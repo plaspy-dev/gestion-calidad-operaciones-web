@@ -1,0 +1,562 @@
+﻿body 	
+{
+	color:#686868;
+  	background: #ededed;
+    text-align: center;
+    border-color: #F0F0F0;
+}
+.td1
+{
+    white-space: nowrap;
+    width: 1px;
+}
+.nowrap 
+{
+    white-space: nowrap;
+}
+.hora 
+{
+    width: 40px;
+    text-align: right;
+}
+.fecha 
+{
+    width: 100px;
+    text-align: right;
+    background: white url('../imgs/cal.gif') left center no-repeat;
+}
+.likenumber 
+{
+    width: 100px;
+    text-align: right;
+}
+.float
+{
+    width: 100px;
+    text-align: right;
+}
+.entero 
+{
+    width: 100px;
+    text-align: right;
+}
+.selecteditem 
+{
+    background-color: #406BAF;
+    font-weight: bold;
+    color: White;
+}
+.izquierdo
+{
+    text-align: right;
+}
+#loading 
+{
+    font-family: Verdana, Arial, Helvetica;
+    font-size: small;
+    position:absolute;
+    top:0;right:0; /*This may prevent it from being seen if the user has scrolled down */
+    color:#fff;
+    padding:2px 2px 2px 20px;
+    background:red url(ajax-loader.gif) no-repeat 2px;
+}
+a
+{    
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: none;
+	color: #406BAF;
+	text-decoration: underline;
+	font-size: 10px;
+	cursor:hand;
+}
+
+.a:link
+{    
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: none;
+	color: #406BAF;
+	text-decoration: underline;
+	font-size: 10px;
+}
+.a:hover
+{
+    font: 10px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: none;
+	color: #7294CB;
+	text-decoration: underline;
+	font-size: 10px;
+}
+
+.roundedPanel
+{
+	background-color:white;
+	text-align: left;
+	border-color:#adadad;
+	background-image: url(Imagenes/barraSombra.png);
+	background-repeat:repeat-y;
+	background-position:right;
+	
+}
+.PanelInicio
+{
+	width: 300px; /*background-color:#5377A9;*/
+	background-color:white;
+    border-color:#406BAF;
+	text-align: center;
+}
+.Boton
+{
+	border: 1px solid #333333;
+	background-color: #ffffff;
+		color: #000000;
+		cursor: hand;
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		font-size: 10px;
+		font-weight: bold;
+	height: 18px;
+}
+.Etiqueta
+{
+	color: #406BAF; /*dimgray*/
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+}
+.EtiquetaHand
+{
+	font: bold 10px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: none;
+	color: #406BAF;
+	text-decoration: underline;
+	font-size: 10px;
+	cursor:hand;
+}
+.EtiquetaHand:hover
+{
+	font: bold 10px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: none;
+	color: #7294CB;
+	text-decoration: underline;
+	font-size: 10px;
+	cursor:hand;
+}
+
+.EtiquetaSubT
+{
+	color: #406BAF; /*dimgray*/
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+.textoEntrada
+{
+    background-color: #f9fafb;
+    border-bottom: #F0F0F0 1px solid;
+    border-left: #F0F0F0 1px solid;
+    border-right: #F0F0F0 1px solid;
+    border-top: #F0F0F0 1px solid;
+    color: #406BAF;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    border-color: #C5C5C5;
+}
+.lblsubTitulo
+{
+	color: White; /*dimgray*/
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	background-color: Transparent;
+	text-transform: uppercase;
+	width: 100%;
+}
+.validador
+{
+	font-size:x-small;
+	font-family:Verdana;
+}
+.link
+{
+	font: bold 10px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: none;
+	color: #406BAF;
+	text-decoration: underline;
+	font-size: 10px;
+}
+.link:hover
+{
+	font: bold 10px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: none;
+	color: #7294CB;
+	text-decoration: underline;
+	font-size: 10px;
+}
+.linkEnlace
+{
+	font: 9px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: none;
+	color: #406BAF;
+	text-decoration: underline;
+	font-size: 9px;
+
+    }
+.linkEnlace:hover
+{
+    font: 9px Verdana, Arial, Helvetica, sans-serif;
+    color: #7294CB;
+    text-decoration: underline;
+    font-size: 9px;
+}
+.celdaMenu
+{
+	border: thin solid #000000;
+	width: 200px;
+	overflow: scroll ;
+	vertical-align:top;
+}
+.lblTituloPagina
+{
+	color: White; /*dimgray*/
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	background-color: Transparent;
+	width: 100%;
+	text-align:center ;
+}
+.celdaTitulo
+{
+	background-color: #406BAF;
+	text-align:center ;
+	text-transform: uppercase;
+	font-size: 11px;
+	color: White;
+	font-weight: bold;
+	background-image: url(../imgs/bkg.jpg);
+	background-repeat: repeat-x;
+	width:100%;
+}
+.verificadorClave
+{
+	font-family: Verdana;
+	font-size: 8pt;
+	color: white;
+	background-color: gray;
+}
+.GridHeader
+{
+	background-color: #406BAF;
+	color: #FFFFFF;
+    border-color: #F0F0F0;
+}
+.GridHeader:link
+{
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+	color: white;
+	text-decoration: underline;
+	font-size: 10px;
+    border-color: #F0F0F0;
+}
+.GridFooter
+{
+    background-color: #406BAF;
+    color: #FFFFFF;
+    font-size: 9px;
+    border-color: #F0F0F0;
+    text-align: left;
+}
+.GridRow
+{
+    border-color: #F0F0F0;
+	color: #406BAF;
+    font-size: 9px;
+}
+.GridSelRow
+{
+	color: #FFFFFF;
+	font-size: 10px;
+	font-weight: bold;
+	background-color: #9AB3DA;
+    border-color: #F0F0F0;
+}
+.GridSelRow td      
+{
+	color: #FFFFFF;
+	font-size: 10px;
+}
+.GridSelRow a
+{
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: bold;
+    background-color: #9AB3DA;
+    border-color: #F0F0F0;
+}
+
+.GridSelRow:hover
+{
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: bold;
+    background-color: #9AB3DA;
+    border-color: #F0F0F0;
+}
+
+.GridAltRow
+{
+    border-color: #F0F0F0;
+	color: #406BAF;
+	font-size: 9px;
+	background-color: #F4F7FB;
+}
+.GridPager
+{
+	background-color: #406BAF;
+	color: #FFFFFF;
+	font-size: 9px;
+    border-color: #F0F0F0;
+}
+.linkBH
+{
+	font: bold 10px Verdana, Arial, Helvetica, sans-serif;
+	color: white;
+	text-decoration: underline;
+	font-size: 10px;
+}
+.linkBH:hover
+{
+	font: bold 10px Verdana, Arial, Helvetica, sans-serif;
+	color: white;
+	text-decoration: underline;
+	font-size: 10px;
+}
+.lblFormatoFecha
+{
+	font-family: verdana;
+	font-size: x-small;
+
+	}
+/*Modal Popup*/
+.modalBackground {
+	background-color:white;
+	filter:alpha(opacity=70);
+	opacity:0.7;
+    text-align: center;
+    z-index=-1;
+}
+
+.modalPopup
+{
+    background-color: White;
+    border-width: 3px;
+    border-style: solid;
+    border-color: Gray;
+    padding: 3px;
+    /*width: 250px;*/
+    text-align: center;
+    /*display:none;*/
+    z-index=5;
+}
+.MarcaAgua {
+/*	height:20px;*/
+	/*width:150px;*/
+	padding:2px 0 0 2px;
+	border:1px solid #BEBEBE;
+	background-color:#F0F8FF;
+	color:gray;
+	font-size: xx-small ;
+}	
+.imgSubir
+{
+    background-image:Imagenes/collapse.jpg;
+    }
+.imgBajar
+{
+    background-image:Imagenes/expand.jpg;
+    }
+.imgAdv
+{
+    background-image:Imagenes/advertencia.jpg;
+}
+.divInfo
+{
+    font: bold 9px Verdana, Arial, Helvetica, sans-serif;
+    text-transform: none;
+    color: #809ED0;
+    font-size: 9px;
+}
+ .divAdver
+{
+    font: bold 9px Verdana, Arial, Helvetica, sans-serif;
+    color: #D9D900;
+    font-size: 9px;
+}
+.divMargen
+{
+    border-style: solid;
+    border-width: 1px;
+}
+.lblEnl
+{
+    color: #406BAF; /*dimgray*/
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+    cursor:hand;
+}
+.grv
+{
+    border-color: #F0F0F0;
+    text-align: center;
+}
+    .imgLogo
+    {
+         
+        }
+.etiqTitNoticia
+{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: medium;
+    color: #FFFFFF;
+}
+.etiqNoticia
+{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:x-small ;
+    color: #FFFFFF;
+}
+.marquee
+{
+	background-color: #406BAF;
+	/* vertical-align:top ;*/
+	 text-align:left ;
+	}
+.msj
+{
+    border-style: solid;
+    border-width: 1px;
+    background-color: #FFFFD9;
+    color:Black;
+}
+
+.nuevo
+{
+    font-size: xx-small;
+    color: #FF0000;    
+    font-style: italic;
+    display:inline;    
+}
+.dvMensajes
+{
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #CCCCCC;
+    background-color: white;
+    color: Black;
+    background-image: url(Imagenes/barraSombra.png);
+    background-repeat: repeat-y;
+    background-position: right;
+    font-size:small;
+    width:250px;    
+}
+.aNulo
+{
+	color:White;
+     border-bottom-style:none;
+    }
+
+table tr td
+{
+    
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+    }
+.GridPager span
+{
+    color:White;
+    }
+.margin
+{
+	padding: 0px 5px 0px 5px;
+	}
+.panel
+{
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	font-family:Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 10px; 
+	font-weight: normal; 
+	border: #333333 3px solid; 
+	background-color: #FAFAFA; 
+	color: #000000; 
+	z-index:100000000000;
+}
+.panelTitulo
+{
+	font-size: 13px;
+	font-weight: bold;
+	color: #FFF;
+	background-image: url(images/bkg_opciones.jpg);
+	
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-left-style: solid;
+	border-top-color: #B0B0B0;
+	border-right-color: #B0B0B0;
+	border-left-color: #B0B0B0;
+	width: auto;
+	width:99%;
+	border-width:thin;
+	border-style:solid;
+	cursor:default;
+	}
+.panelContenido
+{
+	font-size: 10px; 
+	width:100%;
+	height:80%;
+	overflow:auto;
+	background-color:White;
+}
+.panelCerrar
+{
+	text-align:right;cursor:hand;
+}
+.panelFondo
+{
+	filter:alpha(opacity=60);
+	left:0px;
+	width:100%;
+	position:absolute;
+	top:0px;
+	height:100%;
+	background-color:white;
+	opacity:.6;
+	z-index:1000000000;
+}
+.subrayado
+{
+	border-bottom:solid thin red
+}
+.ui-autocomplete {
+	max-height: 500px;
+	overflow-y: auto;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+	/* add padding to account for vertical scrollbar */
+	padding-right: 20px;
+	text-align: left;
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+	height: 500px;
+}
+.ui-autocomplete-loading { background: white url('../imgs/ui-anim_basic_16x16.gif') right center no-repeat; }
+	

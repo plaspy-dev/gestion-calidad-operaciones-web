@@ -1,0 +1,266 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPageI" %>
+<%@ Register src="~/modificaciones.ascx" TagName="modificaciones" TagPrefix="uc1" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <script type="text/javascript" src="https://service.example.invalid/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery-ui-1.8.13.custom.min.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.ui.autocomplete.selectFirst.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.ui.datepicker-es.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery-ui-numeric-min.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.updatepanel.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.timeentry.min.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.ui.timepicker.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.maskedinput-1.3.min.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/combo.js"></script>
+    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/main.js"></script>
+    <link href="css/ui-lightness/jquery-ui-1.8.13.custom.css" type="text/css" rel="Stylesheet" />
+    <link href="css/ui-lightness/jquery-ui-numeric-min.css" type="text/css" rel="Stylesheet" />
+    <link href="css/estilo.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(function() {
+            $("#tabs").tabs();
+            $("#ctl00_lnkCambioClave").click(function() {
+                $("#contrasena").dialog(
+                    {
+                        modal: true,
+                        autoOpen: true,
+                        width: 'auto',
+                        open: function(event, ui) { setTimeout("$('#contrasena :input:first').focus();", 100); },
+                        buttons: {
+                            "Aceptar": function() {
+                                $("#ctl00_BAceptar").click();
+                            },
+                            "Cancelar": function() {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                $("#ctl00_BAceptar").hide();
+                $("#contrasena").parent().appendTo(jQuery("#aspnetForm"));
+                return false;
+            });
+            $("#loading").hide();
+        });
+    </script>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <div id="loading">Cargando ...</div>
+    <form id="form1" runat="server" autocomplete="off">
+    <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true" ScriptMode="Release" LoadScriptsBeforeUI="false">
+    </asp:ScriptManager>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr><td align="center" >
+<table cellpadding="0" cellspacing="0">
+<tr><td align="left" >
+            <asp:Panel ID="Panel1" runat="server" CssClass="roundedPanel" >
+            <div style="width:700px; height:0px;"></div>
+            <table cellpadding="0" cellspacing="0" id="tblPr"><tr><td style="width:auto;">
+                <asp:ImageButton ID="ImageButton1" runat="server" ImageUrl="~/imgs/Logo.jpg" 
+                    Height="60px" CausesValidation="False" PostBackUrl="~/inicio.aspx"/>
+                </td><td valign="bottom" align="left" style="width:40%;"><asp:Label ID="lblUsuario" runat="server" Text=""></asp:Label>
+                    <br />
+                    <asp:Label ID="lblNombre" runat="server" Text=""></asp:Label>
+                </td>
+                <td valign="bottom" align="right" >
+                    &nbsp;&nbsp;
+                </td><td valign="bottom" align="right" >
+                    <asp:LinkButton ID="lnkCambioClave" runat="server" CausesValidation="False" 
+                        PostBackUrl="">Cambio de Clave</asp:LinkButton>
+                    &nbsp;<asp:LinkButton ID="lnkSalir" runat="server" CausesValidation="False" 
+                        PostBackUrl="~/Default.aspx?end=1">Salir</asp:LinkButton>
+&nbsp;
+                    </td>
+                    </tr>
+                    <tr>
+                    <td colspan="4" >
+                    <div class="celdaTitulo" >
+                    <table width="100%"  cellpadding="0" cellspacing="0">
+                    <tr><td>
+                        <asp:Label ID="lblTitulo" CssClass="lblTituloPagina" runat="server" Text="" ></asp:Label>
+                    </td></tr>
+                    <tr><td align="right">
+                     <table><tr>
+                     <td align="left" >
+                         <asp:LinkButton ID="lnkNuevo" runat="server" CssClass="linkBH" 
+                         Visible="False" CausesValidation="False" PostBackUrl="">Nuevo</asp:LinkButton>
+                     </td>
+                     <td align="left" >
+                         <asp:LinkButton ID="lnkImp" runat="server" CssClass="linkBH" 
+                         Visible="False" CausesValidation="False" OnClientClick="imprimir();return false;" onclick="lnkImp_Click">Imprimir</asp:LinkButton>
+                     </td>
+                     <td align="left" >
+                         <asp:LinkButton ID="lnkGuardar" runat="server" CssClass="linkBH" 
+                             Visible="False" ValidationGroup="Guardar">Guardar</asp:LinkButton>
+                     </td>
+                     <td align="left" >
+                         <asp:LinkButton ID="lnkExcel" runat="server" CssClass="linkBH" 
+                             Visible="False" CausesValidation="False" onclick="lnkExcel_Click">Excel</asp:LinkButton>
+                         </td>
+                     </tr></table>
+                    </td></tr>
+                    </table>
+                    </div> 
+                    </td>
+                    </tr>
+                    <tr>
+                    <td valign="top">
+                        <div id="tabs" style="min-width: 190px">
+	                    <ul>
+		                    <li><a href="#tabs-1">Navegador</a></li>
+		                    <li><a href="#tabs-2">Propiedades</a></li>
+	                    </ul>
+	                        <div id="tabs-1">
+                                <asp:TreeView ID="TMenu" runat="server" ImageSet="Arrows" 
+                                    EnableViewState="False">
+                                    <ParentNodeStyle Font-Bold="False" />
+                                    <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
+                                    <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" 
+                                        HorizontalPadding="0px" VerticalPadding="0px" />
+                                    <NodeStyle Font-Names="Verdana" Font-Size="8pt" ForeColor="Black" 
+                                        HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
+                                </asp:TreeView>
+                            </div>
+                            <div id="tabs-2" class="ui-tabs-hide">
+                                <uc1:modificaciones ID="MModificaciones" IdModificacion="" runat="server"/>
+                            </div>
+                        </div>
+                    </td>
+                        <td colspan="3" valign="top" style="border: thin solid #D4D4D4; width:80%;min-width:400px;">
+                            <asp:ContentPlaceHolder ID="cph" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </td>
+                        <td><div style="width:5px;"></div></td>
+                </tr>
+                    </table>
+                            <div style="height:5px;"/>
+                   
+            </asp:Panel>
+            <div style="text-align:right;">
+    <span style="color: darkgray">Copyright &copy;2011 <a href="https://service.example.invalid"><font style="color: darkgray; text-decoration:none">Software Developers Group LTDA</font></a>.All Rights Reserved &nbsp;&nbsp;<br />
+    Versión <asp:Label ID="LVersion" runat="server" Text=""></asp:Label> &nbsp;&nbsp;</span>
+</div>
+</td></tr>
+</table>
+</td></tr>
+</table>
+    <p>
+        &nbsp;</p>
+    <table><tr><td></td><td style="width:5px;"></td></tr></table>
+    </div>
+    <asp:UpdatePanel ID="UPDiagAux" runat="server" RenderMode="Inline">
+        <ContentTemplate>
+            <div id="titulo_aux" style="display: none" runat="server"></div>
+            <div id="dialog_aux">
+                <asp:Literal ID="LAuxDiag" runat="server"></asp:Literal>
+            </div>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+    <div id="contrasena" title="Cambiar contraseña" style="display: none;">
+        <table>
+            <tr>
+                <td align="left">
+                    Actual
+                </td>
+                <td align="left">
+                    <asp:TextBox ID="TActual" TextMode="Password" runat="server"></asp:TextBox>
+                </td>
+                <td align="left">
+                    <asp:Button ID="BAceptar" runat="server" Text="Aceptar" 
+                        ValidationGroup="contrasena" onclick="BAceptar_Click" />
+                </td>
+            </tr>
+            <tr>
+                <td align="left">
+                    Nueva
+                </td>
+                <td align="left">
+                    <asp:TextBox ID="TNueva" TextMode="Password" runat="server"></asp:TextBox>
+                </td>
+                <td align="left">
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                        ControlToValidate="TNueva" ErrorMessage="Por favor ingrese una contraseña." 
+                        Display="Dynamic" SetFocusOnError="true" ValidationGroup="contrasena"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td align="left">
+                    Confirmar
+                </td>
+                <td align="left">
+                    <asp:TextBox ID="TConfirmar" TextMode="Password" runat="server"></asp:TextBox>
+                </td>
+                <td align="left">
+                    <asp:CompareValidator ID="CompareValidator1" runat="server" 
+                        ControlToValidate="TNueva" ControlToCompare="TConfirmar" 
+                        ErrorMessage="Las nuevas contraseñas no coinciden." Display="Dynamic" 
+                        SetFocusOnError="true" ValidationGroup="contrasena"></asp:CompareValidator>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+<div id="dialog-message" title="Error">
+    <asp:Label ID="LMensaje" runat="server" Text=""></asp:Label>
+</div>
+<img src="<%=ResolveUrl("~/")%>renewSes.aspx" alt="" name="renewSession" id="renewSession" style="display: none" />
+<script type="text/javascript">
+
+    var g_OpenDialog = null;
+
+    $('#ctl00_UPDiagAux').panelUpdated(function() {
+
+        if ($("#ctl00_titulo_aux").attr("title").length > 0) {
+            $("#dialog_aux").dialog({
+                modal: true,
+                autoOpen: true,
+                width: 'auto',
+                title: $("#ctl00_titulo_aux").attr("title"),
+                buttons: {
+                    "Aceptar": function() {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+    });
+
+    if ($("#<%= LMensaje.ClientID %>").html().length > 0) {
+        $("#dialog-message").dialog({
+            modal: true,
+            width: 'auto',
+            buttons: {
+                "Aceptar": function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        setInterval("$('#renewSession').attr('src', '" + $('#renewSession').attr('src') + "?par=' + Math.random())", 180000);
+    });
+
+    prm = Sys.WebForms.PageRequestManager.getInstance();
+    prm.add_beginRequest(function(sender, args) {
+        if (g_OpenDialog) {
+            $(g_OpenDialog).dialog("close");
+            g_OpenDialog = null;
+        }
+        $("#loading").show();
+    });
+
+    prm.add_pageLoaded(function(sender, args) {
+
+        inicio();
+    });
+
+</script>
+</body>
+</html>
