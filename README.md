@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-11-28 · Recuperar la aplicación web de evaluación.** Incorpora la entrada del sitio y las pantallas que reúnen los criterios y resultados de evaluación. El lector puede seguir cómo se llega a una evaluación desde la página principal.
+**2011-11-29 · Reorganizar la entrada y los grupos del sitio.** Actualiza la tabla de la portada y el comportamiento de la plantilla común al cargar la página. Retira el controlador anterior de grupos para distinguir la navegación que conserva esta versión.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-11-28 · Recover the web evaluation application.** Recover the site's landing page and the screens that gather assessment criteria and results. Readers can follow the path from the homepage to an evaluation.
+**2011-11-29 · Reorganize navigation and group handling.** Update the homepage table and the shared layout's page-load behavior. Remove the previous group handler to distinguish the navigation present in this version.
 
 ### How to explore the source
 

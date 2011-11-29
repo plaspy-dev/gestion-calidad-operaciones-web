@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <script type="text/javascript" src="https://service.example.invalid/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://service.example.invalid/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.cookie.js"></script>
     <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery-ui-1.8.13.custom.min.js"></script>
     <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.ui.autocomplete.selectFirst.js"></script>
@@ -254,6 +254,9 @@
             g_OpenDialog = null;
         }
         $("#loading").show();
+    });
+    prm.add_pageLoaded(function(sender, args) {
+        $("#loading").hide();
     });
 
     prm.add_pageLoaded(function(sender, args) {

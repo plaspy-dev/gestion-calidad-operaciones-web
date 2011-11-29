@@ -14,8 +14,7 @@ public class CConector : Conector
     {
     }
 
-    static public CConector GetConector() 
-    {
-        return new CConector();
+    public string GetConnectionString() {
+        return m_szConexion;
     }
 }

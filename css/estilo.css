@@ -10,6 +10,10 @@
     white-space: nowrap;
     width: 1px;
 }
+.hide 
+{
+    display:none;
+}
 .nowrap 
 {
     white-space: nowrap;
@@ -559,4 +563,4 @@ table tr td
 	height: 500px;
 }
 .ui-autocomplete-loading { background: white url('../imgs/ui-anim_basic_16x16.gif') right center no-repeat; }
-	
+.ui-progressbar-value { background-image: url(../imgs/pbar-ani.gif); }

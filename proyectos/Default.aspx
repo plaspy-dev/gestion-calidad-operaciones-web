@@ -1,4 +1,6 @@
-ï»¿<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
+<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
+
+<%@ Register src="../archivo/subir.ascx" tagname="subir" tagprefix="uc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script type="text/javascript">
@@ -163,12 +165,12 @@
                 </tr>
                 <tr>
                     <td>
-                        DirecciÃ³n</td>
+                        Dirección</td>
                     <td>
                         <asp:TextBox ID="TDireccion" runat="server"></asp:TextBox>
                         </td>
                     <td>
-                        TelÃ©fono</td>
+                        Teléfono</td>
                     <td>
                         <asp:TextBox ID="TTelefono" runat="server"></asp:TextBox>
                         </td>
@@ -186,7 +188,7 @@
                 </tr>
                 <tr>
                     <td>
-                        Tipo de intervenciÃ³n</td>
+                        Tipo de intervención</td>
                     <td>
                         <asp:DropDownList ID="DTIntervencion" runat="server" DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id">
                         </asp:DropDownList>
@@ -196,7 +198,7 @@
                             SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=104 AND szReservado IS NULL" >
                     </asp:SqlDataSource></td>
                     <td>
-                        Tipo de instituciÃ³n</td>
+                        Tipo de institución</td>
                     <td>
                         <asp:DropDownList ID="DTInstitucion" runat="server" DataSourceID="STInstitucion" DataTextField="nombre" DataValueField="id">
                         </asp:DropDownList>
@@ -218,11 +220,11 @@
                 </tr>
                 <tr>
                     <td>
-                        Costo intervenciÃ³n (m2)</td>
+                        Costo intervención (m2)</td>
                     <td align="right">
                         <asp:Label ID="LCostoIntervencion" runat="server" Text=""></asp:Label></td>
                     <td>
-                        Presupuesto inicial de dotaciÃ³n</td>
+                        Presupuesto inicial de dotación</td>
                     <td>
                         <asp:TextBox runat="server" CssClass="dinero" ID="TPDotacion"></asp:TextBox></td>
                 </tr>
@@ -236,27 +238,20 @@
                     <td>
                         <asp:TextBox runat="server" ID="TObservaciones" TextMode="MultiLine"></asp:TextBox></td>
                 </tr>
-            </table>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <asp:GridView ID="GDocumentos" runat="server" AutoGenerateColumns="False" 
-                        DataSourceID="SDocumentos" DataKeyNames="id,iddocumento">
-                        <RowStyle CssClass="GridRow"></RowStyle>
-                        <FooterStyle CssClass="GridFooter"></FooterStyle>
-                        <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
-                        <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="GridHeader" ForeColor="White"></HeaderStyle>
-                        <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
-                        <Columns>
-                            <asp:TemplateField HeaderText="Documentos">
-                                <ItemTemplate>
-                                    <asp:CheckBox ID="CEstado" runat="server" Checked='<%# Eval("estado").ToString()=="1" %>' Text='<%# Eval("nombre") %>' />
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                    </asp:GridView>
+                <tr>
+                    <td class="celdaTitulo" colspan="4">
+                        Documentos</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <asp:DataList ID="DDocumentos" runat="server" DataSourceID="SDocumentos" 
+                            RepeatColumns="3">
+                            <ItemTemplate>
+                                <asp:HiddenField ID="HId" runat="server" Value='<%# Eval("id") %>' />
+                                <asp:HiddenField ID="HIdDocumento" runat="server" Value='<%# Eval("iddocumento") %>' />
+                                <asp:CheckBox ID="CEstado" runat="server" Checked='<%# Eval("estado").ToString()=="1" %>' Text='<%# Eval("nombre") %>' />
+                            </ItemTemplate>
+                        </asp:DataList>
                     <asp:SqlDataSource ID="SDocumentos" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
@@ -265,6 +260,18 @@
                         <asp:ControlParameter ControlID="HProyecto" Name="proyecto" PropertyName="Value" DefaultValue="0" />
                     </SelectParameters>
                 </asp:SqlDataSource></td>
+                </tr>
+            </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="celdaTitulo">
+                Archivos</td>
+        </tr>
+        <tr>
+            <td>
+                <uc1:subir ID="UCSubir" runat="server" OnEliminarClicked="UCSubir_EliminarClicked"  />
+            </td>
         </tr>
         <tr>
             <td align="right">
