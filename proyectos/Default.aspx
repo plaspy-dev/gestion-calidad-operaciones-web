@@ -1,10 +1,9 @@
-<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
-
-<%@ Register src="../archivo/subir.ascx" tagname="subir" tagprefix="uc1" %>
+ï»¿<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script type="text/javascript">
     $(function() {
+        FullRowSelect("#<%=GDocumentos.ClientID%>");
         $("#<%= TNombre.ClientID %>").autocomplete({
             source: function(request, response) {
                 $.ajax({
@@ -49,7 +48,7 @@
         }
 
         function commaFormatted(amount) {
-            
+
             var delimiter = ","; // replace comma if desired
             var a = amount.split('.', 2)
             var d = a[1];
@@ -72,7 +71,7 @@
             amount = minus + amount;
             return amount;
         }
-        
+
         function Calcular() {
 
             pinicial = parseFloat($("#<%= TPInicial.ClientID %>").val().replace(/,/g, ""));
@@ -104,6 +103,31 @@
             <td>
                 <asp:HiddenField ID="HProyecto" runat="server" />
                 <table style="width: 100%;">
+                <tr>
+                    <td>
+                        Contrato</td>
+                    <td>
+                        <asp:DropDownList ID="DContrato" runat="server" DataSourceID="SContrato" DataTextField="nombre" DataValueField="id" AppendDataBoundItems="true" Width="200px">
+                            <asp:ListItem Text="(Ninguno)" Value=""></asp:ListItem>
+                        </asp:DropDownList>
+                        <asp:SqlDataSource ID="SContrato" runat="server" 
+                            ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                            ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                            SelectCommand="SELECT contratos.id, CAST(CONCAT(LPAD(contratos.id,3,'0'),'-',shared.nombre,'-',entidades.nombre,'-',contratos.id,'-',contratos.ano) AS char) AS nombre
+                                            FROM contratos
+                                            LEFT JOIN shared ON (shared.id=contratos.unidad)
+                                            LEFT JOIN entidades ON (entidades.id=contratos.cliente)
+                                            WHERE contratos.estado IS NULL ORDER BY id" >
+                        </asp:SqlDataSource>
+                        <asp:RequiredFieldValidator ControlToValidate="DContrato" ErrorMessage="Por favor seleccione un contrato." InitialValue="" ID="RequiredFieldValidator2" runat="server" Display="Dynamic" SetFocusOnError="true">*</asp:RequiredFieldValidator>
+                        </td>
+                    <td>
+                        Nombre</td>
+                    <td>
+                        <asp:TextBox runat="server" ID="TNombre"></asp:TextBox>
+                        <asp:RequiredFieldValidator ControlToValidate="TNombre" ErrorMessage="Por favor ingrese un nombre." ID="RequiredFieldValidator4" runat="server" Display="Dynamic" SetFocusOnError="true">*</asp:RequiredFieldValidator>
+                        </td>
+                </tr>
                 <tr>
                     <td>
                         Departamento</td>
@@ -157,30 +181,28 @@
                         <asp:RequiredFieldValidator ControlToValidate="TSede" ErrorMessage="Por favor ingrese una sede." ID="RequiredFieldValidator1" runat="server" Display="Dynamic" SetFocusOnError="true">*</asp:RequiredFieldValidator>
                         </td>
                     <td>
-                        Nombre</td>
+                        IPS referencia</td>
                     <td>
-                        <asp:TextBox runat="server" ID="TNombre"></asp:TextBox>
-                        <asp:RequiredFieldValidator ControlToValidate="TNombre" ErrorMessage="Por favor ingrese un nombre." ID="RequiredFieldValidator4" runat="server" Display="Dynamic" SetFocusOnError="true">*</asp:RequiredFieldValidator>
+                        <asp:TextBox ID="TIPS" runat="server"></asp:TextBox>
                         </td>
                 </tr>
                 <tr>
                     <td>
-                        Dirección</td>
+                        DirecciÃ³n</td>
                     <td>
                         <asp:TextBox ID="TDireccion" runat="server"></asp:TextBox>
                         </td>
                     <td>
-                        Teléfono</td>
+                        TelÃ©fono</td>
                     <td>
                         <asp:TextBox ID="TTelefono" runat="server"></asp:TextBox>
                         </td>
                 </tr>
                 <tr>
                     <td>
-                        IPS referencia</td>
+                        &nbsp;</td>
                     <td>
-                        <asp:TextBox ID="TIPS" runat="server"></asp:TextBox>
-                        </td>
+                        &nbsp;</td>
                     <td>
                         &nbsp;</td>
                     <td>
@@ -188,7 +210,7 @@
                 </tr>
                 <tr>
                     <td>
-                        Tipo de intervención</td>
+                        Tipo de intervenciÃ³n</td>
                     <td>
                         <asp:DropDownList ID="DTIntervencion" runat="server" DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id">
                         </asp:DropDownList>
@@ -198,7 +220,7 @@
                             SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=104 AND szReservado IS NULL" >
                     </asp:SqlDataSource></td>
                     <td>
-                        Tipo de institución</td>
+                        Tipo de instituciÃ³n</td>
                     <td>
                         <asp:DropDownList ID="DTInstitucion" runat="server" DataSourceID="STInstitucion" DataTextField="nombre" DataValueField="id">
                         </asp:DropDownList>
@@ -220,11 +242,11 @@
                 </tr>
                 <tr>
                     <td>
-                        Costo intervención (m2)</td>
+                        Costo intervenciÃ³n (m2)</td>
                     <td align="right">
                         <asp:Label ID="LCostoIntervencion" runat="server" Text=""></asp:Label></td>
                     <td>
-                        Presupuesto inicial de dotación</td>
+                        Presupuesto inicial de dotaciÃ³n</td>
                     <td>
                         <asp:TextBox runat="server" CssClass="dinero" ID="TPDotacion"></asp:TextBox></td>
                 </tr>
@@ -244,18 +266,39 @@
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <asp:DataList ID="DDocumentos" runat="server" DataSourceID="SDocumentos" 
-                            RepeatColumns="3">
-                            <ItemTemplate>
-                                <asp:HiddenField ID="HId" runat="server" Value='<%# Eval("id") %>' />
-                                <asp:HiddenField ID="HIdDocumento" runat="server" Value='<%# Eval("iddocumento") %>' />
-                                <asp:CheckBox ID="CEstado" runat="server" Checked='<%# Eval("estado").ToString()=="1" %>' Text='<%# Eval("nombre") %>' />
-                            </ItemTemplate>
-                        </asp:DataList>
+                    <asp:GridView ID="GDocumentos" runat="server" AutoGenerateColumns="False" 
+                        DataSourceID="SDocumentos" DataKeyNames="id,iddocumento" 
+                            onselectedindexchanged="GDocumentos_SelectedIndexChanged">
+                        <RowStyle CssClass="GridRow"></RowStyle>
+                        <FooterStyle CssClass="GridFooter"></FooterStyle>
+                        <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
+                        <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
+                        <HeaderStyle CssClass="GridHeader" ForeColor="White"></HeaderStyle>
+                        <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
+                        <Columns>
+                            <asp:TemplateField ShowHeader="False">
+                                <ItemTemplate>
+                                    <asp:ImageButton ID="ISelecccionar" Visible='<%# Eval("estado").ToString()=="1" %>' runat="server" CausesValidation="False" CommandName="Select" ImageUrl="~/imgs/edit.gif" Text="Seleccionar" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ShowHeader="False">
+                                <ItemTemplate>
+                                    <asp:ImageButton ID="IDelete" Visible='<%# Eval("estado").ToString()=="1" %>' runat="server" CausesValidation="False" CommandName="Delete" ImageUrl="~/imgs/eliminar.gif" Text="Eliminar" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField HeaderText="Documento" DataField="nombre" />
+                            <asp:TemplateField HeaderText="Archivo">
+                                <ItemTemplate>
+                                    <asp:FileUpload ID="FArchivo" runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
                     <asp:SqlDataSource ID="SDocumentos" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,documentos_proyecto.id AS iddocumento,documentos_proyecto.estado AS estado FROM shared LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=@proyecto AND documentos_proyecto.documento=shared.id) WHERE shared.nReservado=106 AND shared.szReservado IS NULL" >
+                    SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,documentos_proyecto.id AS iddocumento,LENGTH(documentos_proyecto.archivo)>0 AS estado FROM shared LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=@proyecto AND documentos_proyecto.documento=shared.id) WHERE shared.nReservado=106 AND shared.szReservado IS NULL ORDER BY nombre" 
+                    DeleteCommand="DELETE FROM documentos_proyecto WHERE id=@iddocumento">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="HProyecto" Name="proyecto" PropertyName="Value" DefaultValue="0" />
                     </SelectParameters>
@@ -265,19 +308,9 @@
             </td>
         </tr>
         <tr>
-            <td class="celdaTitulo">
-                Archivos</td>
-        </tr>
-        <tr>
-            <td>
-                <uc1:subir ID="UCSubir" runat="server" OnEliminarClicked="UCSubir_EliminarClicked"  />
-            </td>
-        </tr>
-        <tr>
             <td align="right">
-                <asp:Button ID="BAceptar" runat="server" Text="Aceptar" 
-                    onclick="BAceptar_Click" /><asp:Button ID="BCancelar" runat="server" 
-                    Text="Cancelar" onclick="BCancelar_Click" />
+                <asp:Button ID="BAceptar" runat="server" Text="Aceptar" onclick="BAceptar_Click" />
+                <asp:Button ID="BCancelar" runat="server" CausesValidation="false" Text="Cancelar" onclick="BCancelar_Click" />
             </td>
         </tr>
     </table>

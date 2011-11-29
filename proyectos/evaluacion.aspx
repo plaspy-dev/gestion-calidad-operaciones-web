@@ -128,6 +128,22 @@
             </asp:SqlDataSource></td>
             </tr>
             <tr>
+                <td>
+                    Acceso</td>
+                <td>
+                    <asp:DropDownList ID="DAcceso2" runat="server" DataSourceID="SAcceso" 
+                        DataTextField="nombre" DataValueField="id" AppendDataBoundItems="true">
+                        <asp:ListItem Text="(Ninguno)" Value=""></asp:ListItem>
+                    </asp:DropDownList><asp:CompareValidator ID="CompareValidator1" runat="server" 
+                        ErrorMessage="Por favor seleccione un acceso diferente." SetFocusOnError="true"
+                        ControlToCompare="DAcceso" Operator="NotEqual" ControlToValidate="DAcceso2" Display="Dynamic">*</asp:CompareValidator>
+                </td>
+                <td>
+                    &nbsp;</td>
+                <td>
+                    &nbsp;</td>
+            </tr>
+            <tr>
                 <td colspan="4" class="celdaTitulo">Datos juridicos</td>
             </tr>
             <tr>
@@ -246,12 +262,6 @@
                 </td>
             </tr>
             <tr>
-                <td>Fecha diligencia</td>
-                <td><asp:TextBox runat="server" ID="TFecha" CssClass="fecha"></asp:TextBox></td>
-                <td>Responsable levantamiento</td>
-                <td><asp:TextBox runat="server" ID="TResponsable"></asp:TextBox></td>
-            </tr>
-            <tr>
                 <td>Observaciones</td>
                 <td colspan="3">
                 <asp:TextBox ID="TObservacionesFinal" Width="99%" runat="server" TextMode="MultiLine"></asp:TextBox>
@@ -259,6 +269,7 @@
             </tr>
         </table>
     <div style="text-align: right;">
+        <asp:ValidationSummary ID="ValidationSummary1" runat="server" />
         <asp:Button runat="server" ID="BAceptar" Text="Aceptar" 
             onclick="BAceptar_Click" /><asp:Button runat="server" ID="BCancelar" 
             Text="Cancelar" CausesValidation="false" onclick="BCancelar_Click" />

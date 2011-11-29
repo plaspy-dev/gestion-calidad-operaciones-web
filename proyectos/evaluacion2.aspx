@@ -1,5 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="evaluacion2.aspx.cs" Inherits="proyectos_evaluacion2" %>
+﻿<%@ Page Title="Estado de la edificación" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="evaluacion2.aspx.cs" Inherits="proyectos_evaluacion2" %>
 <%@ Register src="proyector.ascx" tagname="proyector" tagprefix="uc1" %>
+
+<%@ Register src="../archivo/Subir1.ascx" tagname="Subir1" tagprefix="uc2" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script type="text/javascript">
@@ -11,6 +13,11 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cph" Runat="Server">
     <uc1:proyector ID="UCProyecto" runat="server" />
     <asp:Panel runat="server" ID="PDatos" Visible="false">
+        <table>
+        <tr>
+            <td class="celdaTitulo">Estado de la edificación</td>
+        </tr>
+        <tr><td>
         <asp:Repeater ID="REAfectados" runat="server" DataSourceID="SEAfectados" 
             onitemcommand="REAfectados_ItemCommand">
             <HeaderTemplate>
@@ -87,7 +94,11 @@
         <asp:SqlDataSource ID="SEAfectados" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT id,servicio,area FROM evaluacion_elemento_afectado WHERE proyecto=@proyecto"
+                    SelectCommand="SELECT evaluacion_elemento_afectado.id,evaluacion_elemento_afectado.servicio
+                    ,CONCAT(evaluacion_elemento_afectado.area,' ',unidad.nombre) AS area
+                    FROM evaluacion_elemento_afectado 
+                    LEFT JOIN shared AS unidad ON (unidad.id=evaluacion_elemento_afectado.unidad)
+                    WHERE evaluacion_elemento_afectado.proyecto=@proyecto"
                     >
                     <SelectParameters>
                         <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" DefaultValue="0" />
@@ -96,7 +107,16 @@
             <div style="text-align: right">
                 <asp:Button ID="BMas" runat="server" Text="+" onclick="BMas_Click" />
             </div>
-            
+            </td></tr>
+            <tr>
+                <td class="celdaTitulo">Esquema del establecimiento</td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <uc2:Subir1 ID="UCSubir" runat="server" OnUploadClicked="UCSubir_UploadClicked" OnEliminarClicked="UCSubir_EliminarClicked" />
+                </td>
+            </tr>
+            </table>
             <asp:Panel runat="server" ID="PEAfectados" Visible="false">
             <div id="dAfectados" title="Elemento afectado" style="display:none;">
                 <table border="1">
@@ -110,6 +130,18 @@
                   <tr>
                     <td>Área o ambiente</td>
                     <td><asp:TextBox runat="server" ID="TArea" Text=""></asp:TextBox></td>
+                  </tr>
+                  <tr>
+                    <td>Unidad</td>
+                    <td>
+                    <asp:DropDownList ID="DUnidad" runat="server" DataSourceID="SUnidad" DataTextField="nombre" DataValueField="id">
+                        </asp:DropDownList>
+                        <asp:SqlDataSource ID="SUnidad" runat="server" 
+                            ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                            ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                            SelectCommand="SELECT id,nombre FROM shared WHERE nReservado=121 AND szReservado IS NULL" >
+                    </asp:SqlDataSource>
+                    </td>
                   </tr>
                     <asp:Repeater runat="server" ID="RElementos" DataSourceID="SElementos">
                         <HeaderTemplate></HeaderTemplate>

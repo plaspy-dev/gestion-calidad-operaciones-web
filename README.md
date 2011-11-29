@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-11-29 · Reorganizar la entrada y los grupos del sitio.** Actualiza la tabla de la portada y el comportamiento de la plantilla común al cargar la página. Retira el controlador anterior de grupos para distinguir la navegación que conserva esta versión.
+**2011-11-29 · Vincular la evaluación con sus listas de datos.** Reorganiza controles de la portada y enlaza selectores de evaluación con sus orígenes de datos. Los formularios pueden mostrar opciones obtenidas de los registros de la aplicación.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-11-29 · Reorganize navigation and group handling.** Update the homepage table and the shared layout's page-load behavior. Remove the previous group handler to distinguish the navigation present in this version.
+**2011-11-29 · Link evaluation fields to their data lists.** Rework homepage controls and bind evaluation selectors to their data sources. The forms can display choices loaded from application records.
 
 ### How to explore the source
 
