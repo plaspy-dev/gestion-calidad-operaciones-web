@@ -7,8 +7,8 @@
 <head runat="server">
     <title></title>
     <script type="text/javascript" src="https://service.example.invalid/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://service.example.invalid/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
     <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery-ui-1.8.13.custom.min.js"></script>
     <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.ui.autocomplete.selectFirst.js"></script>
     <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery.ui.datepicker-es.js"></script>
     <script type="text/javascript" src="<%=ResolveUrl("~/")%>js/jquery-ui-numeric-min.js"></script>
@@ -93,7 +93,8 @@
                      </td>
                      <td align="left" >
                          <asp:LinkButton ID="lnkImp" runat="server" CssClass="linkBH" 
-                         Visible="False" CausesValidation="False" OnClientClick="imprimir();return false;" onclick="lnkImp_Click">Imprimir</asp:LinkButton>
+                         Visible="False" CausesValidation="False" 
+                             OnClientClick="imprimir();return false;" onclick="lnkImp_Click">Imprimir</asp:LinkButton>
                      </td>
                      <td align="left" >
                          <asp:LinkButton ID="lnkGuardar" runat="server" CssClass="linkBH" 

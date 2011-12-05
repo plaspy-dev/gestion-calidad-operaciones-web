@@ -1,4 +1,4 @@
-<%@ Page Title="EvaluaciÛn inmuebles" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="evaluacion.aspx.cs" Inherits="proyectos_evaluacion" %>
+Ôªø<%@ Page Title="Evaluaci√≥n inmuebles" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="evaluacion.aspx.cs" Inherits="proyectos_evaluacion" %>
 <%@ Register src="proyector.ascx" tagname="proyector" tagprefix="uc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
@@ -12,7 +12,7 @@
                 <td colspan="4" class="celdaTitulo">Concepto preliminar</td>
             </tr>
             <tr>
-                <td>ReposiciÛn</td>
+                <td>Reposici√≥n</td>
                 <td><asp:DropDownList ID="DReposicion" runat="server" DataSourceID="SReposicion" DataTextField="nombre" DataValueField="id">
                 </asp:DropDownList>
                 <asp:SqlDataSource ID="SReposicion" runat="server" 
@@ -20,7 +20,7 @@
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
                     SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=107 AND szReservado IS NULL ORDER BY nombre" >
             </asp:SqlDataSource></td>
-                <td>AdecuaciÛn</td>
+                <td>Adecuaci√≥n</td>
                 <td><asp:DropDownList ID="DAdecuacion" runat="server" DataSourceID="SAdecuacion" DataTextField="nombre" DataValueField="id">
                 </asp:DropDownList>
                 <asp:SqlDataSource ID="SAdecuacion" runat="server" 
@@ -76,7 +76,7 @@
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
                     SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=110 AND szReservado IS NULL ORDER BY nombre" >
             </asp:SqlDataSource></td>
-                <td>Altura m·xima de inundaciÛn sobre el piso</td>
+                <td>Altura m√°xima de inundaci√≥n sobre el piso</td>
                 <td><asp:TextBox runat="server" ID="TAltura" CssClass="entero"></asp:TextBox>cm</td>
             </tr>
             <tr>
@@ -165,7 +165,7 @@
                 <td><asp:TextBox runat="server" ID="TMatriculaI"></asp:TextBox></td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">¡reas</td>
+                <td colspan="4" class="celdaTitulo">√Åreas</td>
             </tr>
             <tr>
                 <td>Total lote</td>
@@ -183,7 +183,7 @@
                 <td colspan="4" class="celdaTitulo">Terreno</td>
             </tr>
             <tr>
-                <td>TopografÌa</td>
+                <td>Topograf√≠a</td>
                 <td><asp:DropDownList ID="DTopografia" runat="server" DataSourceID="STopografia" DataTextField="nombre" DataValueField="id">
             </asp:DropDownList>
             <asp:SqlDataSource ID="STopografia" runat="server" 
@@ -207,12 +207,12 @@
                 <td>
                     &nbsp;</td>
                 <td><asp:CheckBox ID="CEnUso" runat="server" Text="Actualmente en uso" /></td>
-                <td>N˙mero de edificios</td>
+                <td>N√∫mero de edificios</td>
                 <td><asp:TextBox runat="server" CssClass="entero" ID="TEdificios"></asp:TextBox></td>
             </tr>
             <tr>
                 <td>
-                    N˙mero de pisos</td>
+                    N√∫mero de pisos</td>
                 <td><asp:TextBox runat="server" CssClass="entero" ID="TPisos"></asp:TextBox></td>
                 <td>&nbsp;</td>
                 <td><asp:CheckBox ID="CSotano" runat="server" Text="Sotano" /></td>

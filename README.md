@@ -8,16 +8,16 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-11-29 · Vincular la evaluación con sus listas de datos.** Reorganiza controles de la portada y enlaza selectores de evaluación con sus orígenes de datos. Los formularios pueden mostrar opciones obtenidas de los registros de la aplicación.
+**2011-12-05 · Añadir la pantalla de cantidades de obra.** Añade una pantalla con cantidades y filtros y actualiza la portada para integrarla con la navegación. El equipo puede revisar mediciones del proyecto en una vista separada.
 
 ### Cómo explorar el código
 
 El sitio usa ASP.NET de su época. Revisa las páginas y su código en un entorno Windows compatible con .NET Framework. Para una ejecución local, identifica las conexiones que usa la aplicación y prepara una base vacía con datos de prueba. Las conexiones, recursos y servicios originales se gestionan por separado.
 
 - [inicio.aspx](inicio.aspx)
+- [imprimir/Default.aspx](imprimir/Default.aspx)
 - [proyectos/Default.aspx](proyectos/Default.aspx)
 - [renewSes.aspx](renewSes.aspx)
-- [administrador/grupos.aspx](administrador/grupos.aspx)
 
 ## English
 
@@ -25,13 +25,13 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-11-29 · Link evaluation fields to their data lists.** Rework homepage controls and bind evaluation selectors to their data sources. The forms can display choices loaded from application records.
+**2011-12-05 · Add the work quantities screen.** Add a quantities and filters screen and update the homepage to integrate it with navigation. Teams can review project measurements in a dedicated view.
 
 ### How to explore the source
 
 The site uses historical ASP.NET. Review its pages and code in a Windows environment compatible with .NET Framework. To run locally, identify the connections the application uses and prepare an empty database with test data. Original connections, resources, and services are managed separately.
 
 - [inicio.aspx](inicio.aspx)
+- [imprimir/Default.aspx](imprimir/Default.aspx)
 - [proyectos/Default.aspx](proyectos/Default.aspx)
 - [renewSes.aspx](renewSes.aspx)
-- [administrador/grupos.aspx](administrador/grupos.aspx)

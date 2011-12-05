@@ -93,6 +93,15 @@
         $("#<%= TPInicial.ClientID %>").change(Calcular).change();
         $("#<%= TAreaAfectada.ClientID %>").change(Calcular).change();
         $("#<%= TPDotacion.ClientID%>").change(Calcular).change();
+
+        /*$("#<%= BCancelar.ClientID %>").unbind('click');
+        $("#<%= BCancelar.ClientID %>").click(function() {
+            alert($("#aspnetForm").attr("action"));
+            $("#aspnetForm").attr("action", "<%=ResolveUrl("~/")%>imprimir/Default.aspx");
+            $("#aspnetForm").attr("target", "_blank");
+            $("#aspnetForm").submit();
+            return false;
+        });*/
     });
 </script>
 </asp:Content>
@@ -130,6 +139,13 @@
                 </tr>
                 <tr>
                     <td>
+                        Objeto</td>
+                    <td colspan="3">
+                        <asp:TextBox ID="TObjeto" runat="server" TextMode="MultiLine" Width="99%"></asp:TextBox>
+                        </td>
+                </tr>
+                <tr>
+                    <td>
                         Departamento</td>
                     <td>
                         <asp:DropDownList ID="DDepartamento" runat="server" 
@@ -140,11 +156,13 @@
                             ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                             ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
                             SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=101 AND szReservado IS NULL ORDER BY nombre" >
-                    </asp:SqlDataSource></td>
-                    <td>
-                        Grupo</td>
-                    <td>
+                    </asp:SqlDataSource>
                         <asp:Label ID="LGrupo" runat="server" Text=""></asp:Label></td>
+                    <td>
+                        &nbsp;</td>
+                    <td>
+                        <asp:CheckBox ID="CViable" runat="server" Text="Víable" />
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -256,9 +274,16 @@
                     <td align="right">
                         <asp:Label ID="LPTotal" runat="server" Text=""></asp:Label></td>
                     <td>
-                        Observaciones</td>
+                        &nbsp;</td>
                     <td>
-                        <asp:TextBox runat="server" ID="TObservaciones" TextMode="MultiLine"></asp:TextBox></td>
+                        &nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+                        Observaciones</td>
+                    <td align="right" colspan="3">
+                        <asp:TextBox runat="server" ID="TObservaciones" TextMode="MultiLine" 
+                            Width="99%"></asp:TextBox></td>
                 </tr>
                 <tr>
                     <td class="celdaTitulo" colspan="4">
