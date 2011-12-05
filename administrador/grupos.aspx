@@ -72,7 +72,7 @@
                 </asp:SqlDataSource>
             </td>
             <td>
-                <table style="width: 100%;">
+                <table>
                     <tr>
                         <td>
                             <table>
@@ -80,19 +80,22 @@
                         <td>
                             Nombre
                         </td>
-                        <td>
-                            <asp:TextBox ID="TNombre" runat="server"></asp:TextBox>
+                        <td width="100%">
+                            <asp:TextBox ID="TNombre" runat="server" Width="100%"></asp:TextBox>
+                        </td>
+                        <td style="white-space: nowrap;">
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
                                 ControlToValidate="TNombre" Display="Dynamic" 
                                 ErrorMessage="Por favor ingrese un nombre."></asp:RequiredFieldValidator>
-                            &nbsp;
                         </td>
                     </tr>
                     <tr>
                         <td>
                             Descripción</td>
                         <td>
-                            <asp:TextBox ID="TDescripcion" runat="server"></asp:TextBox>
+                            <asp:TextBox ID="TDescripcion" runat="server" Width="100%"></asp:TextBox>
+                        </td>
+                        <td>&nbsp;
                         </td>
                     </tr>
                     </table>
@@ -116,7 +119,7 @@
                                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                                        <HeaderStyle CssClass="GridHeader" ForeColor="White"></HeaderStyle>
+                                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
                                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                                         <Columns>
                                             <asp:TemplateField HeaderText="Todos">

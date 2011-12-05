@@ -15,7 +15,7 @@
     <asp:Panel runat="server" ID="PDatos" Visible="false">
         <table>
         <tr>
-            <td class="celdaTitulo">Estado de la edificación</td>
+            <td class="ui-widget-header ui-corner-all">Estado de la edificación</td>
         </tr>
         <tr><td>
         <asp:Repeater ID="REAfectados" runat="server" DataSourceID="SEAfectados" 
@@ -50,7 +50,7 @@
                         <td>
                             <table border="1" width="100%">
                               <tr>
-                                <td class="celdaTitulo" colspan="2"><%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                                <td class="ui-widget-header ui-corner-all" colspan="2"><%# DataBinder.Eval(Container.DataItem, "nombre") %>
                                 </td>
                               </tr>
                               <tr>
@@ -109,7 +109,7 @@
             </div>
             </td></tr>
             <tr>
-                <td class="celdaTitulo">Esquema del establecimiento</td>
+                <td class="ui-widget-header ui-corner-all">Esquema del establecimiento</td>
             </tr>
             <tr>
                 <td align="right">
@@ -147,7 +147,7 @@
                         <HeaderTemplate></HeaderTemplate>
                         <ItemTemplate>
                             <tr>
-                                <td class="celdaTitulo" colspan="2"><%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                                <td class="ui-widget-header ui-corner-all" colspan="2"><%# DataBinder.Eval(Container.DataItem, "nombre") %>
                                     <asp:HiddenField runat="server" ID="HId" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
                                     <asp:HiddenField runat="server" ID="HIdElemento" Value='<%# DataBinder.Eval(Container.DataItem, "idelemento") %>' />
                                 </td>

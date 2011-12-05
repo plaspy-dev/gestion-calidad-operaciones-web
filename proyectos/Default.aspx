@@ -218,16 +218,6 @@
                 </tr>
                 <tr>
                     <td>
-                        &nbsp;</td>
-                    <td>
-                        &nbsp;</td>
-                    <td>
-                        &nbsp;</td>
-                    <td>
-                        &nbsp;</td>
-                </tr>
-                <tr>
-                    <td>
                         Tipo de intervención</td>
                     <td>
                         <asp:DropDownList ID="DTIntervencion" runat="server" DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id">
@@ -286,7 +276,7 @@
                             Width="99%"></asp:TextBox></td>
                 </tr>
                 <tr>
-                    <td class="celdaTitulo" colspan="4">
+                    <td class="ui-widget-header ui-corner-all" colspan="4">
                         Documentos</td>
                 </tr>
                 <tr>
@@ -298,7 +288,7 @@
                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="GridHeader" ForeColor="White"></HeaderStyle>
+                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                         <Columns>
                             <asp:TemplateField ShowHeader="False">

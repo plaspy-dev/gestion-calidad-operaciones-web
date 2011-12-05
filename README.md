@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-12-05 · Añadir la pantalla de cantidades de obra.** Añade una pantalla con cantidades y filtros y actualiza la portada para integrarla con la navegación. El equipo puede revisar mediciones del proyecto en una vista separada.
+**2011-12-05 · Reorganizar la plantilla y las pantallas de evaluación.** Actualiza los controles que se muestran en la plantilla común y alinea las clases y columnas de las pantallas de evaluación. Las vistas pueden usar la estructura compartida durante la revisión.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-12-05 · Add the work quantities screen.** Add a quantities and filters screen and update the homepage to integrate it with navigation. Teams can review project measurements in a dedicated view.
+**2011-12-05 · Rework the shared layout and evaluation screens.** Update the controls shown in the shared layout and align classes and columns across evaluation pages. The views can use the common structure during a review.
 
 ### How to explore the source
 

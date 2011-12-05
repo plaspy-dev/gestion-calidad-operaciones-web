@@ -9,7 +9,7 @@
     <asp:HiddenField runat="server" ID="HEvaluacion" />
         <table border="1">
             <tr>
-                <td colspan="4" class="celdaTitulo">Concepto preliminar</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Concepto preliminar</td>
             </tr>
             <tr>
                 <td>Reposición</td>
@@ -37,7 +37,7 @@
                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="GridHeader" ForeColor="White"></HeaderStyle>
+                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                         <Columns>
                             <asp:TemplateField HeaderText="Concepto">
@@ -62,10 +62,10 @@
                 <td colspan="3"><asp:TextBox runat="server" ID="TObservaciones" Width="99%" TextMode="MultiLine"></asp:TextBox></td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Condiciones actuales</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Condiciones actuales</td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Afectaciones</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Afectaciones</td>
             </tr>
             <tr>
                 <td>Naturales</td>
@@ -80,7 +80,7 @@
                 <td><asp:TextBox runat="server" ID="TAltura" CssClass="entero"></asp:TextBox>cm</td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Condiciones climaticas</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Condiciones climaticas</td>
             </tr>
             <tr>
                 <td>Clima</td>
@@ -107,7 +107,7 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Acceso</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Acceso</td>
             </tr>
             <tr>
                 <td>Acceso</td>
@@ -144,7 +144,7 @@
                     &nbsp;</td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Datos juridicos</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Datos juridicos</td>
             </tr>
             <tr>
                 <td>Tenencia</td>
@@ -165,7 +165,7 @@
                 <td><asp:TextBox runat="server" ID="TMatriculaI"></asp:TextBox></td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Áreas</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Áreas</td>
             </tr>
             <tr>
                 <td>Total lote</td>
@@ -180,7 +180,7 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Terreno</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Terreno</td>
             </tr>
             <tr>
                 <td>Topografía</td>
@@ -201,7 +201,7 @@
         </asp:SqlDataSource></td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Edificios</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Edificios</td>
             </tr>
             <tr>
                 <td>
@@ -218,7 +218,7 @@
                 <td><asp:CheckBox ID="CSotano" runat="server" Text="Sotano" /></td>
             </tr>
             <tr>
-                <td colspan="4" class="celdaTitulo">Exteriores</td>
+                <td colspan="4" class="ui-widget-header ui-corner-all">Exteriores</td>
             </tr>
             <tr>
                 <td colspan="4">
@@ -228,7 +228,7 @@
                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="GridHeader" ForeColor="White"></HeaderStyle>
+                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                         <Columns>
                             <asp:BoundField HeaderText="Tipo" DataField="nombre" />

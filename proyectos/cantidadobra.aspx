@@ -140,7 +140,7 @@
     <asp:Repeater ID="RElementos" runat="server" DataSourceID="SElementos">
         <HeaderTemplate>
             <table id='elementos' class='ui-accordion ui-widget ui-helper-reset ui-accordion-icons' cellspacing='0'>
-                <tr class="GridHeader" style="text-align:center">
+                <tr class="ui-state-default" style="text-align:center">
                     <td>Descripción</td>
                     <td>Unidad</td>
                     <td>L</td>
