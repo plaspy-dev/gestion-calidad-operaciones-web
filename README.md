@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-12-09 · Generar el resultado desde la pantalla principal.** Incorpora el controlador que prepara el resultado en la portada y ajusta los eventos y la presentación de la evaluación. El lector puede seguir cómo los controles en pantalla llegan al resultado generado.
+**2011-12-09 · Actualizar los rótulos de intervención.** Revisa los textos de intervención en la portada y los controles compartidos de la plantilla, junto con el número de versión. Los rótulos acompañan la revisión de la pantalla que ve el usuario.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-12-09 · Generate results from the main screen.** Add the handler that prepares the homepage result and update evaluation presentation and events. Readers can trace on-screen controls to the generated result.
+**2011-12-09 · Update intervention labels.** Revise intervention labels on the homepage and shared layout controls alongside the version number. The displayed labels match the revised screen.
 
 ### How to explore the source
 
