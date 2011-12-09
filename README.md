@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-12-09 · Actualizar los rótulos de intervención.** Revisa los textos de intervención en la portada y los controles compartidos de la plantilla, junto con el número de versión. Los rótulos acompañan la revisión de la pantalla que ve el usuario.
+**2011-12-09 · Ajustar la presentación de cantidades en beta 0.53.** Cambia cómo se forma el valor enlazado que aparece en cantidades de obra y actualiza la versión a 0.53 Beta. El historial permite ubicar el cambio de presentación en la revisión correspondiente.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-12-09 · Update intervention labels.** Revise intervention labels on the homepage and shared layout controls alongside the version number. The displayed labels match the revised screen.
+**2011-12-09 · Adjust quantity display for beta 0.53.** Change how a bound value is rendered on the work quantities screen and bump the version to 0.53 Beta. The history ties the display adjustment to its revision.
 
 ### How to explore the source
 

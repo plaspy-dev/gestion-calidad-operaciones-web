@@ -162,10 +162,10 @@
                         <asp:TextBox runat="server" ID="TCantidad" CssClass="float" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="TVUnitario" CssClass="float" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario") %>'></asp:TextBox>
+                        <asp:TextBox runat="server" ID="TVUnitario" CssClass="dinero" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="TVTotal" CssClass="float" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal") %>'></asp:TextBox>
+                        <asp:TextBox runat="server" ID="TVTotal" CssClass="dinero" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
                     </td>
                     <td>
                         <asp:TextBox runat="server" ID="TObservaciones" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
