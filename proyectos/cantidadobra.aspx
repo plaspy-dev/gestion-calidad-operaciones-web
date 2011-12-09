@@ -6,7 +6,7 @@
     .ui-widget-contentb { border-bottom: 1px solid #a6c9e2; color: #222222; }
     .ui-widget-contentl { border-left: 1px solid #a6c9e2; color: #222222; }
     .ui-widget-contentr { border-right: 1px solid #a6c9e2; color: #222222; }
-    .ui-accordion .ui-accordion-header { cursor: pointer; position: relative; margin-top: 1px; zoom: 1; display: block; font-size: 1em; padding: .5em .5em .5em .7em; }
+    .ui-accordion .ui-accordion-header { cursor: pointer; position: relative; margin-top: 1px; zoom: 1; padding: .5em .5em .5em .7em;}
 </style>
 <script type="text/javascript">
     $(function() {
@@ -64,9 +64,9 @@
 
                 $(elemento).children("td").addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all");
                 $(elemento).addClass("ph").hover(function() {
-                    $(this).addClass("ui-state-hover");
+                    $(this).children("td").addClass("ui-state-hover");
                 }, function() {
-                    $(this).removeClass("ui-state-hover");
+                    $(this).children("td").removeClass("ui-state-hover");
                 }).click(function() {
                     if (toggle(this)) {
                         $(this).removeClass("ph").addClass("pv")
@@ -79,7 +79,7 @@
                     }
                 });
             } else {
-                $(elemento).children("td").addClass("ui-helper-reset ui-widget-contentb ui-accordion-content-active")
+                $(elemento).children("td").addClass("ui-helper-reset ui-widget-contentb")
                 $(elemento).children("td").first().addClass("ui-widget-contentl");
                 $(elemento).children("td").last().addClass("ui-widget-contentr");
             }
@@ -104,30 +104,27 @@
             indent(this, 10);
         });
 
-        function calcular(cantidad) {
+        function calcular(vtotal) {
 
             var total = 1;
-            l = cantidad.replace(/TCantidad/g, "TL");
-            a = cantidad.replace(/TCantidad/g, "TA");
-            p = cantidad.replace(/TCantidad/g, "TP");
+            cantidad = vtotal.replace(/TVTotal/g, "TCantidad");
+            vunitario = vtotal.replace(/TVTotal/g, "TVUnitario");
 
-            $(l + "," + a + "," + p).each(function(i) {
-                total*= parseFloat($(this).val().replace(/,/g, ""));
-            });
-            $(cantidad).numeric('value', isNaN(total) ? 0 : total)
+            total = parseFloat($(cantidad).val().replace(/,/g, ""));
+            total *= parseFloat($(vunitario).val().replace(/,/g, ""));
+            $(vtotal).numeric('value', isNaN(total) ? 0 : total);
         }
 
-        $('input[name$="TCantidad"]').each(function(i) {
+        $('input[name$="TVTotal"]').each(function(i) {
 
-            var cantidad = $(this).attr("id");
+            var vtotal = $(this).attr("id");
             $(this).attr("readonly", true);
-            
-            l = cantidad.replace(/TCantidad/g, "TL");
-            a = cantidad.replace(/TCantidad/g, "TA");
-            p = cantidad.replace(/TCantidad/g, "TP");
 
-            $("#" + l + ",#" + a + ",#" + p).change(function() {
-                calcular("#" + cantidad);
+            cantidad = vtotal.replace(/TVTotal/g, "TCantidad");
+            vunitario = vtotal.replace(/TVTotal/g, "TVUnitario");
+
+            $("#" + vunitario + ",#" + cantidad).change(function() {
+                calcular("#" + vtotal);
             });
         });
     });
@@ -143,17 +140,16 @@
                 <tr class="ui-state-default" style="text-align:center">
                     <td>Descripción</td>
                     <td>Unidad</td>
-                    <td>L</td>
-                    <td>A</td>
-                    <td>P</td>
                     <td>Cantidad</td>
+                    <td>Vr. unitario</td>
+                    <td>Vr. total</td>
                     <td>Observaciones</td>
                 </tr>
         </HeaderTemplate>
         <ItemTemplate>
             <tr p='<%# DataBinder.Eval(Container.DataItem, "parent").ToString() %>' t='<%# DataBinder.Eval(Container.DataItem, "id") %>' 
                 class='<%# DataBinder.Eval(Container.DataItem, "parent").ToString()=="0" ? "" : "hide" %>'>
-                <td colspan='<%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "7" : "0" %>'>
+                <td colspan='<%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "6" : "0" %>'>
                     <%# DataBinder.Eval(Container.DataItem, "szReservado") %><%# DataBinder.Eval(Container.DataItem, "nombre") %>
                     <asp:HiddenField ID="HIdElemento" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
                     <asp:HiddenField ID="HIdCantidad" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
@@ -163,16 +159,13 @@
                         <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="TL" CssClass="float" Width="50px" Text='<%# DataBinder.Eval(Container.DataItem, "l") %>'></asp:TextBox>
+                        <asp:TextBox runat="server" ID="TCantidad" CssClass="float" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="TA" CssClass="float" Width="50px" Text='<%# DataBinder.Eval(Container.DataItem, "a") %>'></asp:TextBox>
+                        <asp:TextBox runat="server" ID="TVUnitario" CssClass="float" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario") %>'></asp:TextBox>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="TP" CssClass="float" Width="50px" Text='<%# DataBinder.Eval(Container.DataItem, "p") %>'></asp:TextBox>
-                    </td>
-                    <td>
-                        <asp:TextBox runat="server" ID="TCantidad" CssClass="float" Width="50px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
+                        <asp:TextBox runat="server" ID="TVTotal" CssClass="float" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal") %>'></asp:TextBox>
                     </td>
                     <td>
                         <asp:TextBox runat="server" ID="TObservaciones" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
@@ -189,7 +182,7 @@
         ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
         SelectCommand="SELECT shared.id, shared.nombre, shared.descripcion,shared.szReservado,IFNULL(shared.parametro1,0) AS parent
                         ,(SELECT COUNT(*) FROM shared AS s WHERE s.nReservado=122 AND s.szReservado!=-1 AND s.parametro1=shared.id) AS hijos 
-                        ,cantidades_obra.id AS idcantidad,cantidades_obra.a,cantidades_obra.l,cantidades_obra.p,cantidades_obra.cantidad,cantidades_obra.observaciones
+                        ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
                         FROM shared 
                         LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=shared.id AND cantidades_obra.proyecto=@proyecto)
                         WHERE shared.nReservado=122 AND shared.szReservado!=-1 ORDER BY GetCodigo(shared.szReservado)">

@@ -2,14 +2,31 @@
 <%@ Register src="proyector.ascx" tagname="proyector" tagprefix="uc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+<script type="text/javascript">
+    $(function() {
+        $('input[name$="CNo"]').change(function() {
+            otr = $(this).attr("id").replace(/CNo/g, "CEstado");
+            $("#" + otr).attr('checked', !$(this).is(':checked'));
+        });
+        $('input[name$="CEstado"]').change(function() {
+            otr = $(this).attr("id").replace(/CEstado/g, "CNo");
+            $("#" + otr).attr('checked', !$(this).is(':checked'));
+        });
+        $('span[id$="LConcepto"]').css({ cursor: "hand", cursor: "pointer" }).click(function() {
+            otr = $(this).attr("id").replace(/LConcepto/g, "CEstado");
+            $("#" + otr).attr('checked', !$("#" + otr).is(':checked'));
+            $("#" + otr).change();
+        });
+    });
+</script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cph" Runat="Server">
     <uc1:proyector ID="UCProyecto" runat="server" />
     <asp:Panel runat="server" ID="PDatos" Visible="false">
     <asp:HiddenField runat="server" ID="HEvaluacion" />
-        <table border="1">
+        <table class="tabla">
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Concepto preliminar</td>
+                <td colspan="4" class="Titulo">Concepto preliminar</td>
             </tr>
             <tr>
                 <td>Reposición</td>
@@ -37,12 +54,22 @@
                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
+                        <HeaderStyle CssClass="GridHeader"></HeaderStyle>
                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                         <Columns>
+                            <asp:TemplateField HeaderText="Sí">
+                                <ItemTemplate>
+                                    <asp:CheckBox ID="CEstado" runat="server" Checked='<%# Eval("estado").ToString()=="1" %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="No">
+                                <ItemTemplate>
+                                    <asp:CheckBox ID="CNo" runat="server" Checked='<%# Eval("estado").ToString()!="1" %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
                             <asp:TemplateField HeaderText="Concepto">
                                 <ItemTemplate>
-                                    <asp:CheckBox ID="CEstado" runat="server" Text='<%# Eval("nombre") %>' Checked='<%# Eval("estado").ToString()=="1" %>' />
+                                    <asp:Label runat="server" ID="LConcepto" Text='<%# Eval("nombre").ToString() %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
@@ -62,10 +89,10 @@
                 <td colspan="3"><asp:TextBox runat="server" ID="TObservaciones" Width="99%" TextMode="MultiLine"></asp:TextBox></td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Condiciones actuales</td>
+                <td colspan="4" class="Titulo">Condiciones actuales</td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Afectaciones</td>
+                <td colspan="4" class="Titulo">Afectaciones</td>
             </tr>
             <tr>
                 <td>Naturales</td>
@@ -80,7 +107,18 @@
                 <td><asp:TextBox runat="server" ID="TAltura" CssClass="entero"></asp:TextBox>cm</td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Condiciones climaticas</td>
+                <td>
+                    Otros</td>
+                <td>
+                    <asp:TextBox ID="TOtros" runat="server"></asp:TextBox>
+                </td>
+                <td>
+                    &nbsp;</td>
+                <td>
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="Titulo">Condiciones climaticas</td>
             </tr>
             <tr>
                 <td>Clima</td>
@@ -102,12 +140,12 @@
             </tr>
             <tr>
                 <td>Temperatura promedio</td>
-                <td><asp:TextBox runat="server" CssClass="entero" ID="TTemperatura"></asp:TextBox></td>
+                <td><asp:TextBox runat="server" CssClass="entero" ID="TTemperatura"></asp:TextBox>&deg;C</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Acceso</td>
+                <td colspan="4" class="Titulo">Acceso</td>
             </tr>
             <tr>
                 <td>Acceso</td>
@@ -144,7 +182,7 @@
                     &nbsp;</td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Datos juridicos</td>
+                <td colspan="4" class="Titulo">Datos juridicos</td>
             </tr>
             <tr>
                 <td>Tenencia</td>
@@ -165,7 +203,7 @@
                 <td><asp:TextBox runat="server" ID="TMatriculaI"></asp:TextBox></td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Áreas</td>
+                <td colspan="4" class="Titulo">Áreas</td>
             </tr>
             <tr>
                 <td>Total lote</td>
@@ -180,7 +218,7 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Terreno</td>
+                <td colspan="4" class="Titulo">Terreno</td>
             </tr>
             <tr>
                 <td>Topografía</td>
@@ -201,7 +239,7 @@
         </asp:SqlDataSource></td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Edificios</td>
+                <td colspan="4" class="Titulo">Edificios</td>
             </tr>
             <tr>
                 <td>
@@ -218,7 +256,7 @@
                 <td><asp:CheckBox ID="CSotano" runat="server" Text="Sotano" /></td>
             </tr>
             <tr>
-                <td colspan="4" class="ui-widget-header ui-corner-all">Exteriores</td>
+                <td colspan="4" class="Titulo">Exteriores</td>
             </tr>
             <tr>
                 <td colspan="4">
@@ -228,7 +266,7 @@
                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
+                        <HeaderStyle CssClass="GridHeader"></HeaderStyle>
                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                         <Columns>
                             <asp:BoundField HeaderText="Tipo" DataField="nombre" />

@@ -119,7 +119,7 @@
                                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
+                                        <HeaderStyle CssClass="GridHeader"></HeaderStyle>
                                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                                         <Columns>
                                             <asp:TemplateField HeaderText="Todos">

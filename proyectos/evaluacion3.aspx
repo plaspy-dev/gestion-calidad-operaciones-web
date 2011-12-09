@@ -12,16 +12,16 @@
     <uc1:proyector ID="UCProyecto" runat="server" />
     <asp:Panel runat="server" ID="PDatos" Visible="false">
         <asp:HiddenField runat="server" ID="HEvaluacion" />
-        <table>
+        <table class="tabla">
             <tr>
-                <td colspan="6" class="ui-widget-header ui-corner-all">Instalaciones hidraulicas y sanitarias</td>
+                <td colspan="6" class="Titulo">Instalaciones hidraulicas y sanitarias</td>
             </tr>
             <tr>
-                <td colspan="2" class="ui-widget-header ui-corner-all">
+                <td colspan="2" class="SubTitulo">
                     Suministro de agua</td>
-                <td colspan="2" class="ui-widget-header ui-corner-all">
+                <td colspan="2" class="SubTitulo">
                     Desagues</td>
-                <td colspan="2" class="ui-widget-header ui-corner-all">
+                <td colspan="2" class="SubTitulo">
                     Almacenamiento</td>
             </tr>
             <tr>
@@ -95,15 +95,15 @@
                 </td>
             </tr>
             <tr>
-                <td class="ui-widget-header ui-corner-all" colspan="6">
+                <td class="Titulo" colspan="6">
                     Instalaciones elÉctricas</td>
             </tr>
             <tr>
-                <td class="ui-widget-header ui-corner-all" colspan="2">
+                <td class="SubTitulo" colspan="2">
                     Suministro de energia</td>
-                <td class="ui-widget-header ui-corner-all" colspan="2">
+                <td class="SubTitulo" colspan="2">
                     Estado de la red electrica</td>
-                <td class="ui-widget-header ui-corner-all" colspan="2">
+                <td class="SubTitulo" colspan="2">
                     Planta de emergencia</td>
             </tr>
             <tr>
@@ -155,7 +155,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="ui-widget-header ui-corner-all" colspan="6">
+                <td class="Titulo" colspan="6">
                     Afectación de equipos fijos</td>
             </tr>
             <tr>
@@ -166,7 +166,7 @@
                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
+                        <HeaderStyle CssClass="GridHeader"></HeaderStyle>
                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                         <Columns>
                             <asp:CommandField ButtonType="Image" ShowSelectButton="True" SelectImageUrl="~/imgs/edit.gif" />

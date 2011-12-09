@@ -13,22 +13,22 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cph" Runat="Server">
     <uc1:proyector ID="UCProyecto" runat="server" />
     <asp:Panel runat="server" ID="PDatos" Visible="false">
-        <table>
+        <table class="tabla">
         <tr>
-            <td class="ui-widget-header ui-corner-all">Estado de la edificación</td>
+            <td class="Titulo">Estado de la edificación</td>
         </tr>
         <tr><td>
         <asp:Repeater ID="REAfectados" runat="server" DataSourceID="SEAfectados" 
             onitemcommand="REAfectados_ItemCommand">
             <HeaderTemplate>
-                <table border="1">
+                <table class="tabla">
             </HeaderTemplate>
             <ItemTemplate>
                  <tr>
                     <td><asp:ImageButton ID="IEditar" runat="server" CommandName="Editar" CommandArgument='<%# DataBinder.Eval(Container.DataItem,"id") %>' ImageUrl="~/imgs/edit.gif" /></td>
                     <td><asp:ImageButton ID="IBorrar" runat="server" CommandName="Eliminar" CommandArgument='<%# DataBinder.Eval(Container.DataItem,"id") %>' ImageUrl="~/imgs/eliminar.gif" /></td>
                     <td>
-                    <table border="1" width="100%">
+                    <table class="tablal" width="100%">
                       <tr>
                         <td>Servicio</td>
                       </tr>
@@ -48,9 +48,9 @@
                         <HeaderTemplate></HeaderTemplate>
                         <ItemTemplate>
                         <td>
-                            <table border="1" width="100%">
+                            <table class="tablal" width="100%">
                               <tr>
-                                <td class="ui-widget-header ui-corner-all" colspan="2"><%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                                <td class="Titulo" colspan="2"><%# DataBinder.Eval(Container.DataItem, "nombre") %>
                                 </td>
                               </tr>
                               <tr>
@@ -109,7 +109,7 @@
             </div>
             </td></tr>
             <tr>
-                <td class="ui-widget-header ui-corner-all">Esquema del establecimiento</td>
+                <td class="Titulo">Esquema del establecimiento</td>
             </tr>
             <tr>
                 <td align="right">
@@ -119,7 +119,7 @@
             </table>
             <asp:Panel runat="server" ID="PEAfectados" Visible="false">
             <div id="dAfectados" title="Elemento afectado" style="display:none;">
-                <table border="1">
+                <table class="tabla">
                   <tr>
                      <td>Servicio</td>
                      <td>
@@ -147,7 +147,7 @@
                         <HeaderTemplate></HeaderTemplate>
                         <ItemTemplate>
                             <tr>
-                                <td class="ui-widget-header ui-corner-all" colspan="2"><%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                                <td class="Titulo" colspan="2"><%# DataBinder.Eval(Container.DataItem, "nombre") %>
                                     <asp:HiddenField runat="server" ID="HId" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
                                     <asp:HiddenField runat="server" ID="HIdElemento" Value='<%# DataBinder.Eval(Container.DataItem, "idelemento") %>' />
                                 </td>

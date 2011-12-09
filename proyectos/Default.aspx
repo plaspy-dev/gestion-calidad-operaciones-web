@@ -1,4 +1,4 @@
-ï»¿<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
+<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script type="text/javascript">
@@ -106,7 +106,6 @@
 </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cph" Runat="Server">
-    <asp:ValidationSummary ID="ValidationSummary1" runat="server" ShowMessageBox="true" />
     <table style="width: 100%;">
         <tr>
             <td>
@@ -161,7 +160,7 @@
                     <td>
                         &nbsp;</td>
                     <td>
-                        <asp:CheckBox ID="CViable" runat="server" Text="VÃ­able" />
+                        <asp:CheckBox ID="CViable" runat="server" Text="Víable" />
                     </td>
                 </tr>
                 <tr>
@@ -206,21 +205,23 @@
                 </tr>
                 <tr>
                     <td>
-                        DirecciÃ³n</td>
+                        Dirección</td>
                     <td>
                         <asp:TextBox ID="TDireccion" runat="server"></asp:TextBox>
                         </td>
                     <td>
-                        TelÃ©fono</td>
+                        Teléfono</td>
                     <td>
                         <asp:TextBox ID="TTelefono" runat="server"></asp:TextBox>
                         </td>
                 </tr>
                 <tr>
                     <td>
-                        Tipo de intervenciÃ³n</td>
+                        Tipo de intervención</td>
                     <td>
-                        <asp:DropDownList ID="DTIntervencion" runat="server" DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id">
+                        <asp:DropDownList ID="DTIntervencion" runat="server" 
+                            DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id" 
+                            AutoPostBack="True">
                         </asp:DropDownList>
                         <asp:SqlDataSource ID="STIntervencion" runat="server" 
                             ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
@@ -228,7 +229,15 @@
                             SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=104 AND szReservado IS NULL" >
                     </asp:SqlDataSource></td>
                     <td>
-                        Tipo de instituciÃ³n</td>
+                        &nbsp;</td>
+                    <td>
+                        <asp:CheckBox ID="CDotacion" runat="server" Text="Dotación" 
+                            AutoPostBack="True" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Tipo de institución</td>
                     <td>
                         <asp:DropDownList ID="DTInstitucion" runat="server" DataSourceID="STInstitucion" DataTextField="nombre" DataValueField="id">
                         </asp:DropDownList>
@@ -237,6 +246,12 @@
                             ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
                             SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=105 AND szReservado IS NULL" >
                     </asp:SqlDataSource></td>
+                    <td>
+                        Fecha visita</td>
+                    <td>
+                        <asp:TextBox ID="TFVisita" runat="server" CssClass="fecha"></asp:TextBox>
+                        <asp:RangeValidator ControlToValidate="TFVisita" runat="server" ErrorMessage="Por favor ingrese una fecha valida." MinimumValue="01/01/1930" MaximumValue="01/01/2100" ID="RangeValidator3" Display="Dynamic" Type="Date">*</asp:RangeValidator>
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -250,11 +265,11 @@
                 </tr>
                 <tr>
                     <td>
-                        Costo intervenciÃ³n (m2)</td>
+                        Costo intervención (m2)</td>
                     <td align="right">
                         <asp:Label ID="LCostoIntervencion" runat="server" Text=""></asp:Label></td>
                     <td>
-                        Presupuesto inicial de dotaciÃ³n</td>
+                        Presupuesto inicial de dotación</td>
                     <td>
                         <asp:TextBox runat="server" CssClass="dinero" ID="TPDotacion"></asp:TextBox></td>
                 </tr>
@@ -264,9 +279,10 @@
                     <td align="right">
                         <asp:Label ID="LPTotal" runat="server" Text=""></asp:Label></td>
                     <td>
-                        &nbsp;</td>
+                        Código prestador</td>
                     <td>
-                        &nbsp;</td>
+                        <asp:TextBox ID="TPrestador" runat="server"></asp:TextBox>
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -276,7 +292,7 @@
                             Width="99%"></asp:TextBox></td>
                 </tr>
                 <tr>
-                    <td class="ui-widget-header ui-corner-all" colspan="4">
+                    <td class="Titulo" colspan="4">
                         Documentos</td>
                 </tr>
                 <tr>
@@ -288,7 +304,7 @@
                         <FooterStyle CssClass="GridFooter"></FooterStyle>
                         <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
                         <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="ui-widget-header"></HeaderStyle>
+                        <HeaderStyle CssClass="GridHeader"></HeaderStyle>
                         <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
                         <Columns>
                             <asp:TemplateField ShowHeader="False">
@@ -312,10 +328,17 @@
                     <asp:SqlDataSource ID="SDocumentos" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,documentos_proyecto.id AS iddocumento,LENGTH(documentos_proyecto.archivo)>0 AS estado FROM shared LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=@proyecto AND documentos_proyecto.documento=shared.id) WHERE shared.nReservado=106 AND shared.szReservado IS NULL ORDER BY nombre" 
+                    SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,documentos_proyecto.id AS iddocumento,LENGTH(documentos_proyecto.archivo)>0 AS estado 
+                                FROM shared 
+                                LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=@proyecto AND documentos_proyecto.documento=shared.id) 
+                                WHERE shared.nReservado=106 AND shared.szReservado IS NULL 
+                                AND (shared.parametro1=@tipo OR (@dotacion=1 AND shared.parametro1 IS NULL))
+                                ORDER BY nombre" 
                     DeleteCommand="DELETE FROM documentos_proyecto WHERE id=@iddocumento">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="HProyecto" Name="proyecto" PropertyName="Value" DefaultValue="0" />
+                        <asp:ControlParameter ControlID="DTIntervencion" Name="tipo" PropertyName="SelectedValue" />
+                        <asp:ControlParameter ControlID="CDotacion" Name="dotacion" PropertyName="Checked" />
                     </SelectParameters>
                 </asp:SqlDataSource></td>
                 </tr>
@@ -324,6 +347,7 @@
         </tr>
         <tr>
             <td align="right">
+                <asp:ValidationSummary ID="ValidationSummary1" runat="server" ShowMessageBox="true" />
                 <asp:Button ID="BAceptar" runat="server" Text="Aceptar" onclick="BAceptar_Click" />
                 <asp:Button ID="BCancelar" runat="server" CausesValidation="false" Text="Cancelar" onclick="BCancelar_Click" />
             </td>

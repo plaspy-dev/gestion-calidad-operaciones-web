@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-12-05 · Reorganizar la plantilla y las pantallas de evaluación.** Actualiza los controles que se muestran en la plantilla común y alinea las clases y columnas de las pantallas de evaluación. Las vistas pueden usar la estructura compartida durante la revisión.
+**2011-12-09 · Generar el resultado desde la pantalla principal.** Incorpora el controlador que prepara el resultado en la portada y ajusta los eventos y la presentación de la evaluación. El lector puede seguir cómo los controles en pantalla llegan al resultado generado.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-12-05 · Rework the shared layout and evaluation screens.** Update the controls shown in the shared layout and align classes and columns across evaluation pages. The views can use the common structure during a review.
+**2011-12-09 · Generate results from the main screen.** Add the handler that prepares the homepage result and update evaluation presentation and events. Readers can trace on-screen controls to the generated result.
 
 ### How to explore the source
 

@@ -24,7 +24,7 @@
     <script type="text/javascript">
         $(function() {
             $("#tabs").tabs();
-            $("#ctl00_lnkCambioClave").click(function() {
+            $("#<%= lnkCambioClave.ClientID %>").click(function() {
                 $("#contrasena").dialog(
                     {
                         modal: true,
@@ -33,7 +33,7 @@
                         open: function(event, ui) { setTimeout("$('#contrasena :input:first').focus();", 100); },
                         buttons: {
                             "Aceptar": function() {
-                                $("#ctl00_BAceptar").click();
+                                $("#<%= BAceptar.ClientID %>").click();
                             },
                             "Cancelar": function() {
                                 $(this).dialog("close");
@@ -80,6 +80,7 @@
                                 <asp:LinkButton ID="lnkImp" runat="server" CssClass="menulnk" Visible="False" CausesValidation="False" OnClientClick="imprimir();return false;" onclick="lnkImp_Click">Imprimir</asp:LinkButton>
                                 <asp:LinkButton ID="lnkGuardar" runat="server" CssClass="menulnk" Visible="False" ValidationGroup="Guardar">Guardar</asp:LinkButton>
                                 <asp:LinkButton ID="lnkExcel" runat="server" CssClass="menulnk" Visible="False" CausesValidation="False" onclick="lnkExcel_Click">Excel</asp:LinkButton>
+                                <asp:LinkButton ID="lnkCambioClave" runat="server" CssClass="menulnk" CausesValidation="False" PostBackUrl="">Contraseña</asp:LinkButton>
                                 <asp:LinkButton ID="lnkSalir" runat="server" CssClass="menulnk" CausesValidation="false">Salir</asp:LinkButton>
                             </td>
                           </tr>
