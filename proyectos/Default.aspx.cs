@@ -33,7 +33,6 @@ public partial class proyectos_Default : System.Web.UI.Page
                 query += "departamento";
                 query += "municipio";
                 query += "localidad";
-                query += "sede";
                 query += "nombre";
                 query += "tintervencion";
                 query += "tinstitucion";
@@ -45,7 +44,6 @@ public partial class proyectos_Default : System.Web.UI.Page
                 query += "direccion";
                 query += "ips";
                 query += "objeto";
-                query += "viable";
                 query += "dotacion";
                 query += "visita";
                 query += "prestador";
@@ -62,7 +60,6 @@ public partial class proyectos_Default : System.Web.UI.Page
                     DDepartamento_SelectedIndexChanged(null, null);
                     DMunicipio.SelectedValue = reader["municipio"].ToString();
                     DLocalidad.SelectedValue = reader["localidad"].ToString();
-                    TSede.Text = reader["sede"].ToString();
                     TNombre.Text = reader["nombre"].ToString();
                     DTIntervencion.SelectedValue = reader["tintervencion"].ToString();
                     DTInstitucion.SelectedValue = reader["tinstitucion"].ToString();
@@ -74,7 +71,6 @@ public partial class proyectos_Default : System.Web.UI.Page
                     TDireccion.Text = reader["direccion"].ToString();
                     TIPS.Text = reader["ips"].ToString();
                     TObjeto.Text = reader["objeto"].ToString();
-                    CViable.Checked = reader["viable"].ToString() == "1";
                     CDotacion.Checked = reader["dotacion"].ToString() == "1";
                     TFVisita.Text = CConector.GetFromMySQLDate(reader["visita"]);
                     TPrestador.Text = reader["prestador"].ToString();
@@ -106,7 +102,6 @@ public partial class proyectos_Default : System.Web.UI.Page
         query["contrato"] = DContrato.SelectedValue;
         query["municipio"] = DMunicipio.SelectedValue;
         query["localidad"] = DLocalidad.SelectedValue;
-        query["sede"] = TSede.Text;
         query["nombre"] = TNombre.Text;
         query["tintervencion"] = DTIntervencion.SelectedValue;
         query["tinstitucion"] = DTInstitucion.SelectedValue;
@@ -118,7 +113,6 @@ public partial class proyectos_Default : System.Web.UI.Page
         query["direccion"] = TDireccion.Text;
         query["ips"] = TIPS.Text;
         query["objeto"] = TObjeto.Text;
-        query["viable"] = CViable.Checked ? "1" : "";
         query["dotacion"] = CDotacion.Checked ? "1" : "";
         query["visita"] = CConector.GetMySQLDateFormat(TFVisita.Text);
         query["prestador"] = TPrestador.Text;
@@ -177,7 +171,8 @@ public partial class proyectos_Default : System.Web.UI.Page
     protected void OnImprimir(object sender, EventArgs e) {
 
         string resultado = (string)sender;
-        resultado = resultado.Replace("NoViable", CViable.Checked ? "" : "X");
+        // resultado = resultado.Replace("NoViable", CViable.Checked ? "" : "X");
+        resultado = resultado.Replace("NoViable", "");
         resultado = resultado.Replace("OAMe", DTIntervencion.SelectedItem.Text=="ADECUACION MENOR" ? "X" : "");
         resultado = resultado.Replace("OAMa", DTIntervencion.SelectedItem.Text=="ADECUACION MAYOR" ? "X" : "");
         resultado = resultado.Replace("Dotacion", DTIntervencion.SelectedItem.Text == "DOTACION" ? "X" : "");

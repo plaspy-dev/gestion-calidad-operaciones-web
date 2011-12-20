@@ -1,4 +1,4 @@
-ï»¿<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
+<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script type="text/javascript">
@@ -31,46 +31,6 @@
                 return false;
             }
         });
-
-        function currencyFormatted(amount) {
-            var i = parseFloat(amount);
-            if (isNaN(i)) { i = 0.00; }
-            var minus = '';
-            if (i < 0) { minus = '-'; }
-            i = Math.abs(i);
-            i = parseInt((i + .005) * 100);
-            i = i / 100;
-            s = new String(i);
-            if (s.indexOf('.') < 0) { s += '.00'; }
-            if (s.indexOf('.') == (s.length - 2)) { s += '0'; }
-            s = minus + s;
-            return '$' + commaFormatted(s);
-        }
-
-        function commaFormatted(amount) {
-
-            var delimiter = ","; // replace comma if desired
-            var a = amount.split('.', 2)
-            var d = a[1];
-            var i = parseInt(a[0]);
-            if (isNaN(i)) { return ''; }
-            var minus = '';
-            if (i < 0) { minus = '-'; }
-            i = Math.abs(i);
-            var n = new String(i);
-            var a = [];
-            while (n.length > 3) {
-                var nn = n.substr(n.length - 3);
-                a.unshift(nn);
-                n = n.substr(0, n.length - 3);
-            }
-            if (n.length > 0) { a.unshift(n); }
-            n = a.join(delimiter);
-            if (d.length < 1) { amount = n; }
-            else { amount = n + '.' + d; }
-            amount = minus + amount;
-            return amount;
-        }
 
         function Calcular() {
 
@@ -138,13 +98,6 @@
                 </tr>
                 <tr>
                     <td>
-                        Objeto</td>
-                    <td colspan="3">
-                        <asp:TextBox ID="TObjeto" runat="server" TextMode="MultiLine" Width="99%"></asp:TextBox>
-                        </td>
-                </tr>
-                <tr>
-                    <td>
                         Departamento</td>
                     <td>
                         <asp:DropDownList ID="DDepartamento" runat="server" 
@@ -157,13 +110,6 @@
                             SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=101 AND szReservado IS NULL ORDER BY nombre" >
                     </asp:SqlDataSource>
                         <asp:Label ID="LGrupo" runat="server" Text=""></asp:Label></td>
-                    <td>
-                        &nbsp;</td>
-                    <td>
-                        <asp:CheckBox ID="CViable" runat="server" Text="VÃ­able" />
-                    </td>
-                </tr>
-                <tr>
                     <td>
                         Municipio</td>
                     <td>
@@ -179,6 +125,8 @@
                             </SelectParameters>
                         </asp:SqlDataSource>
                     </td>
+                </tr>
+                <tr>
                     <td>
                         Localidad</td>
                     <td>
@@ -188,14 +136,7 @@
                             ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                             ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
                             SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=103 AND szReservado IS NULL" >
-                        </asp:SqlDataSource></td>
-                </tr>
-                <tr>
-                    <td>
-                        Sede</td>
-                    <td>
-                        <asp:TextBox runat="server" ID="TSede"></asp:TextBox>
-                        <asp:RequiredFieldValidator ControlToValidate="TSede" ErrorMessage="Por favor ingrese una sede." ID="RequiredFieldValidator1" runat="server" Display="Dynamic" SetFocusOnError="true">*</asp:RequiredFieldValidator>
+                        </asp:SqlDataSource>
                         </td>
                     <td>
                         IPS referencia</td>
@@ -205,19 +146,19 @@
                 </tr>
                 <tr>
                     <td>
-                        DirecciÃ³n</td>
+                        Dirección</td>
                     <td>
                         <asp:TextBox ID="TDireccion" runat="server"></asp:TextBox>
                         </td>
                     <td>
-                        TelÃ©fono</td>
+                        Teléfono</td>
                     <td>
                         <asp:TextBox ID="TTelefono" runat="server"></asp:TextBox>
                         </td>
                 </tr>
                 <tr>
                     <td>
-                        Tipo de intervenciÃ³n</td>
+                        Tipo de intervención</td>
                     <td>
                         <asp:DropDownList ID="DTIntervencion" runat="server" 
                             DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id" 
@@ -231,13 +172,13 @@
                     <td>
                         &nbsp;</td>
                     <td>
-                        <asp:CheckBox ID="CDotacion" runat="server" Text="DotaciÃ³n" 
+                        <asp:CheckBox ID="CDotacion" runat="server" Text="Dotación" 
                             AutoPostBack="True" />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Tipo de instituciÃ³n</td>
+                        Tipo de institución</td>
                     <td>
                         <asp:DropDownList ID="DTInstitucion" runat="server" DataSourceID="STInstitucion" DataTextField="nombre" DataValueField="id">
                         </asp:DropDownList>
@@ -265,24 +206,31 @@
                 </tr>
                 <tr>
                     <td>
-                        Costo intervenciÃ³n (m2)</td>
+                        Costo intervención (m2)</td>
                     <td align="right">
                         <asp:Label ID="LCostoIntervencion" runat="server" Text=""></asp:Label></td>
                     <td>
-                        Presupuesto inicial de dotaciÃ³n</td>
+                        Presupuesto inicial de dotación</td>
                     <td>
                         <asp:TextBox runat="server" CssClass="dinero" ID="TPDotacion"></asp:TextBox></td>
                 </tr>
                 <tr>
                     <td>
-                        Presupuesto Total</td>
+                        Presupuesto inicial total</td>
                     <td align="right">
                         <asp:Label ID="LPTotal" runat="server" Text=""></asp:Label></td>
                     <td>
-                        CÃ³digo prestador</td>
+                        Código prestador</td>
                     <td>
                         <asp:TextBox ID="TPrestador" runat="server"></asp:TextBox>
                     </td>
+                </tr>
+                <tr>
+                    <td>
+                        Objeto</td>
+                    <td align="right" colspan="3">
+                        <asp:TextBox ID="TObjeto" runat="server" TextMode="MultiLine" Width="99%"></asp:TextBox>
+                        </td>
                 </tr>
                 <tr>
                     <td>

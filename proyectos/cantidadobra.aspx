@@ -10,54 +10,60 @@
 </style>
 <script type="text/javascript">
     $(function() {
+        function esconder2(e) {
 
-        function indent(e, ind) {
-            $('#elementos [p="' + $(e).attr("t") + '"]').each(function(i) {
-                indent(this, ind + 20);
-            });
-            $(e).children("td").first().css("text-indent", ind);
-        }
-        function esconder2(elemento) {
-            var hijos = false;
-            $('#elementos [p="' + $(elemento).attr("t") + '"]').each(function(i) {
-                hijos = true;
-                if (esconder2(this)) {
-                    $(this).removeClass("pv").addClass("ph")
-                    .children("td").removeClass("ui-state-active ui-corner-top").addClass("ui-state-default ui-corner-all")
-                    .children("span").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
+            if (e.next().attr("p") == e.attr("t")) { // tiene hijos
+
+                var elemento = $(e).next();
+                var t = $(e).attr("t");
+                while (elemento.length!=0) {
+
+                    if(elemento.attr("p") == t) {
+                        if (esconder2(elemento)) {
+                            elemento.removeClass("pv").addClass("ph")
+                            .children("td").removeClass("ui-state-active ui-corner-top").addClass("ui-state-default ui-corner-all")
+                            .children("span").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
+                        }
+                        elemento.hide();
+                    }
+                    elemento = elemento.next();
                 }
-                $(this).hide();
-            });
-            return hijos;
+                return true;
+            }
+            return false;
         }
         function toggle(e) {
             var mostrar = false;
-            var show = 100;
-            $('#elementos [p="' + $(e).attr("t") + '"]').each(function(i) {
-                if (!$(this).is(":visible")) {
-                    $(this).show(show);
-                    mostrar = true;
-                } else {
-                    if (esconder2(this)) {
-                        $(this).removeClass("pv").addClass("ph")
-                        .children("td").removeClass("ui-state-active ui-corner-top").addClass("ui-state-default ui-corner-all")
-                        .children("span").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
+            var t = $(e).attr("t");
+            var elemento = $(e).next();
+
+            while (elemento.length != 0) {
+                if (elemento.attr("p") == t) {
+                    if (!elemento.is(":visible")) {
+                        elemento.show();
+                        mostrar = true;
+                    } else {
+                        if (esconder2(elemento)) {
+                            elemento.removeClass("pv").addClass("ph")
+                            .children("td").removeClass("ui-state-active ui-corner-top").addClass("ui-state-default ui-corner-all")
+                            .children("span").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
+                        }
+                        elemento.hide();
                     }
-                    $(this).hide(show);
                 }
-                show += 100;
-            });
+                elemento = elemento.next();
+            }
             return mostrar;
         }
-        function esconder(elemento) {
+        function esconder(elemento, indent) {
 
-            var c = false;
-            $('#elementos [p="' + $(elemento).attr("t") + '"]').each(function(i) {
-                c = true;
-                esconder(this);
-                $(this).hide();
-            });
-            if (c) { // tiene hijos
+            if (elemento.indent)
+                return false;
+            $(elemento).children("td").first().css("text-indent", indent);
+            elemento.indent = indent;
+
+            if ($(elemento).next().attr("p") == $(elemento).attr("t")) { // tiene hijos
+
                 $("<span></span>")
 				    .addClass("ui-icon ui-icon-triangle-1-e")
 				    .prependTo($(elemento).children("td"));
@@ -69,6 +75,32 @@
                     $(this).children("td").removeClass("ui-state-hover");
                 }).click(function() {
                     if (toggle(this)) {
+                        // expandir
+
+                        var t = $(this).attr("t");
+                        var info = $(this).next();
+
+                        while (info.length != 0) {
+                            if (info.attr("p") == t) {
+                                if (esconder($(info).get(0), indent + 20)) {
+                                    var vtotal = info.children("td").children(".totalt").attr("id");
+                                    if (vtotal) {
+                                        $(info).children("td").children(".floatt").change(function() {
+                                            calcular("#" + $(this).attr("id").replace(/TCantidad/g, "TVTotal").toString());
+                                        }).numeric({ format: "0.##", buttons: false, minValue: 0 });
+
+                                        $(info).children("td").children(".dinerot").change(function() {
+                                            calcular("#" + $(this).attr("id").replace(/TVUnitario/g, "TVTotal").toString());
+                                        }).numeric({ format: "#,000.##", buttons: false, minValue: 0 });
+
+                                        $(info).children("td").children(".totalt")
+                                            .attr("readonly", true)
+                                            .numeric({ format: "#,000.##", buttons: false, minValue: 0 });
+                                    }
+                                }
+                            }
+                            info = info.next();
+                        }
                         $(this).removeClass("ph").addClass("pv")
                         .children("td").removeClass("ui-state-default ui-corner-all").addClass("ui-state-active ui-corner-top")
                         .children("span").removeClass("ui-icon-triangle-1-e").addClass("ui-icon-triangle-1-s");
@@ -83,57 +115,41 @@
                 $(elemento).children("td").first().addClass("ui-widget-contentl");
                 $(elemento).children("td").last().addClass("ui-widget-contentr");
             }
+            return true;
         }
-        $("#mostrar").click(function() {
 
-            var texto = $(this).text();
-            if (texto == "Mostrar todo") {
-                $('#elementos .ph').click();
-            } else {
-                $('#elementos [p="0"]').each(function(i) {
-                    if ($(this).hasClass("pv")) {
-                        $(this).click();
-                    }
-                });
-            }
-            $(this).text(texto == "Mostrar todo" ? "Ocultar todo" : "Mostrar todo");
-        });
-
-        $('#elementos [p="0"]').each(function(i) {
-            esconder(this);
-            indent(this, 10);
+        $('#elementos tr').each(function(i) {
+            if ($(this).attr("p") == "0")
+                esconder(this, 10);
         });
 
         function calcular(vtotal) {
 
             var total = 1;
+            var antiguo = $(vtotal).numeric('value');
             cantidad = vtotal.replace(/TVTotal/g, "TCantidad");
             vunitario = vtotal.replace(/TVTotal/g, "TVUnitario");
 
             total = parseFloat($(cantidad).val().replace(/,/g, ""));
             total *= parseFloat($(vunitario).val().replace(/,/g, ""));
             $(vtotal).numeric('value', isNaN(total) ? 0 : total);
+
+            var ttotal = parseFloat($("#<%=LTotal.ClientID %>").text().replace(/,/g, "").replace(/\$/g, ""));
+            if (isNaN(ttotal))
+                ttotal = 0;
+            if (isNaN(antiguo))
+                antiguo = 0;
+            if (isNaN(total))
+                total = 0;
+            ttotal += total - antiguo;
+            $("#<%=LTotal.ClientID %>").text(currencyFormatted(ttotal.toString()));
         }
-
-        $('input[name$="TVTotal"]').each(function(i) {
-
-            var vtotal = $(this).attr("id");
-            $(this).attr("readonly", true);
-
-            cantidad = vtotal.replace(/TVTotal/g, "TCantidad");
-            vunitario = vtotal.replace(/TVTotal/g, "TVUnitario");
-
-            $("#" + vunitario + ",#" + cantidad).change(function() {
-                calcular("#" + vtotal);
-            });
-        });
     });
 </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cph" Runat="Server">
 <uc1:proyector ID="UCProyecto" runat="server" />
 <asp:Panel runat="server" ID="PDatos" Visible="false">
-    <div align="right"><a id="mostrar" href='#'>Mostrar todo</a></div>
     <asp:Repeater ID="RElementos" runat="server" DataSourceID="SElementos">
         <HeaderTemplate>
             <table id='elementos' class='ui-accordion ui-widget ui-helper-reset ui-accordion-icons' cellspacing='0'>
@@ -159,13 +175,13 @@
                         <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="TCantidad" CssClass="float" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
+                        <asp:TextBox runat="server" ID="TCantidad" CssClass="floatt" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="TVUnitario" CssClass="dinero" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
+                        <asp:TextBox runat="server" ID="TVUnitario" CssClass="dinerot" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="TVTotal" CssClass="dinero" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
+                        <asp:TextBox runat="server" ID="TVTotal" CssClass="totalt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
                     </td>
                     <td>
                         <asp:TextBox runat="server" ID="TObservaciones" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
@@ -185,11 +201,12 @@
                         ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
                         FROM shared 
                         LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=shared.id AND cantidades_obra.proyecto=@proyecto)
-                        WHERE shared.nReservado=122 AND shared.szReservado!=-1 ORDER BY GetCodigo(shared.szReservado)">
+                        WHERE shared.nReservado=122 AND shared.szReservado!=-1 ORDER BY CAST(GetCodigo(shared.szReservado) AS DECIMAL)">
                         <SelectParameters>
                             <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
                         </SelectParameters>
     </asp:SqlDataSource>
+    <div align="right">Total: <asp:Label runat="server" ID="LTotal"></asp:Label></div>
     <div align="right">
         <asp:Button ID="BAceptar" runat="server" Text="Aceptar" 
             onclick="BAceptar_Click" /><asp:Button ID="BCancelar" runat="server" 

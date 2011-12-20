@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-12-09 · Ajustar la presentación de cantidades en beta 0.53.** Cambia cómo se forma el valor enlazado que aparece en cantidades de obra y actualiza la versión a 0.53 Beta. El historial permite ubicar el cambio de presentación en la revisión correspondiente.
+**2011-12-20 · Generar resultados de evaluación desde el formulario.** Añade el controlador de evaluación que prepara el resultado con los valores del formulario. También reajusta el comportamiento del listado de cantidades para la revisión desde el navegador.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-12-09 · Adjust quantity display for beta 0.53.** Change how a bound value is rendered on the work quantities screen and bump the version to 0.53 Beta. The history ties the display adjustment to its revision.
+**2011-12-20 · Generate assessment results from the form.** Add the evaluation handler that builds a result from the form values. Rework the quantities list behavior for browser-based review.
 
 ### How to explore the source
 

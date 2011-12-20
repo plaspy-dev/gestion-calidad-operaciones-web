@@ -17,6 +17,27 @@
             $("#" + otr).attr('checked', !$("#" + otr).is(':checked'));
             $("#" + otr).change();
         });
+        function Calcular() {
+
+            pinicial = parseFloat($("#<%= TPInicial.ClientID %>").val().replace(/,/g, ""));
+            area = parseFloat($("#<%= TAreaAfectada.ClientID %>").val().replace(/,/g, ""));
+            pdotacion = parseFloat($("#<%= TPDotacion.ClientID%>").val().replace(/,/g, ""));
+
+            if (isNaN(pinicial))
+                pinicial = 0;
+            if (isNaN(pdotacion))
+                pdotacion = 0;
+            if (isNaN(area))
+                area = 0;
+            area = area > 0 ? pinicial / area : 0;
+            pinicial += pdotacion;
+
+            $("#<%= LCostoIntervencion.ClientID %>").text(currencyFormatted(area.toString()));
+            $("#<%= LPTotal.ClientID %>").text(currencyFormatted(pinicial.toString()));
+        }
+        $("#<%= TPInicial.ClientID %>").change(Calcular).change();
+        $("#<%= TAreaAfectada.ClientID %>").change(Calcular).change();
+        $("#<%= TPDotacion.ClientID%>").change(Calcular).change();
     });
 </script>
 </asp:Content>
@@ -26,25 +47,26 @@
     <asp:HiddenField runat="server" ID="HEvaluacion" />
         <table class="tabla">
             <tr>
-                <td colspan="4" class="Titulo">Concepto preliminar</td>
+                <td colspan="4" class="Titulo">Concepto</td>
             </tr>
             <tr>
-                <td>Reposición</td>
-                <td><asp:DropDownList ID="DReposicion" runat="server" DataSourceID="SReposicion" DataTextField="nombre" DataValueField="id">
-                </asp:DropDownList>
-                <asp:SqlDataSource ID="SReposicion" runat="server" 
-                    ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
-                    ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=107 AND szReservado IS NULL ORDER BY nombre" >
-            </asp:SqlDataSource></td>
-                <td>Adecuación</td>
-                <td><asp:DropDownList ID="DAdecuacion" runat="server" DataSourceID="SAdecuacion" DataTextField="nombre" DataValueField="id">
+            <td>
+                Adecuación</td>
+            <td>
+                <asp:DropDownList ID="DAdecuacion" runat="server" DataSourceID="SAdecuacion" 
+                    DataTextField="nombre" DataValueField="id">
                 </asp:DropDownList>
                 <asp:SqlDataSource ID="SAdecuacion" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=108 AND szReservado IS NULL ORDER BY nombre" >
-            </asp:SqlDataSource></td>
+                    SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=108 AND szReservado IS NULL ORDER BY nombre">
+                </asp:SqlDataSource>
+            </td>
+            <td>
+            </td>
+            <td>
+                <asp:CheckBox ID="CViable"  Text="Víable" runat="server" />
+            </td>
             </tr>
             <tr>
                 <td colspan="4">
@@ -83,6 +105,41 @@
                     </SelectParameters>
                 </asp:SqlDataSource>
                 </td>
+            </tr>
+            <tr>
+                <td>
+                    Presupuesto inicial</td>
+                <td>
+                    <asp:TextBox runat="server" CssClass="dinero" ID="TPInicial"></asp:TextBox></td>
+                <td>
+                    Area afectada (m2)</td>
+                <td>
+                    <asp:TextBox runat="server" CssClass="float" ID="TAreaAfectada"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td>
+                    Costo intervención (m2)</td>
+                <td align="right">
+                    <asp:Label ID="LCostoIntervencion" runat="server" Text=""></asp:Label></td>
+                <td>
+                    Presupuesto inicial de dotación</td>
+                <td>
+                    <asp:TextBox runat="server" CssClass="dinero" ID="TPDotacion"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td>
+                    Presupuesto inicial total</td>
+                <td align="right">
+                    <asp:Label ID="LPTotal" runat="server" Text=""></asp:Label></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    Objeto</td>
+                <td align="right" colspan="3">
+                    <asp:TextBox ID="TObjeto" runat="server" TextMode="MultiLine" Width="99%"></asp:TextBox>
+                    </td>
             </tr>
             <tr>
                 <td>Observaciones</td>
