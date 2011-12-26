@@ -7,109 +7,46 @@
     .ui-widget-contentl { border-left: 1px solid #a6c9e2; color: #222222; }
     .ui-widget-contentr { border-right: 1px solid #a6c9e2; color: #222222; }
     .ui-accordion .ui-accordion-header { cursor: pointer; position: relative; margin-top: 1px; zoom: 1; padding: .5em .5em .5em .7em;}
+    .ft,dt,tt {text-align: right;}
 </style>
 <script type="text/javascript">
     $(function() {
-        function esconder2(e) {
 
-            if (e.next().attr("p") == e.attr("t")) { // tiene hijos
+        var arreglo = null;
+        var nactual = 0;
+        var len = 0;
 
-                var elemento = $(e).next();
-                var t = $(e).attr("t");
-                while (elemento.length!=0) {
-
-                    if(elemento.attr("p") == t) {
-                        if (esconder2(elemento)) {
-                            elemento.removeClass("pv").addClass("ph")
-                            .children("td").removeClass("ui-state-active ui-corner-top").addClass("ui-state-default ui-corner-all")
-                            .children("span").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
-                        }
-                        elemento.hide();
-                    }
-                    elemento = elemento.next();
-                }
-                return true;
-            }
-            return false;
-        }
-        function toggle(e) {
-            var mostrar = false;
-            var t = $(e).attr("t");
-            var elemento = $(e).next();
-
-            while (elemento.length != 0) {
-                if (elemento.attr("p") == t) {
-                    if (!elemento.is(":visible")) {
-                        elemento.show();
-                        mostrar = true;
-                    } else {
-                        if (esconder2(elemento)) {
-                            elemento.removeClass("pv").addClass("ph")
-                            .children("td").removeClass("ui-state-active ui-corner-top").addClass("ui-state-default ui-corner-all")
-                            .children("span").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
-                        }
-                        elemento.hide();
-                    }
-                }
-                elemento = elemento.next();
-            }
-            return mostrar;
-        }
         function esconder(elemento, indent) {
 
-            if (elemento.indent)
-                return false;
             $(elemento).children("td").first().css("text-indent", indent);
-            elemento.indent = indent;
+            var hijos = $(elemento).next().attr("p") == $(elemento).attr("t");
 
-            if ($(elemento).next().attr("p") == $(elemento).attr("t")) { // tiene hijos
+            if ($(elemento).attr("p") == '0' || hijos) { // tiene hijos
 
                 $("<span></span>")
-				    .addClass("ui-icon ui-icon-triangle-1-e")
+				    .addClass("ui-icon " + (hijos ? "ui-icon-triangle-1-s" : "ui-icon-triangle-1-e"))
 				    .prependTo($(elemento).children("td"));
 
-                $(elemento).children("td").addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all");
-                $(elemento).addClass("ph").hover(function() {
+                $(elemento).children("td").addClass("ui-accordion-header ui-helper-reset " + (hijos ? "ui-state-active ui-corner-top" : "ui-state-default ui-corner-all"));
+                $(elemento).hover(function() {
                     $(this).children("td").addClass("ui-state-hover");
                 }, function() {
                     $(this).children("td").removeClass("ui-state-hover");
-                }).click(function() {
-                    if (toggle(this)) {
-                        // expandir
-
-                        var t = $(this).attr("t");
-                        var info = $(this).next();
-
-                        while (info.length != 0) {
-                            if (info.attr("p") == t) {
-                                if (esconder($(info).get(0), indent + 20)) {
-                                    var vtotal = info.children("td").children(".totalt").attr("id");
-                                    if (vtotal) {
-                                        $(info).children("td").children(".floatt").change(function() {
-                                            calcular("#" + $(this).attr("id").replace(/TCantidad/g, "TVTotal").toString());
-                                        }).numeric({ format: "0.##", buttons: false, minValue: 0 });
-
-                                        $(info).children("td").children(".dinerot").change(function() {
-                                            calcular("#" + $(this).attr("id").replace(/TVUnitario/g, "TVTotal").toString());
-                                        }).numeric({ format: "#,000.##", buttons: false, minValue: 0 });
-
-                                        $(info).children("td").children(".totalt")
-                                            .attr("readonly", true)
-                                            .numeric({ format: "#,000.##", buttons: false, minValue: 0 });
-                                    }
-                                }
-                            }
-                            info = info.next();
-                        }
-                        $(this).removeClass("ph").addClass("pv")
-                        .children("td").removeClass("ui-state-default ui-corner-all").addClass("ui-state-active ui-corner-top")
-                        .children("span").removeClass("ui-icon-triangle-1-e").addClass("ui-icon-triangle-1-s");
-                    } else {
-                        $(this).removeClass("pv").addClass("ph")
-                        .children("td").removeClass("ui-state-active ui-corner-top").addClass("ui-state-default ui-corner-all")
-                        .children("span").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
-                    }
                 });
+                if (hijos) {
+                    nactual++;
+                    for (; nactual < len; nactual++) {
+                        var e = arreglo[nactual];
+                        if (e.p == elemento.p || e.p != elemento.t) { // tiene el mismo padre
+                            nactual--;
+                            break;
+                        }
+                        esconder(e, indent + 20);
+                    };
+                    if ($(elemento).attr("p") == '0') {  // es el seleccionado
+                        $("html:not(:animated),body:not(:animated)").animate({ scrollTop: $(elemento).offset().top }, 1100);
+                    }
+                }
             } else {
                 $(elemento).children("td").addClass("ui-helper-reset ui-widget-contentb")
                 $(elemento).children("td").first().addClass("ui-widget-contentl");
@@ -118,17 +55,12 @@
             return true;
         }
 
-        $('#elementos tr').each(function(i) {
-            if ($(this).attr("p") == "0")
-                esconder(this, 10);
-        });
-
         function calcular(vtotal) {
 
             var total = 1;
             var antiguo = $(vtotal).numeric('value');
-            cantidad = vtotal.replace(/TVTotal/g, "TCantidad");
-            vunitario = vtotal.replace(/TVTotal/g, "TVUnitario");
+            cantidad = vtotal.replace(/TT/g, "TC");
+            vunitario = vtotal.replace(/TT/g, "TU");
 
             total = parseFloat($(cantidad).val().replace(/,/g, ""));
             total *= parseFloat($(vunitario).val().replace(/,/g, ""));
@@ -144,13 +76,40 @@
             ttotal += total - antiguo;
             $("#<%=LTotal.ClientID %>").text(currencyFormatted(ttotal.toString()));
         }
+
+        function inicio() {
+            arreglo = $('#elementos tr');
+            len = arreglo.length;
+            nactual = 1;
+            for (; nactual < len; nactual++) {
+                var e = arreglo[nactual];
+                esconder(e, 10);
+            };
+            $(".ft").change(function() {
+                calcular("#" + $(this).attr("id").replace(/TC/g, "TT").toString());
+            }).numeric({ format: "0.##", buttons: false, minValue: 0 }).first().numeric('select');
+
+            $(".dt").change(function() {
+                calcular("#" + $(this).attr("id").replace(/TU/g, "TT").toString());
+            }).numeric({ format: "#,000.##", buttons: false, minValue: 0 });
+
+            $(".tt").attr("readonly", true).numeric({ format: "#,000.##", buttons: false, minValue: 0 });
+        }
+
+        $('#<%=UCantidad.ClientID%>').panelUpdated(function() {
+
+            inicio();
+            $("#<%= LFiltro.ClientID %>").click(function() { return confirm('Esta acción revertira todos los cambios realizados. ¿Desea continuar?'); });
+        });
+        inicio();
     });
 </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cph" Runat="Server">
 <uc1:proyector ID="UCProyecto" runat="server" />
 <asp:Panel runat="server" ID="PDatos" Visible="false">
-    <asp:Repeater ID="RElementos" runat="server" DataSourceID="SElementos">
+    <div align="right"><asp:LinkButton runat="server" ID="LFiltro" Text="Filtrar" onclick="LFiltro_Click"></asp:LinkButton></div>
+    <asp:Repeater ID="RFiltrar" runat="server" DataSourceID="SFiltrar" Visible="false">
         <HeaderTemplate>
             <table id='elementos' class='ui-accordion ui-widget ui-helper-reset ui-accordion-icons' cellspacing='0'>
                 <tr class="ui-state-default" style="text-align:center">
@@ -163,31 +122,112 @@
                 </tr>
         </HeaderTemplate>
         <ItemTemplate>
-            <tr p='<%# DataBinder.Eval(Container.DataItem, "parent").ToString() %>' t='<%# DataBinder.Eval(Container.DataItem, "id") %>' 
-                class='<%# DataBinder.Eval(Container.DataItem, "parent").ToString()=="0" ? "" : "hide" %>'>
-                <td colspan='<%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "6" : "0" %>'>
-                    <%# DataBinder.Eval(Container.DataItem, "szReservado") %><%# DataBinder.Eval(Container.DataItem, "nombre") %>
-                    <asp:HiddenField ID="HIdElemento" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
-                    <asp:HiddenField ID="HIdCantidad" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
+            <tr t=1>
+                <td>
+                    <%# DataBinder.Eval(Container.DataItem, "szReservado") %> <%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                    <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
+                    <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
                 </td>
-                <asp:Panel runat="server" ID="PSinHijos" Visible='<%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))==0 %>'>
-                    <td>
-                        <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
-                    </td>
-                    <td>
-                        <asp:TextBox runat="server" ID="TCantidad" CssClass="floatt" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
-                    </td>
-                    <td>
-                        <asp:TextBox runat="server" ID="TVUnitario" CssClass="dinerot" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
-                    </td>
-                    <td>
-                        <asp:TextBox runat="server" ID="TVTotal" CssClass="totalt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
-                    </td>
-                    <td>
-                        <asp:TextBox runat="server" ID="TObservaciones" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
-                    </td>
-                </asp:Panel>
+                <td>
+                    <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
+                </td>
+                <td>
+                    <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
+                </td>
+                <td>
+                    <asp:TextBox runat="server" ID="TU" CssClass="dt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
+                </td>
+                <td>
+                    <asp:TextBox runat="server" ID="TT" CssClass="tt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
+                </td>
+                <td>
+                    <asp:TextBox runat="server" ID="TO" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
+                </td>
             </tr>
+        </ItemTemplate>
+        <FooterTemplate>
+            </table>
+        </FooterTemplate>
+    </asp:Repeater>
+    <asp:SqlDataSource ID="SFiltrar" runat="server" 
+        ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+        ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+        SelectCommand="SELECT shared.id, shared.nombre, shared.descripcion,shared.szReservado
+                        ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
+                        FROM shared 
+                        LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=shared.id AND cantidades_obra.proyecto=@proyecto)
+                        WHERE shared.nReservado=122 AND shared.szReservado!=-1 AND cantidades_obra.cantidad IS NOT NULL ORDER BY GetCodigo(shared.szReservado)">
+                    <SelectParameters>
+                        <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
+                    </SelectParameters>
+    </asp:SqlDataSource>
+    <asp:UpdatePanel runat="server" ID="UCantidad" UpdateMode="Conditional">
+    <ContentTemplate>
+    <asp:HiddenField ID="HSel" runat="server" />
+    <asp:Repeater ID="E" runat="server" DataSourceID="SElementos">
+        <HeaderTemplate>
+            <table id='elementos' class='ui-accordion ui-widget ui-helper-reset ui-accordion-icons' cellspacing='0'>
+                <tr class="ui-state-default" style="text-align:center">
+                    <td>Descripción</td>
+                    <td>Unidad</td>
+                    <td>Cantidad</td>
+                    <td>Vr. unitario</td>
+                    <td>Vr. total</td>
+                    <td>Observaciones</td>
+                </tr>
+        </HeaderTemplate>
+        <ItemTemplate>
+            <tr p=0 t=<%# DataBinder.Eval(Container.DataItem, "id") %>>
+                <td colspan=6>
+                    <asp:LinkButton CommandName='<%# DataBinder.Eval(Container.DataItem, "cap") %>' CommandArgument='<%# DataBinder.Eval(Container.DataItem, "id") %>' runat="server" ID="LCapitulo" OnClick="LCapitulo_Click"
+                        Text='<%# DataBinder.Eval(Container.DataItem, "nombre") %>'></asp:LinkButton>
+                </td>
+            </tr>
+            <asp:Repeater runat="server" ID="R" DataSourceID="SHijos" onitemdatabound="R_ItemDataBound">
+                    <ItemTemplate>
+                        <tr p='<%# DataBinder.Eval(Container.DataItem, "parent").ToString() %>' t=<%# DataBinder.Eval(Container.DataItem, "id") %>>
+                            <td <%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "colspan=6" : "" %>>
+                                <%# DataBinder.Eval(Container.DataItem, "szReservado") %> <%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                                <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
+                                <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
+                            </td>
+                            <asp:Panel runat="server" ID="S" Visible='<%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))==0 %>'>
+                                <td>
+                                    <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
+                                </td>
+                                <td>
+                                    <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
+                                </td>
+                                <td>
+                                    <asp:TextBox runat="server" ID="TU" CssClass="dt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
+                                </td>
+                                <td>
+                                    <asp:TextBox runat="server" ID="TT" CssClass="tt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
+                                </td>
+                                <td>
+                                    <asp:TextBox runat="server" ID="TO" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
+                                </td>
+                            </asp:Panel>
+                        </tr>
+                    </ItemTemplate>
+                </asp:Repeater>
+                <asp:SqlDataSource ID="SHijos" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                    ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                    SelectCommand="SELECT shared.id, shared.nombre, shared.descripcion,shared.szReservado,IFNULL(shared.parametro1,0) AS parent
+                        ,(SELECT COUNT(*) FROM shared AS s WHERE s.nReservado=122 AND s.szReservado!=-1 AND s.parametro1=shared.id) AS hijos 
+                        ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
+                        FROM shared 
+                        LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=shared.id AND cantidades_obra.proyecto=@proyecto)
+                        WHERE @actualid=@actual AND shared.nReservado=122 AND shared.szReservado LIKE CONCAT(@capitulo,'%') AND shared.szReservado!=-1 AND shared.id!=@actualid ORDER BY GetCodigo(shared.szReservado)">
+                    <SelectParameters>
+                        <asp:ControlParameter ControlID="HSel" Name="padre" PropertyName="Value" />
+                        <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
+                        <asp:ControlParameter ControlID="LCapitulo" Name="actual" PropertyName="CommandArgument" />
+                        <asp:ControlParameter ControlID="HSel" Name="actualid" PropertyName="Value" />
+                        <asp:ControlParameter ControlID="LCapitulo" Name="capitulo" PropertyName="CommandName" />
+                    </SelectParameters>
+                </asp:SqlDataSource>
         </ItemTemplate>
         <FooterTemplate>
             </table>
@@ -196,16 +236,10 @@
     <asp:SqlDataSource ID="SElementos" runat="server" 
         ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-        SelectCommand="SELECT shared.id, shared.nombre, shared.descripcion,shared.szReservado,IFNULL(shared.parametro1,0) AS parent
-                        ,(SELECT COUNT(*) FROM shared AS s WHERE s.nReservado=122 AND s.szReservado!=-1 AND s.parametro1=shared.id) AS hijos 
-                        ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
-                        FROM shared 
-                        LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=shared.id AND cantidades_obra.proyecto=@proyecto)
-                        WHERE shared.nReservado=122 AND shared.szReservado!=-1 ORDER BY CAST(GetCodigo(shared.szReservado) AS DECIMAL)">
-                        <SelectParameters>
-                            <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
-                        </SelectParameters>
+        SelectCommand="SELECT shared.id, shared.szReservado AS cap, CONCAT(shared.szReservado, ' ',shared.nombre) AS nombre FROM shared WHERE shared.nReservado=122 AND shared.szReservado!=-1 AND shared.parametro1 IS NULL ORDER BY GetCodigo(shared.szReservado)">
     </asp:SqlDataSource>
+    </ContentTemplate>
+    </asp:UpdatePanel>
     <div align="right">Total: <asp:Label runat="server" ID="LTotal"></asp:Label></div>
     <div align="right">
         <asp:Button ID="BAceptar" runat="server" Text="Aceptar" 

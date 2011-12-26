@@ -1,4 +1,4 @@
-<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
+ï»¿<%@ Page Title="Proyecto" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="proyectos_Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script type="text/javascript">
@@ -146,19 +146,19 @@
                 </tr>
                 <tr>
                     <td>
-                        Dirección</td>
+                        DirecciÃ³n</td>
                     <td>
                         <asp:TextBox ID="TDireccion" runat="server"></asp:TextBox>
                         </td>
                     <td>
-                        Teléfono</td>
+                        TelÃ©fono</td>
                     <td>
                         <asp:TextBox ID="TTelefono" runat="server"></asp:TextBox>
                         </td>
                 </tr>
                 <tr>
                     <td>
-                        Tipo de intervención</td>
+                        Tipo de intervenciÃ³n</td>
                     <td>
                         <asp:DropDownList ID="DTIntervencion" runat="server" 
                             DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id" 
@@ -172,13 +172,13 @@
                     <td>
                         &nbsp;</td>
                     <td>
-                        <asp:CheckBox ID="CDotacion" runat="server" Text="Dotación" 
+                        <asp:CheckBox ID="CDotacion" runat="server" Text="DotaciÃ³n" 
                             AutoPostBack="True" />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Tipo de institución</td>
+                        Tipo de instituciÃ³n</td>
                     <td>
                         <asp:DropDownList ID="DTInstitucion" runat="server" DataSourceID="STInstitucion" DataTextField="nombre" DataValueField="id">
                         </asp:DropDownList>
@@ -206,11 +206,11 @@
                 </tr>
                 <tr>
                     <td>
-                        Costo intervención (m2)</td>
+                        Costo intervenciÃ³n (m2)</td>
                     <td align="right">
                         <asp:Label ID="LCostoIntervencion" runat="server" Text=""></asp:Label></td>
                     <td>
-                        Presupuesto inicial de dotación</td>
+                        Presupuesto inicial de dotaciÃ³n</td>
                     <td>
                         <asp:TextBox runat="server" CssClass="dinero" ID="TPDotacion"></asp:TextBox></td>
                 </tr>
@@ -220,7 +220,7 @@
                     <td align="right">
                         <asp:Label ID="LPTotal" runat="server" Text=""></asp:Label></td>
                     <td>
-                        Código prestador</td>
+                        CÃ³digo prestador</td>
                     <td>
                         <asp:TextBox ID="TPrestador" runat="server"></asp:TextBox>
                     </td>

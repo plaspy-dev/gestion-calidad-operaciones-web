@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2011-12-20 · Generar resultados de evaluación desde el formulario.** Añade el controlador de evaluación que prepara el resultado con los valores del formulario. También reajusta el comportamiento del listado de cantidades para la revisión desde el navegador.
+**2011-12-26 · Reorganizar la tabla de cantidades por intervención.** Reestructura los campos enlazados y controles de la pantalla de cantidades y ajusta los títulos relacionados con la intervención. El equipo puede ubicar las cantidades en la sección que corresponde al proyecto.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2011-12-20 · Generate assessment results from the form.** Add the evaluation handler that builds a result from the form values. Rework the quantities list behavior for browser-based review.
+**2011-12-26 · Reorganize the work quantities table.** Rework bound fields and controls on the quantities page and adjust related intervention labels. Teams can find quantities in the relevant project section.
 
 ### How to explore the source
 

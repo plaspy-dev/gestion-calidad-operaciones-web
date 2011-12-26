@@ -96,13 +96,13 @@
             </tr>
             <tr>
                 <td class="Titulo" colspan="6">
-                    Instalaciones elÉctricas</td>
+                    Instalaciones eléctricas</td>
             </tr>
             <tr>
                 <td class="SubTitulo" colspan="2">
-                    Suministro de energia</td>
+                    Suministro de energía</td>
                 <td class="SubTitulo" colspan="2">
-                    Estado de la red electrica</td>
+                    Estado de la red eléctrica</td>
                 <td class="SubTitulo" colspan="2">
                     Planta de emergencia</td>
             </tr>

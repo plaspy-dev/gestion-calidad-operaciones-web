@@ -39,6 +39,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 {
                     return;
                 }
+                TPInicial.Text = conector.QueryString("SELECT SUM(vtotal) FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ";");
 
                 Query query = new Query("evaluacion");
 
@@ -73,7 +74,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 query += "area_afectada";
                 query += "presupuesto_dotacion";
 
-                MySqlDataReader reader = conector.Query(query.GetSelect("proyecto='" + Request.QueryString["idp"] + "'"));
+                MySqlDataReader reader = conector.Query(query.GetSelect("proyecto='" + UCProyecto.IdProyecto + "'"));
                 if(reader!=null && reader.Read()) {
 
                     ((MasterPageI)Master).Imprimir("~/imprimir/evaluacion.htm");
@@ -104,7 +105,6 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     CSotano.Checked = reader["sotano"].ToString()=="1";
                     TObservacionesFinal.Text = reader["observacionesf"].ToString();
                     TOtros.Text = reader["otros"].ToString();
-                    TPInicial.Text = reader["presupuesto_inicial"].ToString().Replace(",", ".");
                     TAreaAfectada.Text = reader["area_afectada"].ToString().Replace(",", ".");
                     TPDotacion.Text = reader["presupuesto_dotacion"].ToString().Replace(",", ".");
                     TObjeto.Text = reader["objeto"].ToString();
