@@ -65,7 +65,6 @@
             <td>
             </td>
             <td>
-                <asp:CheckBox ID="CViable"  Text="Víable" runat="server" />
             </td>
             </tr>
             <tr>
@@ -99,7 +98,7 @@
                     <asp:SqlDataSource ID="SReubicacion" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,reubicacion_evaluacion.id AS idreubicacion,reubicacion_evaluacion.estado AS estado FROM shared LEFT JOIN reubicacion_evaluacion ON (reubicacion_evaluacion.proyecto=@evaluacion AND reubicacion_evaluacion.reubicacion=shared.id) WHERE shared.nReservado=109 AND shared.szReservado IS NULL" >
+                    SelectCommand="(SELECT shared.id AS id, shared.nombre AS nombre,reubicacion_evaluacion.id AS idreubicacion,reubicacion_evaluacion.estado AS estado FROM shared LEFT JOIN reubicacion_evaluacion ON (reubicacion_evaluacion.proyecto=@evaluacion AND reubicacion_evaluacion.reubicacion=shared.id) WHERE shared.nReservado=109 AND shared.szReservado IS NULL) UNION (SELECT 0 AS id,'VÍABLE' AS nombre, 0 AS idreubicacion,(SELECT viable FROM evaluacion WHERE proyecto=@evaluacion) AS estado)" >
                     <SelectParameters>
                         <asp:ControlParameter ControlID="HEvaluacion" Name="evaluacion" PropertyName="Value" DefaultValue="0" />
                     </SelectParameters>
@@ -108,27 +107,27 @@
             </tr>
             <tr>
                 <td>
-                    Presupuesto inicial</td>
+                    Presupuesto</td>
                 <td>
                     <asp:TextBox runat="server" CssClass="dinero" ID="TPInicial" ReadOnly="true"></asp:TextBox></td>
                 <td>
-                    Area afectada (m2)</td>
+                    Area afectada (m<sup>2</sup>)</td>
                 <td>
                     <asp:TextBox runat="server" CssClass="float" ID="TAreaAfectada"></asp:TextBox></td>
             </tr>
             <tr>
                 <td>
-                    Costo intervención (m2)</td>
+                    Costo intervención (m<sup>2</sup>)</td>
                 <td align="right">
                     <asp:Label ID="LCostoIntervencion" runat="server" Text=""></asp:Label></td>
                 <td>
-                    Presupuesto inicial de dotación</td>
+                    Presupuesto de dotación</td>
                 <td>
                     <asp:TextBox runat="server" CssClass="dinero" ID="TPDotacion"></asp:TextBox></td>
             </tr>
             <tr>
                 <td>
-                    Presupuesto inicial total</td>
+                    Presupuesto total</td>
                 <td align="right">
                     <asp:Label ID="LPTotal" runat="server" Text=""></asp:Label></td>
                 <td></td>

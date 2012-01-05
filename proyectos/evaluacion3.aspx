@@ -5,6 +5,9 @@
 <script type="text/javascript">
     $(function() {
         addDialog("#dEquipoParent", "#dEquipo");
+        $('input[name$="CFunciona"]').change(function() {
+            $(this).next().html($(this).is(":checked") ? "Sí" : "No");
+        }).change();
     });
 </script>
 </asp:Content>
@@ -43,7 +46,7 @@
                 </td>
                 <td colspan="2">
                     <asp:CheckBox ID="CDesagueIPropia" runat="server" 
-                        Text="Instalación propia" />
+                        Text="Eliminación propia" />
                 </td>
                 <td colspan="2">
                     <asp:CheckBox ID="CAlmacenamientoElevado" runat="server" Text="Elevado" />
@@ -173,7 +176,11 @@
                             <asp:CommandField ButtonType="Image" DeleteImageUrl="~/imgs/eliminar.gif" ShowDeleteButton="True" />
                             <asp:BoundField HeaderText="Nombre" DataField="nombre" />
                             <asp:BoundField HeaderText="Capacidad" DataField="capacidad" />
-                            <asp:CheckBoxField HeaderText="Funciona" DataField="funciona" />
+                            <asp:TemplateField HeaderText="Funciona">
+                                <ItemTemplate>
+                                    <asp:CheckBox Enabled="false" runat="server" ID="CF" Checked='<%# Bind("funciona") %>' Text='<%# Eval("funciona").ToString()=="True" ? "Sí" : "No" %>' />
+                                </ItemTemplate>                                
+                            </asp:TemplateField>
                             <asp:BoundField HeaderText="Afectación" DataField="afectacion" />
                         </Columns>
                     </asp:GridView>
@@ -213,12 +220,12 @@
                                     <asp:TextBox ID="TCapacidad" runat="server" Text='<%# Bind("capacidad") %>'></asp:TextBox>
                                 </InsertItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="">
+                            <asp:TemplateField HeaderText="Funciona">
                                 <EditItemTemplate>
-                                    <asp:CheckBox runat="server" ID="CFunciona" Text="Funciona" Checked='<%# Bind("funciona") %>' />
+                                    <asp:CheckBox runat="server" CssClass="cf" ID="CFunciona" Text=" " />
                                 </EditItemTemplate>
                                 <InsertItemTemplate>
-                                    <asp:CheckBox runat="server" ID="CFunciona" Text="Funciona" Checked='<%# Bind("funciona") %>' />
+                                    <asp:CheckBox runat="server" CssClass="cf" ID="CFunciona" Text=" " />
                                 </InsertItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField HeaderText="Afectación" DataField="afectacion" />

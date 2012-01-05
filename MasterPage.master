@@ -44,6 +44,10 @@
                 $("#contrasena").parent().appendTo(jQuery("#aspnetForm"));
                 return false;
             });
+            var imp = $("#<%= lnkImp.ClientID %>");
+            if (imp.attr("r") == "1") {
+                imp.attr("href", window.location + "&p=1").attr("target", "_blank");
+            }
             $("#loading").hide();
         });
     </script>

@@ -53,14 +53,19 @@
         $("#<%= TPInicial.ClientID %>").change(Calcular).change();
         $("#<%= TAreaAfectada.ClientID %>").change(Calcular).change();
         $("#<%= TPDotacion.ClientID%>").change(Calcular).change();
+        $("#<%= DLocalidad.ClientID %>").change(function() {
+            var t = $(this).children(":selected").text().toLowerCase();
+            t = t.charAt(0).toUpperCase() + t.slice(1);
+            $("#<%= LLocalidad.ClientID %>").html(t);
+        }).change();
 
         /*$("#<%= BCancelar.ClientID %>").unbind('click');
         $("#<%= BCancelar.ClientID %>").click(function() {
-            alert($("#aspnetForm").attr("action"));
-            $("#aspnetForm").attr("action", "<%=ResolveUrl("~/")%>imprimir/Default.aspx");
-            $("#aspnetForm").attr("target", "_blank");
-            $("#aspnetForm").submit();
-            return false;
+        alert($("#aspnetForm").attr("action"));
+        $("#aspnetForm").attr("action", "<%=ResolveUrl("~/")%>imprimir/Default.aspx");
+        $("#aspnetForm").attr("target", "_blank");
+        $("#aspnetForm").submit();
+        return false;
         });*/
     });
 </script>
@@ -139,10 +144,22 @@
                         </asp:SqlDataSource>
                         </td>
                     <td>
+                        <asp:Label ID="LLocalidad" runat="server" Text="Localidad"></asp:Label>
+                    </td>
+                    <td>
+                        <asp:TextBox ID="TLocalidad" runat="server"></asp:TextBox>
+                        </td>
+                </tr>
+                <tr>
+                    <td>
                         IPS referencia</td>
                     <td>
                         <asp:TextBox ID="TIPS" runat="server"></asp:TextBox>
                         </td>
+                    <td>
+                        &nbsp;</td>
+                    <td>
+                        &nbsp;</td>
                 </tr>
                 <tr>
                     <td>

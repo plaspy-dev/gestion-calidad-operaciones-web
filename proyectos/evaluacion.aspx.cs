@@ -68,7 +68,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 query += "observaciones";
                 query += "observacionesf";
                 query += "otros";
-                query += "viable";
+                // query += "viable";
                 query += "objeto";
                 query += "presupuesto_inicial";
                 query += "area_afectada";
@@ -78,9 +78,11 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 if(reader!=null && reader.Read()) {
 
                     ((MasterPageI)Master).Imprimir("~/imprimir/evaluacion.htm");
-
-                    BAceptar.Enabled = usuario.CanUpdate();
                     HEvaluacion.Value = reader["proyecto"].ToString();
+
+                    BAceptar.Enabled = ((CUsuario)usuario).CanUpdate(HEvaluacion.Value);
+                    
+                    
                     DAdecuacion.SelectedValue = reader["adecuacion"].ToString();
                     TObservaciones.Text = reader["observaciones"].ToString();
                     DNaturales.SelectedValue = reader["afectacion_natural"].ToString();
@@ -108,7 +110,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     TAreaAfectada.Text = reader["area_afectada"].ToString().Replace(",", ".");
                     TPDotacion.Text = reader["presupuesto_dotacion"].ToString().Replace(",", ".");
                     TObjeto.Text = reader["objeto"].ToString();
-                    CViable.Checked = reader["viable"].ToString() == "1";
+                    // CViable.Checked = reader["viable"].ToString() == "1";
                 }
             }
         }
@@ -147,7 +149,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         query["area_afectada"] = TAreaAfectada.Text;
         query["presupuesto_dotacion"] = TPDotacion.Text.Replace(",", "");
         query["objeto"] = TObjeto.Text;
-        query["viable"] = CViable.Checked ? "1" : "";
+        query["viable"] = ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "1" : ""; // es el ultimo de la lista
         
         if (HEvaluacion.Value.Length == 0)
         {
@@ -164,7 +166,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         if (conector.InsertModificacionWeb(HEvaluacion.Value) == -1)
             return;
 
-        for (int i = 0; i < GReubicacion.Rows.Count; i++)
+        for (int i = 0; i < GReubicacion.Rows.Count-1; i++)
         {
             Query reubicacion = new Query("reubicacion_evaluacion");
             reubicacion["reubicacion"] = GReubicacion.DataKeys[i].Values["id"].ToString();
@@ -205,7 +207,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     return;
             }
         }
-        
+        ((MasterPageI)Master).SetParametros("?idp=" + UCProyecto.IdProyecto);
         ((MasterPageI)Master).SetResultado(UCProyecto.Institucion + " modificado");
     }
 
@@ -218,7 +220,8 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
     {
 
         string resultado = (string)sender;
-        resultado = resultado.Replace("NoViable", CViable.Checked ? "" : "X");
+        resultado = resultado.Replace("$CViable$", ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "X" : "");
+        resultado = resultado.Replace("$NoViable$", ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "" : "X");
 
         Query query = new Query("proyecto");
 
@@ -246,8 +249,11 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         if(reader!=null) {
 
             bool l= reader.Read();
+            if(l) {
+                resultado = resultado.Replace("$TFVisita$", CConector.GetFromMySQLDate(reader["TFVisita"]));
+            }
             for(int i=0; i<reader.FieldCount; i++) {
-                resultado= resultado.Replace(reader.GetName(i), l ? reader[i].ToString() : "");
+                resultado= resultado.Replace("$" + reader.GetName(i) + "$", l ? reader[i].ToString() : "");
             }
         }
 
@@ -261,8 +267,8 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                             +" AND (shared.parametro1=proyecto.tintervencion OR (proyecto.dotacion=1 AND shared.parametro1 IS NULL))"
                             +" AND documentos_proyecto.id IS NULL AND documentos_proyecto.archivo IS NULL;")=="0";
 
-        resultado = resultado.Replace("szCompleta", completa ? "X" : "");
-        resultado = resultado.Replace("szTramite", completa ? "" : "X");
+        resultado = resultado.Replace("$szCompleta$", completa ? "X" : "");
+        resultado = resultado.Replace("$szTramite$", completa ? "" : "X");
 
         double pinicial = string.IsNullOrEmpty(TPInicial.Text) ? 0 : Convert.ToDouble(TPInicial.Text.Replace(",", ""));
         double area = string.IsNullOrEmpty(TAreaAfectada.Text) ? 0 : Convert.ToDouble(TAreaAfectada.Text.Replace(",", ""));
@@ -271,10 +277,13 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
 
         CultureInfo culture = new CultureInfo("en-US");
 
-        resultado = resultado.Replace("szTotal", string.Format(culture, "{0:0,0.##}", total));
-        resultado = resultado.Replace("pvalor", string.Format(culture, "{0:0,0.##}", total != 0 ? pinicial * 100 / total : 0));
-        resultado = resultado.Replace("pdotacion", string.Format(culture, "{0:0,0.##}", total != 0 ? pdotacion * 100 / total : 0));
-        resultado = resultado.Replace("szCostoIntervencion", string.Format(culture, "{0:0,0.##}", area != 0 ? total / area : 0));
+        resultado = resultado.Replace("$sTPInicial$", string.Format(culture, "{0:0,0.##}", pinicial));
+        resultado = resultado.Replace("$sTPDotacion$", string.Format(culture, "{0:0,0.##}", pdotacion));
+
+        resultado = resultado.Replace("$szTotal$", string.Format(culture, "{0:0,0.##}", total));
+        resultado = resultado.Replace("$pvalor$", string.Format(culture, "{0:0,0.##}", total != 0 ? pinicial * 100 / total : 0));
+        resultado = resultado.Replace("$pdotacion$", string.Format(culture, "{0:0,0.##}", total != 0 ? pdotacion * 100 / total : 0));
+        resultado = resultado.Replace("$szCostoIntervencion$", string.Format(culture, "{0:0,0.##}", area != 0 ? total / area : 0));
 
         Response.Clear();
         Response.Write(resultado);

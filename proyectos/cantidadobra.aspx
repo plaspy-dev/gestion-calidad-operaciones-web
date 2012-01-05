@@ -132,7 +132,7 @@
                     <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
                 </td>
                 <td>
-                    <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
+                    <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad").ToString().Replace(",", ".") %>'></asp:TextBox>
                 </td>
                 <td>
                     <asp:TextBox runat="server" ID="TU" CssClass="dt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
@@ -196,7 +196,7 @@
                                     <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
                                 </td>
                                 <td>
-                                    <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad") %>'></asp:TextBox>
+                                    <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad").ToString().Replace(",", ".") %>'></asp:TextBox>
                                 </td>
                                 <td>
                                     <asp:TextBox runat="server" ID="TU" CssClass="dt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>

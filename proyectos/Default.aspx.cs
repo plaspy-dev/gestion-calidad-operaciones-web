@@ -33,6 +33,7 @@ public partial class proyectos_Default : System.Web.UI.Page
                 query += "departamento";
                 query += "municipio";
                 query += "localidad";
+                query += "nombre_localidad";
                 query += "nombre";
                 query += "tintervencion";
                 query += "tinstitucion";
@@ -55,11 +56,15 @@ public partial class proyectos_Default : System.Web.UI.Page
                     ((MasterPageI)Master).Imprimir("~/imprimir/proyecto.htm");
 
                     HProyecto.Value = Request.QueryString["idp"];
+                    BAceptar.Enabled = ((CUsuario)usuario).CanUpdate(HProyecto.Value);
+                    GDocumentos.Columns[1].Visible = ((CUsuario)usuario).CanDelete(HProyecto.Value);
+
                     DDepartamento.SelectedValue = reader["departamento"].ToString();
                     DContrato.SelectedValue = reader["contrato"].ToString();
                     DDepartamento_SelectedIndexChanged(null, null);
                     DMunicipio.SelectedValue = reader["municipio"].ToString();
                     DLocalidad.SelectedValue = reader["localidad"].ToString();
+                    TLocalidad.Text = reader["nombre_localidad"].ToString();
                     TNombre.Text = reader["nombre"].ToString();
                     DTIntervencion.SelectedValue = reader["tintervencion"].ToString();
                     DTInstitucion.SelectedValue = reader["tinstitucion"].ToString();
@@ -102,6 +107,7 @@ public partial class proyectos_Default : System.Web.UI.Page
         query["contrato"] = DContrato.SelectedValue;
         query["municipio"] = DMunicipio.SelectedValue;
         query["localidad"] = DLocalidad.SelectedValue;
+        query["nombre_localidad"] = TLocalidad.Text;
         query["nombre"] = TNombre.Text;
         query["tintervencion"] = DTIntervencion.SelectedValue;
         query["tinstitucion"] = DTInstitucion.SelectedValue;
@@ -154,7 +160,7 @@ public partial class proyectos_Default : System.Web.UI.Page
                 archivo.SaveFile(documentos);
             }
         }
-
+        ((MasterPageI)Master).SetParametros("?idp=" + HProyecto.Value);
         ((MasterPageI)Master).SetResultado(TNombre.Text + " modificado");
     }
     protected void BCancelar_Click(object sender, EventArgs e)
@@ -172,10 +178,13 @@ public partial class proyectos_Default : System.Web.UI.Page
 
         string resultado = (string)sender;
         // resultado = resultado.Replace("NoViable", CViable.Checked ? "" : "X");
-        resultado = resultado.Replace("NoViable", "");
-        resultado = resultado.Replace("OAMe", DTIntervencion.SelectedItem.Text=="ADECUACION MENOR" ? "X" : "");
-        resultado = resultado.Replace("OAMa", DTIntervencion.SelectedItem.Text=="ADECUACION MAYOR" ? "X" : "");
-        resultado = resultado.Replace("Dotacion", DTIntervencion.SelectedItem.Text == "DOTACION" ? "X" : "");
+        resultado = resultado.Replace("$NoViable$", "");
+
+        
+
+        resultado = resultado.Replace("$OAMe$", DTIntervencion.SelectedItem.Text=="ADECUACION MENOR" ? "X" : "");
+        resultado = resultado.Replace("$OAMa$", DTIntervencion.SelectedItem.Text=="ADECUACION MAYOR" ? "X" : "");
+        resultado = resultado.Replace("$Dotacion$", DTIntervencion.SelectedItem.Text == "DOTACION" ? "X" : "");
 
         bool completa = true;
         for (int i = 0; i < GDocumentos.Rows.Count; i++)
@@ -185,8 +194,8 @@ public partial class proyectos_Default : System.Web.UI.Page
                  break;
              }
         }
-        resultado = resultado.Replace("szCompleta", completa ? "X" : "");
-        resultado = resultado.Replace("szTramite", completa  ? "" : "X");
+        resultado = resultado.Replace("$szCompleta$", completa ? "X" : "");
+        resultado = resultado.Replace("$szTramite$", completa  ? "" : "X");
 
         double pinicial = string.IsNullOrEmpty(TPInicial.Text) ? 0 : Convert.ToDouble(TPInicial.Text.Replace(",", ""));
         double area = string.IsNullOrEmpty(TAreaAfectada.Text) ? 0 : Convert.ToDouble(TAreaAfectada.Text.Replace(",", ""));
@@ -195,10 +204,10 @@ public partial class proyectos_Default : System.Web.UI.Page
 
         CultureInfo culture = new CultureInfo("en-US");
 
-        resultado = resultado.Replace("szTotal", string.Format(culture, "{0:0,0.##}", total));
-        resultado = resultado.Replace("pvalor", string.Format(culture, "{0:0,0.##}", total != 0 ? pinicial * 100 / total : 0));
-        resultado = resultado.Replace("pdotacion", string.Format(culture, "{0:0,0.##}", total != 0 ? pdotacion * 100 / total : 0));
-        resultado = resultado.Replace("szCostoIntervencion", string.Format(culture, "{0:0,0.##}", area != 0 ? total / area : 0));
+        resultado = resultado.Replace("$szTotal$", string.Format(culture, "{0:0,0.##}", total));
+        resultado = resultado.Replace("$pvalor$", string.Format(culture, "{0:0,0.##}", total != 0 ? pinicial * 100 / total : total));
+        resultado = resultado.Replace("$pdotacion$", string.Format(culture, "{0:0,0.##}", total != 0 ? pdotacion * 100 / total : total));
+        resultado = resultado.Replace("$szCostoIntervencion$", string.Format(culture, "{0:0,0.##}", area != 0 ? total / area : area));
 
 
         CConector conector = new CConector();
@@ -207,19 +216,24 @@ public partial class proyectos_Default : System.Web.UI.Page
         query["observaciones"] = "evaluacion.observaciones";
         query["reposicion"] = "reposicion.nombre";
         query["adecuacion"] = "adecuacion.nombre";
+        query["viable"] = "evaluacion.viable";
 
         MySqlDataReader reader = conector.Query(query.GetSelect("evaluacion.proyecto='" + HProyecto.Value + "'",
             "LEFT JOIN shared AS reposicion ON (reposicion.id=evaluacion.reposicion) "
             + "LEFT JOIN shared AS adecuacion ON (adecuacion.id=evaluacion.adecuacion)" ));
         if (reader != null && reader.Read())
         {
-            resultado = resultado.Replace("szObservaciones", reader["observaciones"].ToString());
-            resultado = resultado.Replace("szReposicion", reader["reposicion"].ToString());
-            resultado = resultado.Replace("szReubicacion", reader["adecuacion"].ToString());
+            resultado = resultado.Replace("$szObservaciones$", reader["observaciones"].ToString());
+            resultado = resultado.Replace("$szReposicion$", reader["reposicion"].ToString());
+            resultado = resultado.Replace("$szReubicacion$", reader["adecuacion"].ToString());
+            resultado = resultado.Replace("$CViable$", reader["viable"].ToString()=="1" ? "X" : "");
+            resultado = resultado.Replace("$NoViable$", reader["viable"].ToString() == "1" ? "" : "X");
         } else {
-            resultado = resultado.Replace("szObservaciones", "");
-            resultado = resultado.Replace("szReposicion", "");
-            resultado = resultado.Replace("szReubicacion", "");
+            resultado = resultado.Replace("$szObservaciones$", "");
+            resultado = resultado.Replace("$szReposicion$", "");
+            resultado = resultado.Replace("$szReubicacion$", "");
+            resultado = resultado.Replace("$CViable$","");
+            resultado = resultado.Replace("$NoViable$", "");
         }
 
         Response.Clear();
