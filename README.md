@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-05 · Conectar cantidades de obra con la salida del sitio.** Añade el controlador de cantidades y el código de la plantilla que genera la salida para el usuario. Esto permite seguir cómo los controles y valores de la página se convierten en contenido que se puede revisar.
+**2012-01-05 · Identificar la compilación 0.6 Beta.** Cambia el valor devuelto por el identificador de versión de 0.56 Beta a 0.6 Beta. Este marcador permite relacionar una instalación con la revisión correspondiente.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-05 · Connect work quantities to rendered output.** Add the quantities handler and shared layout code that produces output for the user. Readers can see how page controls and values become content for review.
+**2012-01-05 · Label the 0.6 Beta build.** Change the reported version from 0.56 Beta to 0.6 Beta. This marker helps maintainers associate an installation with its revision.
 
 ### How to explore the source
 
