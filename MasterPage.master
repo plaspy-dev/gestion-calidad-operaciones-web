@@ -106,7 +106,7 @@
                                     <NodeStyle HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
                                 </asp:TreeView>
                             </div>
-                            <div id="tabs-2" class="ui-tabs-hide">
+                            <div id="tabs-2" class="hide">
                                 <uc1:modificaciones ID="MModificaciones" IdModificacion="" runat="server"/>
                             </div>
                         </div>

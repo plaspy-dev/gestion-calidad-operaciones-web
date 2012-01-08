@@ -124,12 +124,12 @@
         <ItemTemplate>
             <tr t=1>
                 <td>
-                    <%# DataBinder.Eval(Container.DataItem, "szReservado") %> <%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                    <asp:Label ID="LC"  runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "szReservado") + "" + DataBinder.Eval(Container.DataItem, "nombre") %>'></asp:Label>
                     <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
                     <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
                 </td>
                 <td>
-                    <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
+                    <asp:Label ID="LD"  runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "descripcion") %>'></asp:Label>
                 </td>
                 <td>
                     <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad").ToString().Replace(",", ".") %>'></asp:TextBox>

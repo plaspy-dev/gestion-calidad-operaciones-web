@@ -73,25 +73,30 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 query += "presupuesto_inicial";
                 query += "area_afectada";
                 query += "presupuesto_dotacion";
+                query += "dotacion";
 
                 MySqlDataReader reader = conector.Query(query.GetSelect("proyecto='" + UCProyecto.IdProyecto + "'"));
                 if(reader!=null && reader.Read()) {
 
                     ((MasterPageI)Master).Imprimir("~/imprimir/evaluacion.htm");
                     HEvaluacion.Value = reader["proyecto"].ToString();
-
+                    GDocumentos.Columns[1].Visible = ((CUsuario)usuario).CanDelete(HEvaluacion.Value);
                     BAceptar.Enabled = ((CUsuario)usuario).CanUpdate(HEvaluacion.Value);
+
+                    conector.SelectInDropDown(DAdecuacion, reader["adecuacion"], "SELECT nombre FROM shared WHERE id={0}");
+                    conector.SelectInDropDown(DNaturales,reader["afectacion_natural"]);
+                    conector.SelectInDropDown(DClima, reader["clima"]);
+                    conector.SelectInDropDown(DAmbiente, reader["ambiente"]);
+                    conector.SelectInDropDown(DAcceso,reader["acceso"]);
+                    conector.SelectInDropDown(DAcceso2,reader["acceso2"]);
+                    conector.SelectInDropDown(DTopografia,reader["topografia"]);
+                    conector.SelectInDropDown(DForma, reader["forma"]);
                     
-                    
-                    DAdecuacion.SelectedValue = reader["adecuacion"].ToString();
+                    CDotacion.Checked = reader["dotacion"].ToString() == "1";
                     TObservaciones.Text = reader["observaciones"].ToString();
-                    DNaturales.SelectedValue = reader["afectacion_natural"].ToString();
                     TAltura.Text = reader["altura"].ToString();
-                    DClima.SelectedValue = reader["clima"].ToString();
-                    DAmbiente.SelectedValue = reader["ambiente"].ToString();
                     TTemperatura.Text = reader["temperatura"].ToString();
-                    DAcceso.SelectedValue = reader["acceso"].ToString();
-                    DAcceso2.SelectedValue = reader["acceso2"].ToString();
+                    
                     DDificultadAcceso.Text = reader["dificultad_acceso"].ToString();
                     DTenencia.Text = reader["tenencia"].ToString();
                     TCCatastral.Text = reader["cedula_catastral"].ToString();
@@ -99,8 +104,8 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     TATotal.Text = reader["area_total"].ToString();
                     TAOcupada.Text = reader["area_ocupada"].ToString();
                     TAConstruida.Text = reader["area_construida"].ToString();
-                    DTopografia.SelectedValue = reader["topografia"].ToString();
-                    DForma.SelectedValue = reader["forma"].ToString();
+                    
+                    
                     CEnUso.Checked = reader["actualmente_enuso"].ToString()=="1";
                     TEdificios.Text = reader["edificios"].ToString();
                     TPisos.Text = reader["pisos"].ToString();
@@ -109,7 +114,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     TOtros.Text = reader["otros"].ToString();
                     TAreaAfectada.Text = reader["area_afectada"].ToString().Replace(",", ".");
                     TPDotacion.Text = reader["presupuesto_dotacion"].ToString().Replace(",", ".");
-                    TObjeto.Text = reader["objeto"].ToString();
+                    CDotacion_CheckedChanged(sender, e);
                     // CViable.Checked = reader["viable"].ToString() == "1";
                 }
             }
@@ -148,7 +153,8 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         query["presupuesto_inicial"] = TPInicial.Text.Replace(",", "");
         query["area_afectada"] = TAreaAfectada.Text;
         query["presupuesto_dotacion"] = TPDotacion.Text.Replace(",", "");
-        query["objeto"] = TObjeto.Text;
+        query["objeto"] = LObjeto.Text;
+        query["dotacion"] = CDotacion.Checked ? "1" : "";
         query["viable"] = ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "1" : ""; // es el ultimo de la lista
         
         if (HEvaluacion.Value.Length == 0)
@@ -207,6 +213,28 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     return;
             }
         }
+        for (int i = 0; i < GDocumentos.Rows.Count; i++)
+        {
+            Query documentos = new Query("documentos_proyecto");
+
+            FileUpload file = (FileUpload)GDocumentos.Rows[i].FindControl("FArchivo");
+            if (file.HasFile)
+            {
+
+                string id = GDocumentos.DataKeys[i].Values["iddocumento"].ToString();
+                if (id.Length > 0)
+                {
+                    if (conector.QueryMod("DELETE FROM documentos_proyecto WHERE id='" + id + "'") == -1)
+                        return;
+                }
+
+                documentos["documento"] = GDocumentos.DataKeys[i].Value.ToString();
+                documentos["proyecto"] = UCProyecto.IdProyecto;
+
+                Archivos archivo = new Archivos(file.PostedFile, 0);
+                archivo.SaveFile(documentos);
+            }
+        }
         ((MasterPageI)Master).SetParametros("?idp=" + UCProyecto.IdProyecto);
         ((MasterPageI)Master).SetResultado(UCProyecto.Institucion + " modificado");
     }
@@ -215,6 +243,19 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
     {
         Response.Redirect(Request.Url.AbsolutePath);
     }
+    protected void GDocumentos_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Query archivos = new Query("documentos_proyecto");
+
+        archivos += "id";
+        archivos += "nombre";
+        archivos += "tipo";
+
+        Archivos archivo = new Archivos(archivos.GetSelect("id='" + GDocumentos.SelectedDataKey.Values["iddocumento"].ToString() + "'"),
+            "SELECT archivo FROM documentos_proyecto WHERE id={0}");
+
+        archivo.ShowFile(Response);
+    }
 
     protected void OnImprimir(object sender, EventArgs e)
     {
@@ -222,6 +263,10 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         string resultado = (string)sender;
         resultado = resultado.Replace("$CViable$", ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "X" : "");
         resultado = resultado.Replace("$NoViable$", ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "" : "X");
+        resultado = resultado.Replace("$szAMenor$", DAdecuacion.SelectedItem.Text.ToLower()=="menor" ? "X" : "");
+        resultado = resultado.Replace("$szAMayor$", DAdecuacion.SelectedItem.Text.ToLower() == "mayor" ? "X" : "");
+        resultado = resultado.Replace("$szReubicacion$", DAdecuacion.SelectedItem.Text.ToLower() == "reubicación" ? "X" : "");
+        resultado = resultado.Replace("$szReposicion$", DAdecuacion.SelectedItem.Text.ToLower().IndexOf("reposic")!=-1 ? "X" : "");
 
         Query query = new Query("proyecto");
 
@@ -231,10 +276,6 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         query["TSede"] = "proyecto.ips";
         query["DMunicipio"] = "municipio.nombre";
         query["TFVisita"] = "proyecto.visita";
-        query["OAMe"] = "IF(intervencion.nombre='ADECUACION MENOR', 'X', '')";
-        query["OAMa"] = "IF(intervencion.nombre='ADECUACION MAYOR', 'X', '')";
-        query["CDotacion"] = "IF(intervencion.nombre='DOTACION', 'X', '')";
-        query["szReposicion"] = "''";
 
         CConector conector = new CConector();
 
@@ -257,15 +298,15 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
             }
         }
 
-        bool completa= conector.QueryString("SELECT COUNT(*)"
+        bool completa = conector.QueryString("SELECT COUNT(*)"
                             + " FROM shared "
-                            +" LEFT JOIN proyecto ON (proyecto.id="
-                            + UCProyecto.IdProyecto
-                            +")"
-                            +" LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=proyecto.id AND documentos_proyecto.documento=shared.id) "
-                            +" WHERE shared.nReservado=106 AND shared.szReservado IS NULL "
-                            +" AND (shared.parametro1=proyecto.tintervencion OR (proyecto.dotacion=1 AND shared.parametro1 IS NULL))"
-                            +" AND documentos_proyecto.id IS NULL AND documentos_proyecto.archivo IS NULL;")=="0";
+                            + " LEFT JOIN evaluacion ON (evaluacion.proyecto="
+                            + HEvaluacion.Value
+                            + ")"
+                            + " LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id) "
+                            + " WHERE shared.nReservado=106 AND shared.szReservado='1'"
+                            + " AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL))"
+                            + " AND documentos_proyecto.id IS NULL AND documentos_proyecto.archivo IS NULL;") == "0";
 
         resultado = resultado.Replace("$szCompleta$", completa ? "X" : "");
         resultado = resultado.Replace("$szTramite$", completa ? "" : "X");
@@ -275,18 +316,30 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         double pdotacion = string.IsNullOrEmpty(TPDotacion.Text) ? 0 : Convert.ToDouble(TPDotacion.Text.Replace(",", ""));
         double total = pinicial + pdotacion;
 
-        CultureInfo culture = new CultureInfo("en-US");
+        resultado = resultado.Replace("$sTPInicial$", string.Format("{0:c}", pinicial));
+        resultado = resultado.Replace("$sTPDotacion$", string.Format("{0:c}", pdotacion));
 
-        resultado = resultado.Replace("$sTPInicial$", string.Format(culture, "{0:0,0.##}", pinicial));
-        resultado = resultado.Replace("$sTPDotacion$", string.Format(culture, "{0:0,0.##}", pdotacion));
-
-        resultado = resultado.Replace("$szTotal$", string.Format(culture, "{0:0,0.##}", total));
-        resultado = resultado.Replace("$pvalor$", string.Format(culture, "{0:0,0.##}", total != 0 ? pinicial * 100 / total : 0));
-        resultado = resultado.Replace("$pdotacion$", string.Format(culture, "{0:0,0.##}", total != 0 ? pdotacion * 100 / total : 0));
-        resultado = resultado.Replace("$szCostoIntervencion$", string.Format(culture, "{0:0,0.##}", area != 0 ? total / area : 0));
+        resultado = resultado.Replace("$szTotal$", string.Format("{0:c}", total));
+        resultado = resultado.Replace("$pvalor$", string.Format("{0:N}", total != 0 ? pinicial * 100 / total : 0));
+        resultado = resultado.Replace("$pdotacion$", string.Format("{0:N}", total != 0 ? pdotacion * 100 / total : 0));
+        resultado = resultado.Replace("$szCostoIntervencion$", string.Format("{0:c}", area != 0 ? total / area : 0));
 
         Response.Clear();
         Response.Write(resultado);
         Response.End();
+    }
+
+    protected void CDotacion_CheckedChanged(object sender, EventArgs e)
+    {
+        CConector conector = new CConector();
+        string institucion= conector.QueryString("SELECT shared.nombre FROM proyecto LEFT JOIN shared ON (shared.id=proyecto.tinstitucion) WHERE proyecto.id='" + UCProyecto.IdProyecto + "'");
+        string dotacion = CDotacion.Checked ? " Y DOTACIÓN " : "";
+        string objeto = conector.QueryString("SELECT descripcion FROM shared WHERE id='" + DAdecuacion.SelectedValue + "'");
+        LObjeto.Text = string.Format(objeto, dotacion, institucion);
+    }
+
+    protected void DAdecuacion_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        CDotacion_CheckedChanged(sender, e);
     }
 }

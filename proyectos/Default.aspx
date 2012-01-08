@@ -3,7 +3,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script type="text/javascript">
     $(function() {
-        FullRowSelect("#<%=GDocumentos.ClientID%>");
         $("#<%= TNombre.ClientID %>").autocomplete({
             source: function(request, response) {
                 $.ajax({
@@ -178,8 +177,7 @@
                         Tipo de intervención</td>
                     <td>
                         <asp:DropDownList ID="DTIntervencion" runat="server" 
-                            DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id" 
-                            AutoPostBack="True">
+                            DataSourceID="STIntervencion" DataTextField="nombre" DataValueField="id">
                         </asp:DropDownList>
                         <asp:SqlDataSource ID="STIntervencion" runat="server" 
                             ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
@@ -189,8 +187,7 @@
                     <td>
                         &nbsp;</td>
                     <td>
-                        <asp:CheckBox ID="CDotacion" runat="server" Text="Dotación" 
-                            AutoPostBack="True" />
+                        <asp:CheckBox ID="CDotacion" runat="server" Text="Dotación" />
                     </td>
                 </tr>
                 <tr>
@@ -244,68 +241,10 @@
                 </tr>
                 <tr>
                     <td>
-                        Objeto</td>
-                    <td align="right" colspan="3">
-                        <asp:TextBox ID="TObjeto" runat="server" TextMode="MultiLine" Width="99%"></asp:TextBox>
-                        </td>
-                </tr>
-                <tr>
-                    <td>
                         Observaciones</td>
                     <td align="right" colspan="3">
                         <asp:TextBox runat="server" ID="TObservaciones" TextMode="MultiLine" 
                             Width="99%"></asp:TextBox></td>
-                </tr>
-                <tr>
-                    <td class="Titulo" colspan="4">
-                        Documentos</td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                    <asp:GridView ID="GDocumentos" runat="server" AutoGenerateColumns="False" 
-                        DataSourceID="SDocumentos" DataKeyNames="id,iddocumento" 
-                            onselectedindexchanged="GDocumentos_SelectedIndexChanged">
-                        <RowStyle CssClass="GridRow"></RowStyle>
-                        <FooterStyle CssClass="GridFooter"></FooterStyle>
-                        <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
-                        <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                        <HeaderStyle CssClass="GridHeader"></HeaderStyle>
-                        <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
-                        <Columns>
-                            <asp:TemplateField ShowHeader="False">
-                                <ItemTemplate>
-                                    <asp:ImageButton ID="ISelecccionar" Visible='<%# Eval("estado").ToString()=="1" %>' runat="server" CausesValidation="False" CommandName="Select" ImageUrl="~/imgs/edit.gif" Text="Seleccionar" />
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField ShowHeader="False">
-                                <ItemTemplate>
-                                    <asp:ImageButton ID="IDelete" Visible='<%# Eval("estado").ToString()=="1" %>' runat="server" CausesValidation="False" CommandName="Delete" ImageUrl="~/imgs/eliminar.gif" Text="Eliminar" />
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:BoundField HeaderText="Documento" DataField="nombre" />
-                            <asp:TemplateField HeaderText="Archivo">
-                                <ItemTemplate>
-                                    <asp:FileUpload ID="FArchivo" runat="server" />
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                    </asp:GridView>
-                    <asp:SqlDataSource ID="SDocumentos" runat="server" 
-                    ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
-                    ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,documentos_proyecto.id AS iddocumento,LENGTH(documentos_proyecto.archivo)>0 AS estado 
-                                FROM shared 
-                                LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=@proyecto AND documentos_proyecto.documento=shared.id) 
-                                WHERE shared.nReservado=106 AND shared.szReservado IS NULL 
-                                AND (shared.parametro1=@tipo OR (@dotacion=1 AND shared.parametro1 IS NULL))
-                                ORDER BY nombre" 
-                    DeleteCommand="DELETE FROM documentos_proyecto WHERE id=@iddocumento">
-                    <SelectParameters>
-                        <asp:ControlParameter ControlID="HProyecto" Name="proyecto" PropertyName="Value" DefaultValue="0" />
-                        <asp:ControlParameter ControlID="DTIntervencion" Name="tipo" PropertyName="SelectedValue" />
-                        <asp:ControlParameter ControlID="CDotacion" Name="dotacion" PropertyName="Checked" />
-                    </SelectParameters>
-                </asp:SqlDataSource></td>
                 </tr>
             </table>
             </td>

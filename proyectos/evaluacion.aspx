@@ -4,6 +4,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script type="text/javascript">
     $(function() {
+        FullRowSelect("#<%=GDocumentos.ClientID%>");
         $('input[name$="CNo"]').change(function() {
             otr = $(this).attr("id").replace(/CNo/g, "CEstado");
             $("#" + otr).attr('checked', !$(this).is(':checked'));
@@ -54,7 +55,8 @@
                 Adecuación</td>
             <td>
                 <asp:DropDownList ID="DAdecuacion" runat="server" DataSourceID="SAdecuacion" 
-                    DataTextField="nombre" DataValueField="id">
+                    DataTextField="nombre" DataValueField="id" AutoPostBack="True" 
+                    onselectedindexchanged="DAdecuacion_SelectedIndexChanged">
                 </asp:DropDownList>
                 <asp:SqlDataSource ID="SAdecuacion" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
@@ -63,8 +65,11 @@
                 </asp:SqlDataSource>
             </td>
             <td>
+                <asp:CheckBox ID="CDotacion" runat="server" Text="Dotación" AutoPostBack="True" 
+                    oncheckedchanged="CDotacion_CheckedChanged" />
             </td>
             <td>
+                &nbsp;
             </td>
             </tr>
             <tr>
@@ -98,7 +103,7 @@
                     <asp:SqlDataSource ID="SReubicacion" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="(SELECT shared.id AS id, shared.nombre AS nombre,reubicacion_evaluacion.id AS idreubicacion,reubicacion_evaluacion.estado AS estado FROM shared LEFT JOIN reubicacion_evaluacion ON (reubicacion_evaluacion.proyecto=@evaluacion AND reubicacion_evaluacion.reubicacion=shared.id) WHERE shared.nReservado=109 AND shared.szReservado IS NULL) UNION (SELECT 0 AS id,'VÍABLE' AS nombre, 0 AS idreubicacion,(SELECT viable FROM evaluacion WHERE proyecto=@evaluacion) AS estado)" >
+                    SelectCommand="(SELECT shared.id AS id, shared.nombre AS nombre,reubicacion_evaluacion.id AS idreubicacion,reubicacion_evaluacion.estado AS estado FROM shared LEFT JOIN reubicacion_evaluacion ON (reubicacion_evaluacion.proyecto=@evaluacion AND reubicacion_evaluacion.reubicacion=shared.id) WHERE shared.nReservado=109 AND shared.szReservado IS NULL) UNION (SELECT 0 AS id,'VIABLE' AS nombre, 0 AS idreubicacion,(SELECT viable FROM evaluacion WHERE proyecto=@evaluacion) AS estado)" >
                     <SelectParameters>
                         <asp:ControlParameter ControlID="HEvaluacion" Name="evaluacion" PropertyName="Value" DefaultValue="0" />
                     </SelectParameters>
@@ -136,8 +141,8 @@
             <tr>
                 <td>
                     Objeto</td>
-                <td align="right" colspan="3">
-                    <asp:TextBox ID="TObjeto" runat="server" TextMode="MultiLine" Width="99%"></asp:TextBox>
+                <td colspan="3">
+                    <asp:Label ID="LObjeto" runat="server"></asp:Label>
                     </td>
             </tr>
             <tr>
@@ -354,6 +359,57 @@
                     </SelectParameters>
                 </asp:SqlDataSource>
                 </td>
+            </tr>
+            <tr>
+                <td class="Titulo" colspan="4">
+                    Documentos</td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                <asp:GridView ID="GDocumentos" runat="server" AutoGenerateColumns="False" 
+                    DataSourceID="SDocumentos" DataKeyNames="id,iddocumento" 
+                        onselectedindexchanged="GDocumentos_SelectedIndexChanged">
+                    <RowStyle CssClass="GridRow"></RowStyle>
+                    <FooterStyle CssClass="GridFooter"></FooterStyle>
+                    <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
+                    <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
+                    <HeaderStyle CssClass="GridHeader"></HeaderStyle>
+                    <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
+                    <Columns>
+                        <asp:TemplateField ShowHeader="False">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="ISelecccionar" Visible='<%# Eval("estado").ToString()=="1" %>' runat="server" CausesValidation="False" CommandName="Select" ImageUrl="~/imgs/edit.gif" Text="Seleccionar" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField ShowHeader="False">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="IDelete" Visible='<%# Eval("estado").ToString()=="1" %>' runat="server" CausesValidation="False" CommandName="Delete" ImageUrl="~/imgs/eliminar.gif" Text="Eliminar" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:BoundField HeaderText="Documento" DataField="nombre" />
+                        <asp:TemplateField HeaderText="Archivo">
+                            <ItemTemplate>
+                                <asp:FileUpload ID="FArchivo" runat="server" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+                <asp:SqlDataSource ID="SDocumentos" runat="server" 
+                ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,documentos_proyecto.id AS iddocumento,LENGTH(documentos_proyecto.archivo)>0 AS estado 
+                            FROM shared 
+                            LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=@proyecto AND documentos_proyecto.documento=shared.id) 
+                            WHERE shared.nReservado=106 AND (shared.szReservado IS NULL OR shared.szReservado!=-1)
+                            AND (shared.parametro1=@tipo OR (@dotacion=1 AND shared.parametro1 IS NULL))
+                            ORDER BY nombre" 
+                DeleteCommand="DELETE FROM documentos_proyecto WHERE id=@iddocumento">
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="HEvaluacion" Name="proyecto" PropertyName="Value" DefaultValue="0" />
+                    <asp:ControlParameter ControlID="DAdecuacion" Name="tipo" PropertyName="SelectedValue" />
+                    <asp:ControlParameter ControlID="CDotacion" Name="dotacion" PropertyName="Checked" />
+                </SelectParameters>
+            </asp:SqlDataSource></td>
             </tr>
             <tr>
                 <td>Observaciones</td>

@@ -280,26 +280,28 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                     + "<td style='font-weight: bold'>Observaciones</td>"
                 + "</tr>";
 
-        CultureInfo culture = new CultureInfo("en-US");
-
         for (int i = 0; i < RFiltrar.Items.Count; i++)
         {
-            valor += ((DataBoundLiteralControl)RFiltrar.Items[i].Controls[0]).Text.Trim();
-            valor += ((DataBoundLiteralControl)RFiltrar.Items[i].Controls[4]).Text.Trim();
-            valor= valor.Substring(0, valor.Length-4).Trim();
-            
+            valor += "<tr><td>";
+            valor+= ((Label)RFiltrar.Items[i].FindControl("LC")).Text;
+            valor += "</td><td>";
+            valor += ((Label)RFiltrar.Items[i].FindControl("LD")).Text;
+            valor += "</td>";
             string sv= ((TextBox)RFiltrar.Items[i].FindControl("TC")).Text;
             double dv= string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv);
-            valor += "<td align=right>" + string.Format(culture, "{0:0.00}", dv);
+            valor += "<td align=right>" + string.Format("{0:N}", dv);
 
             sv= ((TextBox)RFiltrar.Items[i].FindControl("TU")).Text;
             dv= string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv);
-            valor += "</td><td align=right>" + string.Format(culture, "{0:0,0.##}", dv);
+            valor += "</td><td align=right>" + string.Format("{0:c}", dv);
 
             sv=((TextBox)RFiltrar.Items[i].FindControl("TT")).Text;
             dv= string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv);
-            valor += "</td><td align=right>" + string.Format(culture, "{0:0,0.##}", dv);
-            valor += "</td><td>" + ((TextBox)RFiltrar.Items[i].FindControl("TO")).Text;
+            valor += "</td><td align=right>" + string.Format("{0:c}", dv);
+            string ob= ((TextBox)RFiltrar.Items[i].FindControl("TO")).Text;
+            if (ob.Length == 0)
+                ob = " ";
+            valor += "</td><td>" + ob;
             valor += "</td></tr>";
         }
         valor= valor.Replace("<td", "<td style='border: 1px solid #000;'");

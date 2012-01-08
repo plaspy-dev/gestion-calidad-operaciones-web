@@ -178,7 +178,7 @@
                             <asp:BoundField HeaderText="Capacidad" DataField="capacidad" />
                             <asp:TemplateField HeaderText="Funciona">
                                 <ItemTemplate>
-                                    <asp:CheckBox Enabled="false" runat="server" ID="CF" Checked='<%# Bind("funciona") %>' Text='<%# Eval("funciona").ToString()=="True" ? "Sí" : "No" %>' />
+                                    <asp:CheckBox Enabled="false" runat="server" ID="CF" Checked='<%# Eval("funciona").ToString()=="True" %>' Text='<%# Eval("funciona").ToString()=="True" ? "Sí" : "No" %>' />
                                 </ItemTemplate>                                
                             </asp:TemplateField>
                             <asp:BoundField HeaderText="Afectación" DataField="afectacion" />
@@ -222,10 +222,10 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Funciona">
                                 <EditItemTemplate>
-                                    <asp:CheckBox runat="server" CssClass="cf" ID="CFunciona" Text=" " />
+                                    <asp:CheckBox runat="server" CssClass="cf" ID="CFunciona" Checked='<%# Bind("funciona") %>' Text=" " />
                                 </EditItemTemplate>
                                 <InsertItemTemplate>
-                                    <asp:CheckBox runat="server" CssClass="cf" ID="CFunciona" Text=" " />
+                                    <asp:CheckBox runat="server" CssClass="cf" ID="CFunciona" Checked='<%# Bind("funciona") %>' Text=" " />
                                 </InsertItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField HeaderText="Afectación" DataField="afectacion" />
