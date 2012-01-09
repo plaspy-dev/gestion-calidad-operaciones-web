@@ -124,7 +124,8 @@
         <ItemTemplate>
             <tr t=1>
                 <td>
-                    <asp:Label ID="LC"  runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "szReservado") + "" + DataBinder.Eval(Container.DataItem, "nombre") %>'></asp:Label>
+                    <asp:Label ID="LC" Font-Bold="true" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "szReservado") %>'></asp:Label>
+                    <asp:Label ID="LN" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre") %>'></asp:Label>
                     <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
                     <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
                 </td>
@@ -187,7 +188,7 @@
                     <ItemTemplate>
                         <tr p='<%# DataBinder.Eval(Container.DataItem, "parent").ToString() %>' t=<%# DataBinder.Eval(Container.DataItem, "id") %>>
                             <td <%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "colspan=6" : "" %>>
-                                <%# DataBinder.Eval(Container.DataItem, "szReservado") %> <%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                                <b><%# DataBinder.Eval(Container.DataItem, "szReservado") %></b> <%# DataBinder.Eval(Container.DataItem, "nombre") %>
                                 <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
                                 <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
                             </td>

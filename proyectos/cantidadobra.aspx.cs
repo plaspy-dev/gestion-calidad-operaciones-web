@@ -280,31 +280,35 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                     + "<td style='font-weight: bold'>Observaciones</td>"
                 + "</tr>";
 
+        CultureInfo culture = new CultureInfo("en-US");
+
         for (int i = 0; i < RFiltrar.Items.Count; i++)
         {
-            valor += "<tr><td>";
+            valor += "<tr><td class='nowrap'><b>";
             valor+= ((Label)RFiltrar.Items[i].FindControl("LC")).Text;
+            valor += "</b>";
+            valor += ((Label)RFiltrar.Items[i].FindControl("LN")).Text;
             valor += "</td><td>";
             valor += ((Label)RFiltrar.Items[i].FindControl("LD")).Text;
             valor += "</td>";
             string sv= ((TextBox)RFiltrar.Items[i].FindControl("TC")).Text;
-            double dv= string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv);
+            double dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
             valor += "<td align=right>" + string.Format("{0:N}", dv);
 
             sv= ((TextBox)RFiltrar.Items[i].FindControl("TU")).Text;
-            dv= string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv);
+            dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
             valor += "</td><td align=right>" + string.Format("{0:c}", dv);
 
             sv=((TextBox)RFiltrar.Items[i].FindControl("TT")).Text;
-            dv= string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv);
+            dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
             valor += "</td><td align=right>" + string.Format("{0:c}", dv);
             string ob= ((TextBox)RFiltrar.Items[i].FindControl("TO")).Text;
             if (ob.Length == 0)
                 ob = " ";
-            valor += "</td><td>" + ob;
+            valor += "</td><td class='nowrap'>" + ob;
             valor += "</td></tr>";
         }
-        valor= valor.Replace("<td", "<td style='border: 1px solid #000;'");
+        valor = valor.Replace("<td", "<td style='border: 1px solid #000;vertical-align:middle;'");
         valor += "</table>";
         resultado= resultado.Replace("$RFiltrar$", valor);
 

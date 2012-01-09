@@ -36,7 +36,7 @@
             $("#<%= LCostoIntervencion.ClientID %>").text(currencyFormatted(area.toString()));
             $("#<%= LPTotal.ClientID %>").text(currencyFormatted(pinicial.toString()));
         }
-        $("#<%= TPInicial.ClientID %>").change(Calcular).change();
+        // $("#<%= TPInicial.ClientID %>").change(Calcular).change();
         $("#<%= TAreaAfectada.ClientID %>").change(Calcular).change();
         $("#<%= TPDotacion.ClientID%>").change(Calcular).change();
     });

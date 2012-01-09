@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-08 · Añadir el listado de proyectos.** Incorpora una tabla de proyectos con columnas ordenables y ajusta la selección de registros desde la evaluación. El usuario puede localizar el proyecto que quiere revisar antes de consultar sus detalles.
+**2012-01-09 · Interpretar cantidades con el formato regional.** Usa el formato numérico establecido por la aplicación al convertir cantidades e importes. Los valores escritos en los campos pueden interpretarse con los separadores esperados al generar la evaluación y la tabla.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-08 · Add a project list.** Add a project table with sortable columns and revise record selection from the evaluation screen. Users can locate the project they want before opening its details.
+**2012-01-09 · Parse quantities using the regional number format.** Use the application's number format when converting quantities and monetary values. Inputs can be read with the expected separators when producing the evaluation and table.
 
 ### How to explore the source
 

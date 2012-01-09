@@ -39,7 +39,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 {
                     return;
                 }
-                TPInicial.Text = conector.QueryString("SELECT SUM(vtotal) FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ";");
+                TPInicial.Text = conector.QueryString("SELECT SUM(vtotal) FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ";").Replace(",",".");
 
                 Query query = new Query("evaluacion");
 
@@ -270,7 +270,6 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
 
         Query query = new Query("proyecto");
 
-        query["DContrato"] = "CAST(CONCAT(LPAD(contratos.id,3,'0'),'-',shared.nombre,'-',entidades.nombre,'-',contratos.id,'-',contratos.ano) AS char)";
         query["DDepartamento"] = "departamento.nombre";
         query["LGrupo"] = "departamento.descripcion";
         query["TSede"] = "proyecto.ips";
@@ -281,11 +280,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
 
         MySqlDataReader reader = conector.Query(query.GetSelect("proyecto.id=" + UCProyecto.IdProyecto
             , "LEFT JOIN shared AS departamento ON (departamento.id=proyecto.departamento)"
-            +" LEFT JOIN contratos ON (contratos.id=proyecto.contrato)"
-            + " LEFT JOIN shared ON (shared.id=contratos.unidad)"
-            + " LEFT JOIN entidades ON (entidades.id=contratos.cliente)"
             +" LEFT JOIN shared AS municipio ON (municipio.id=proyecto.municipio)"
-            + " LEFT JOIN shared AS intervencion ON (intervencion.id=proyecto.tintervencion)"
             ));
         if(reader!=null) {
 
@@ -311,17 +306,23 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         resultado = resultado.Replace("$szCompleta$", completa ? "X" : "");
         resultado = resultado.Replace("$szTramite$", completa ? "" : "X");
 
-        double pinicial = string.IsNullOrEmpty(TPInicial.Text) ? 0 : Convert.ToDouble(TPInicial.Text.Replace(",", ""));
-        double area = string.IsNullOrEmpty(TAreaAfectada.Text) ? 0 : Convert.ToDouble(TAreaAfectada.Text.Replace(",", ""));
-        double pdotacion = string.IsNullOrEmpty(TPDotacion.Text) ? 0 : Convert.ToDouble(TPDotacion.Text.Replace(",", ""));
+        CultureInfo culture = new CultureInfo("en-US");
+
+        double pinicial = string.IsNullOrEmpty(TPInicial.Text) ? 0 : Convert.ToDouble(TPInicial.Text, culture.NumberFormat);
+        double area = string.IsNullOrEmpty(TAreaAfectada.Text) ? 0 : Convert.ToDouble(TAreaAfectada.Text, culture.NumberFormat);
+        double pdotacion = string.IsNullOrEmpty(TPDotacion.Text) ? 0 : Convert.ToDouble(TPDotacion.Text, culture.NumberFormat);
         double total = pinicial + pdotacion;
+        double aiu = total * .32;
+        total += aiu; // le agregamos el AIU
 
         resultado = resultado.Replace("$sTPInicial$", string.Format("{0:c}", pinicial));
         resultado = resultado.Replace("$sTPDotacion$", string.Format("{0:c}", pdotacion));
+        resultado = resultado.Replace("$sAIU$", string.Format("{0:c}", aiu));        
 
         resultado = resultado.Replace("$szTotal$", string.Format("{0:c}", total));
         resultado = resultado.Replace("$pvalor$", string.Format("{0:N}", total != 0 ? pinicial * 100 / total : 0));
         resultado = resultado.Replace("$pdotacion$", string.Format("{0:N}", total != 0 ? pdotacion * 100 / total : 0));
+        resultado = resultado.Replace("$paiu$", string.Format("{0:N}", total != 0 ? aiu * 100 / total : 0));
         resultado = resultado.Replace("$szCostoIntervencion$", string.Format("{0:c}", area != 0 ? total / area : 0));
 
         Response.Clear();

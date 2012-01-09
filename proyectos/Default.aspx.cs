@@ -12,7 +12,7 @@ public partial class proyectos_Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        ((MasterPageI)Master)._ImprimirClicked+= new EventHandler(OnImprimir);
+        // ((MasterPageI)Master)._ImprimirClicked+= new EventHandler(OnImprimir);
 
         if (Request.QueryString["idp"] != null)
         {
@@ -53,7 +53,7 @@ public partial class proyectos_Default : System.Web.UI.Page
                 MySqlDataReader reader = conector.Query(query.GetSelect("id='" + Request.QueryString["idp"] + "'"));
                 if(reader!=null && reader.Read()) {
 
-                    ((MasterPageI)Master).Imprimir("~/imprimir/proyecto.htm");
+                    // ((MasterPageI)Master).Imprimir("~/imprimir/proyecto.htm");
 
                     HProyecto.Value = Request.QueryString["idp"];
                     BAceptar.Enabled = ((CUsuario)usuario).CanUpdate(HProyecto.Value);
