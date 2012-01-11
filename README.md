@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-09 · Interpretar cantidades con el formato regional.** Usa el formato numérico establecido por la aplicación al convertir cantidades e importes. Los valores escritos en los campos pueden interpretarse con los separadores esperados al generar la evaluación y la tabla.
+**2012-01-11 · Ajustar la selección de adecuación y de obra.** Revisa el evento que responde a cambios en el selector de adecuación y ajusta la consulta de cantidades vinculadas con una intervención e institución. Las vistas pueden cargar los datos asociados a la selección actual.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-09 · Parse quantities using the regional number format.** Use the application's number format when converting quantities and monetary values. Inputs can be read with the expected separators when producing the evaluation and table.
+**2012-01-11 · Update renovation and work item selection.** Revise the renovation selector change handler and the work quantities lookup for an intervention and institution. The views can load data associated with the current selection.
 
 ### How to explore the source
 

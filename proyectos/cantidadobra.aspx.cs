@@ -315,23 +315,23 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
 
         Query query = new Query("proyecto");
 
-        query["DContrato"] = "CAST(CONCAT(LPAD(contratos.id,3,'0'),'-',shared.nombre,'-',entidades.nombre,'-',contratos.id,'-',contratos.ano) AS char)";
         query["DDepartamento"] = "departamento.nombre";
         query["LGrupo"] = "departamento.descripcion";
         query["TSede"] = "proyecto.ips";
         query["DMunicipio"] = "municipio.nombre";
         query["TFVisita"] = "proyecto.visita";
-        query["TObjeto"] = "evaluacion.objeto";
+        query["TObjeto"] = "REPLACE(intervencion.descripcion,'{0}',institucion.nombre)";
+        query["sCoordinador"] = "REPLACE(grupo.descripcion,'\\\\n', '<br/>')";
 
         CConector conector = new CConector();
 
         MySqlDataReader reader = conector.Query(query.GetSelect("proyecto.id=" + UCProyecto.IdProyecto
             , "LEFT JOIN shared AS departamento ON (departamento.id=proyecto.departamento)"
-            + " LEFT JOIN contratos ON (contratos.id=proyecto.contrato)"
-            + " LEFT JOIN shared ON (shared.id=contratos.unidad)"
-            + " LEFT JOIN entidades ON (entidades.id=contratos.cliente)"
             + " LEFT JOIN shared AS municipio ON (municipio.id=proyecto.municipio)"
             + " LEFT JOIN evaluacion ON (evaluacion.proyecto=proyecto.id)"
+            + " LEFT JOIN shared AS intervencion ON (intervencion.id=evaluacion.adecuacion)"
+            + " LEFT JOIN shared AS institucion ON (institucion.id=proyecto.tinstitucion)"
+            +" LEFT JOIN shared AS grupo ON (grupo.nReservado=100 AND grupo.nombre=departamento.descripcion) "
             ));
         if (reader != null)
         {

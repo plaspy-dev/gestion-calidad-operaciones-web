@@ -114,7 +114,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     TOtros.Text = reader["otros"].ToString();
                     TAreaAfectada.Text = reader["area_afectada"].ToString().Replace(",", ".");
                     TPDotacion.Text = reader["presupuesto_dotacion"].ToString().Replace(",", ".");
-                    CDotacion_CheckedChanged(sender, e);
+                    DAdecuacion_SelectedIndexChanged(sender, e);
                     // CViable.Checked = reader["viable"].ToString() == "1";
                 }
             }
@@ -275,12 +275,14 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         query["TSede"] = "proyecto.ips";
         query["DMunicipio"] = "municipio.nombre";
         query["TFVisita"] = "proyecto.visita";
+        query["sCoordinador"] = "REPLACE(grupo.descripcion,'\\\\n', '<br/>')";
 
         CConector conector = new CConector();
 
         MySqlDataReader reader = conector.Query(query.GetSelect("proyecto.id=" + UCProyecto.IdProyecto
             , "LEFT JOIN shared AS departamento ON (departamento.id=proyecto.departamento)"
             +" LEFT JOIN shared AS municipio ON (municipio.id=proyecto.municipio)"
+            + " LEFT JOIN shared AS grupo ON (grupo.nReservado=100 AND grupo.nombre=departamento.descripcion) "
             ));
         if(reader!=null) {
 
@@ -311,18 +313,24 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         double pinicial = string.IsNullOrEmpty(TPInicial.Text) ? 0 : Convert.ToDouble(TPInicial.Text, culture.NumberFormat);
         double area = string.IsNullOrEmpty(TAreaAfectada.Text) ? 0 : Convert.ToDouble(TAreaAfectada.Text, culture.NumberFormat);
         double pdotacion = string.IsNullOrEmpty(TPDotacion.Text) ? 0 : Convert.ToDouble(TPDotacion.Text, culture.NumberFormat);
-        double total = pinicial + pdotacion;
-        double aiu = total * .32;
-        total += aiu; // le agregamos el AIU
+        double total = pinicial;
+        double aiu = total * 0.32;
+        double imprevistos = total * 0.08;
+        double cantidadesobra = total * 0.07;
+        total += pdotacion + aiu + imprevistos+ cantidadesobra;
 
         resultado = resultado.Replace("$sTPInicial$", string.Format("{0:c}", pinicial));
         resultado = resultado.Replace("$sTPDotacion$", string.Format("{0:c}", pdotacion));
-        resultado = resultado.Replace("$sAIU$", string.Format("{0:c}", aiu));        
+        resultado = resultado.Replace("$sAIU$", string.Format("{0:c}", aiu));
+        resultado = resultado.Replace("$sImprevistos$", string.Format("{0:c}", imprevistos));
+        resultado = resultado.Replace("$sMayorCantidad$", string.Format("{0:c}", cantidadesobra));
 
         resultado = resultado.Replace("$szTotal$", string.Format("{0:c}", total));
         resultado = resultado.Replace("$pvalor$", string.Format("{0:N}", total != 0 ? pinicial * 100 / total : 0));
         resultado = resultado.Replace("$pdotacion$", string.Format("{0:N}", total != 0 ? pdotacion * 100 / total : 0));
         resultado = resultado.Replace("$paiu$", string.Format("{0:N}", total != 0 ? aiu * 100 / total : 0));
+        resultado = resultado.Replace("$pImprevistos$", string.Format("{0:N}", total != 0 ? imprevistos * 100 / total : 0));
+        resultado = resultado.Replace("$pMayorCantidad$", string.Format("{0:N}", total != 0 ? cantidadesobra * 100 / total : 0));
         resultado = resultado.Replace("$szCostoIntervencion$", string.Format("{0:c}", area != 0 ? total / area : 0));
 
         Response.Clear();
@@ -330,17 +338,11 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         Response.End();
     }
 
-    protected void CDotacion_CheckedChanged(object sender, EventArgs e)
-    {
-        CConector conector = new CConector();
-        string institucion= conector.QueryString("SELECT shared.nombre FROM proyecto LEFT JOIN shared ON (shared.id=proyecto.tinstitucion) WHERE proyecto.id='" + UCProyecto.IdProyecto + "'");
-        string dotacion = CDotacion.Checked ? " Y DOTACIÓN " : "";
-        string objeto = conector.QueryString("SELECT descripcion FROM shared WHERE id='" + DAdecuacion.SelectedValue + "'");
-        LObjeto.Text = string.Format(objeto, dotacion, institucion);
-    }
-
     protected void DAdecuacion_SelectedIndexChanged(object sender, EventArgs e)
     {
-        CDotacion_CheckedChanged(sender, e);
+        CConector conector = new CConector();
+        string institucion = conector.QueryString("SELECT shared.nombre FROM proyecto LEFT JOIN shared ON (shared.id=proyecto.tinstitucion) WHERE proyecto.id='" + UCProyecto.IdProyecto + "'");
+        string objeto = conector.QueryString("SELECT descripcion FROM shared WHERE id='" + DAdecuacion.SelectedValue + "'");
+        LObjeto.Text = string.Format(objeto, institucion);
     }
 }
