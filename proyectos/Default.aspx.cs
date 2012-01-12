@@ -23,6 +23,7 @@ public partial class proyectos_Default : System.Web.UI.Page
         {
             Usuario usuario = Usuario.GetUsuario();
             BAceptar.Enabled = usuario.CanInsert();
+            BEliminar.Visible = usuario.CanDelete();
             ((MasterPageI)Master).SetModificacion(Request.QueryString["idp"]);
 
             if (Request.QueryString["idp"] != null)
@@ -216,5 +217,21 @@ public partial class proyectos_Default : System.Web.UI.Page
         Response.Clear();
         Response.Write(resultado);
         Response.End();
+    }
+    protected void BEliminar_Click(object sender, EventArgs e)
+    {
+        CConector conector= new CConector();
+        if (conector.QueryMod("DELETE FROM proyecto WHERE id=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM esquema_establecimiento_evaluacion WHERE id=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM registro_fotografico_proyecto WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM evaluacion WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM cantidades_obra WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM reubicacion_evaluacion WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM exteriores_evaluacion WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM documentos_proyecto WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM evaluacion_elemento_afectado WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
+        if (conector.QueryMod("DELETE FROM evaluacion_servicios WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
+        ((MasterPageI)Master).SetParametros("?idp=" + HProyecto.Value);
+        ((MasterPageI)Master).SetResultado(TNombre.Text + " eliminado");
     }
 }

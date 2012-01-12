@@ -21,29 +21,29 @@
             $(elemento).children("td").first().css("text-indent", indent);
             var hijos = $(elemento).next().attr("p") == $(elemento).attr("t");
 
-            if ($(elemento).attr("p") == '0' || hijos) { // tiene hijos
+            if ($(elemento).attr("p") == "0" || hijos) { // tiene hijos
 
                 $("<span></span>")
 				    .addClass("ui-icon " + (hijos ? "ui-icon-triangle-1-s" : "ui-icon-triangle-1-e"))
-				    .prependTo($(elemento).children("td"));
+				    .prependTo($(elemento).children("td").first());
 
-                $(elemento).children("td").addClass("ui-accordion-header ui-helper-reset " + (hijos ? "ui-state-active ui-corner-top" : "ui-state-default ui-corner-all"));
+                $(elemento).children("td").first().addClass("ui-accordion-header ui-helper-reset " + (hijos ? "ui-state-active ui-corner-top" : "ui-state-default ui-corner-all"));
                 $(elemento).hover(function() {
-                    $(this).children("td").addClass("ui-state-hover");
+                    $(this).children("td").first().addClass("ui-state-hover");
                 }, function() {
-                    $(this).children("td").removeClass("ui-state-hover");
+                    $(this).children("td").first().removeClass("ui-state-hover");
                 });
                 if (hijos) {
                     nactual++;
                     for (; nactual < len; nactual++) {
                         var e = arreglo[nactual];
-                        if (e.p == elemento.p || e.p != elemento.t) { // tiene el mismo padre
+                        if ($(e).attr("p") == $(elemento).attr("p") || $(e).attr("p") != $(elemento).attr("t")) { // tiene el mismo padre
                             nactual--;
                             break;
                         }
-                        esconder(e, indent + 20);
+                        esconder(e, indent + 10);
                     };
-                    if ($(elemento).attr("p") == '0') {  // es el seleccionado
+                    if ($(elemento).attr("p") == "0") {  // es el seleccionado
                         $("html:not(:animated),body:not(:animated)").animate({ scrollTop: $(elemento).offset().top }, 1100);
                     }
                 }
@@ -78,12 +78,12 @@
         }
 
         function inicio() {
-            arreglo = $('#elementos tr');
+            arreglo = $('#elementos > tbody > tr');
             len = arreglo.length;
             nactual = 1;
             for (; nactual < len; nactual++) {
                 var e = arreglo[nactual];
-                esconder(e, 10);
+                esconder(e, 15);
             };
             $(".ft").change(function() {
                 calcular("#" + $(this).attr("id").replace(/TC/g, "TT").toString());
@@ -99,7 +99,7 @@
         $('#<%=UCantidad.ClientID%>').panelUpdated(function() {
 
             inicio();
-            $("#<%= LFiltro.ClientID %>").click(function() { return confirm('Esta acción revertira todos los cambios realizados. ¿Desea continuar?'); });
+            $("#<%= LFiltro.ClientID %>").unbind('click').click(function() { return confirm('Esta acción revertira todos los cambios realizados. ¿Desea continuar?'); });
         });
         inicio();
     });
@@ -119,31 +119,38 @@
                     <td>Vr. unitario</td>
                     <td>Vr. total</td>
                     <td>Observaciones</td>
+                    <td>Total Capítulo</td>
                 </tr>
         </HeaderTemplate>
         <ItemTemplate>
-            <tr t=1>
-                <td>
-                    <asp:Label ID="LC" Font-Bold="true" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "szReservado") %>'></asp:Label>
-                    <asp:Label ID="LN" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre") %>'></asp:Label>
-                    <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
-                    <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
+            <tr p='<%# DataBinder.Eval(Container.DataItem, "parent").ToString() %>' t=<%# DataBinder.Eval(Container.DataItem, "id") %>>
+                <td <%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "colspan=7" : "" %>>
+                    <table width=100%><tr><td style="width:100%;">
+                        <asp:Label ID="LC" Font-Bold="true" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "szReservado") %>'></asp:Label>
+                        <asp:Label ID="LN" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre") %>'></asp:Label>
+                        </td><td align=right nowrap=nowrap>
+                            <asp:Label ID="LT" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "total", "{0:c}") %>' Visible='<%# DataBinder.Eval(Container.DataItem, "parent").ToString()=="0" %>'></asp:Label>
+                    </td></tr></table>
                 </td>
-                <td>
-                    <asp:Label ID="LD"  runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "descripcion") %>'></asp:Label>
-                </td>
-                <td>
-                    <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad").ToString().Replace(",", ".") %>'></asp:TextBox>
-                </td>
-                <td>
-                    <asp:TextBox runat="server" ID="TU" CssClass="dt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
-                </td>
-                <td>
-                    <asp:TextBox runat="server" ID="TT" CssClass="tt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
-                </td>
-                <td>
-                    <asp:TextBox runat="server" ID="TO" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
-                </td>
+                <asp:Panel runat="server" ID="S" Visible='<%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))==0 %>'>
+                    <td>
+                        <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
+                        <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
+                        <asp:Label ID="LD"  runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "descripcion") %>'></asp:Label>
+                    </td>
+                    <td>
+                        <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad").ToString().Replace(",", ".") %>'></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:TextBox runat="server" ID="TU" CssClass="dt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vunitario").ToString().Replace(",", ".") %>'></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:TextBox runat="server" ID="TT" CssClass="tt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
+                    </td>
+                    <td colspan=2>
+                        <asp:TextBox runat="server" Width="95%" ID="TO" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
+                    </td>
+                </asp:Panel>
             </tr>
         </ItemTemplate>
         <FooterTemplate>
@@ -153,11 +160,19 @@
     <asp:SqlDataSource ID="SFiltrar" runat="server" 
         ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-        SelectCommand="SELECT shared.id, shared.nombre, shared.descripcion,shared.szReservado
+        SelectCommand="SELECT elemento.id, elemento.nombre, elemento.descripcion,elemento.szReservado,IFNULL(elemento.parametro1,0) AS parent
                         ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
-                        FROM shared 
-                        LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=shared.id AND cantidades_obra.proyecto=@proyecto)
-                        WHERE shared.nReservado=122 AND shared.szReservado!=-1 AND cantidades_obra.cantidad IS NOT NULL ORDER BY GetCodigo(shared.szReservado)">
+                        ,cantidades_obra.elemento!=elemento.id AS hijos
+                        ,(SELECT IFNULL(SUM(cantidades_obra.vtotal),0) FROM cantidades_obra LEFT JOIN shared AS e ON (e.id=cantidades_obra.elemento) WHERE cantidades_obra.proyecto=@proyecto AND e.szReservado LIKE CONCAT(elemento.szReservado,'%')) AS total
+                        FROM cantidades_obra 
+                        LEFT JOIN shared AS elemento ON 
+                        (elemento.nReservado=122 AND elemento.szReservado!=-1 AND (SELECT LEFT(shared.szReservado,LENGTH(elemento.szReservado))=elemento.szReservado FROM shared WHERE id=cantidades_obra.elemento))
+                        WHERE cantidades_obra.proyecto=@proyecto
+                        AND elemento.id IS NOT NULL
+                        AND (cantidades_obra.cantidad IS NOT NULL 
+                        OR cantidades_obra.vunitario IS NOT NULL)
+                        GROUP BY elemento.id
+                        ORDER BY GetCodigo(elemento.szReservado)">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
                     </SelectParameters>
@@ -175,26 +190,29 @@
                     <td>Vr. unitario</td>
                     <td>Vr. total</td>
                     <td>Observaciones</td>
+                    <td>Total Capítulo</td>
                 </tr>
         </HeaderTemplate>
         <ItemTemplate>
             <tr p=0 t=<%# DataBinder.Eval(Container.DataItem, "id") %>>
-                <td colspan=6>
+                <td colspan=7>
+                    <table width=100%><tr><td width=100%>
                     <asp:LinkButton CommandName='<%# DataBinder.Eval(Container.DataItem, "cap") %>' CommandArgument='<%# DataBinder.Eval(Container.DataItem, "id") %>' runat="server" ID="LCapitulo" OnClick="LCapitulo_Click"
                         Text='<%# DataBinder.Eval(Container.DataItem, "nombre") %>'></asp:LinkButton>
+                    </td><td align=right nowrap=nowrap><%# DataBinder.Eval(Container.DataItem, "total", "{0:c}") %></td></tr></table>
                 </td>
             </tr>
             <asp:Repeater runat="server" ID="R" DataSourceID="SHijos" onitemdatabound="R_ItemDataBound">
                     <ItemTemplate>
                         <tr p='<%# DataBinder.Eval(Container.DataItem, "parent").ToString() %>' t=<%# DataBinder.Eval(Container.DataItem, "id") %>>
-                            <td <%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "colspan=6" : "" %>>
+                            <td <%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "colspan=7" : "" %>>
                                 <b><%# DataBinder.Eval(Container.DataItem, "szReservado") %></b> <%# DataBinder.Eval(Container.DataItem, "nombre") %>
-                                <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
-                                <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
                             </td>
                             <asp:Panel runat="server" ID="S" Visible='<%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))==0 %>'>
                                 <td>
                                     <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
+                                    <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
+                                    <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
                                 </td>
                                 <td>
                                     <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad").ToString().Replace(",", ".") %>'></asp:TextBox>
@@ -205,8 +223,8 @@
                                 <td>
                                     <asp:TextBox runat="server" ID="TT" CssClass="tt" Width="80px" Text='<%# DataBinder.Eval(Container.DataItem, "vtotal").ToString().Replace(",", ".") %>'></asp:TextBox>
                                 </td>
-                                <td>
-                                    <asp:TextBox runat="server" ID="TO" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
+                                <td colspan=2>
+                                    <asp:TextBox runat="server" Width="95%" ID="TO" Text='<%# DataBinder.Eval(Container.DataItem, "observaciones") %>'></asp:TextBox>
                                 </td>
                             </asp:Panel>
                         </tr>
@@ -237,7 +255,14 @@
     <asp:SqlDataSource ID="SElementos" runat="server" 
         ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-        SelectCommand="SELECT shared.id, shared.szReservado AS cap, CONCAT(shared.szReservado, ' ',shared.nombre) AS nombre FROM shared WHERE shared.nReservado=122 AND shared.szReservado!=-1 AND shared.parametro1 IS NULL ORDER BY GetCodigo(shared.szReservado)">
+        SelectCommand="SELECT shared.id, shared.szReservado AS cap, CONCAT(shared.szReservado, ' ',shared.nombre) AS nombre 
+                        ,(SELECT IFNULL(SUM(cantidades_obra.vtotal),0) FROM cantidades_obra LEFT JOIN shared AS elemento ON (elemento.id=cantidades_obra.elemento) WHERE cantidades_obra.proyecto=@proyecto AND elemento.szReservado LIKE CONCAT(shared.szReservado,'%')) AS total
+                        FROM shared 
+                        WHERE shared.nReservado=122 AND shared.szReservado!=-1 
+                        AND shared.parametro1 IS NULL ORDER BY GetCodigo(shared.szReservado)">
+                        <SelectParameters>
+                            <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
+                        </SelectParameters>
     </asp:SqlDataSource>
     </ContentTemplate>
     </asp:UpdatePanel>

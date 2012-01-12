@@ -252,6 +252,10 @@
         <tr>
             <td align="right">
                 <asp:ValidationSummary ID="ValidationSummary1" runat="server" ShowMessageBox="true" />
+                <asp:Button ID="BEliminar" runat="server" Text="Eliminar" 
+                    CausesValidation="false" 
+                    OnClientClick="return confirm('¿Esta seguro de eliminar este proyecto?')" 
+                    onclick="BEliminar_Click" />
                 <asp:Button ID="BAceptar" runat="server" Text="Aceptar" onclick="BAceptar_Click" />
                 <asp:Button ID="BCancelar" runat="server" CausesValidation="false" Text="Cancelar" onclick="BCancelar_Click" />
             </td>

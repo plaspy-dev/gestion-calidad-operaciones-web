@@ -207,6 +207,8 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
         {
             for (int i = 0; i < RFiltrar.Items.Count; i++)
             {
+                if (!((Panel)RFiltrar.Items[i].FindControl("S")).Visible)
+                    continue;
                 Query query = new Query("cantidades_obra");
                 HiddenField hid = (HiddenField)RFiltrar.Items[i].FindControl("HC");
 
@@ -278,35 +280,59 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                     + "<td style='font-weight: bold'>Vr. unitario</td>"
                     + "<td style='font-weight: bold'>Vr. total</td>"
                     + "<td style='font-weight: bold'>Observaciones</td>"
+                    + "<td style='font-weight: bold'>Total Capítulo</td>"
                 + "</tr>";
 
         CultureInfo culture = new CultureInfo("en-US");
 
         for (int i = 0; i < RFiltrar.Items.Count; i++)
         {
-            valor += "<tr><td class='nowrap'><b>";
-            valor+= ((Label)RFiltrar.Items[i].FindControl("LC")).Text;
-            valor += "</b>";
-            valor += ((Label)RFiltrar.Items[i].FindControl("LN")).Text;
-            valor += "</td><td>";
-            valor += ((Label)RFiltrar.Items[i].FindControl("LD")).Text;
-            valor += "</td>";
-            string sv= ((TextBox)RFiltrar.Items[i].FindControl("TC")).Text;
-            double dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
-            valor += "<td align=right>" + string.Format("{0:N}", dv);
+            string codigo = ((Label)RFiltrar.Items[i].FindControl("LC")).Text;
+            int ancho = 50;// +codigo.Split('.').Length * 10;
 
-            sv= ((TextBox)RFiltrar.Items[i].FindControl("TU")).Text;
-            dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
-            valor += "</td><td align=right>" + string.Format("{0:c}", dv);
+            if(((Panel)RFiltrar.Items[i].FindControl("S")).Visible) {
+   
+                valor += "<tr><td class='nowrap'>";
+                valor += "<table><tr><TD width=" + ancho + " style='vertical-align: middle;'><b>";
+                valor+= codigo;
+                valor += "</b>";
+                valor += "</td><TD class='nowrap'>";
+                valor += ((Label)RFiltrar.Items[i].FindControl("LN")).Text;
+                valor += "</td></tr></table>";
+                valor += "</td><td>";
+                valor += ((Label)RFiltrar.Items[i].FindControl("LD")).Text;
+                valor += "</td>";
+                string sv= ((TextBox)RFiltrar.Items[i].FindControl("TC")).Text;
+                double dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
+                valor += "<td align=right>" + string.Format("{0:N}", dv);
 
-            sv=((TextBox)RFiltrar.Items[i].FindControl("TT")).Text;
-            dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
-            valor += "</td><td align=right>" + string.Format("{0:c}", dv);
-            string ob= ((TextBox)RFiltrar.Items[i].FindControl("TO")).Text;
-            if (ob.Length == 0)
-                ob = " ";
-            valor += "</td><td class='nowrap'>" + ob;
-            valor += "</td></tr>";
+                sv= ((TextBox)RFiltrar.Items[i].FindControl("TU")).Text;
+                dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
+                valor += "</td><td align=right>" + string.Format("{0:c}", dv);
+
+                sv=((TextBox)RFiltrar.Items[i].FindControl("TT")).Text;
+                dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
+                valor += "</td><td align=right>" + string.Format("{0:c}", dv);
+                string ob= ((TextBox)RFiltrar.Items[i].FindControl("TO")).Text;
+                if (ob.Length == 0)
+                    ob = " ";
+                valor += "</td><td class='nowrap' colspan=2>" + ob;
+                valor += "</td></tr>";
+            } else {
+                string color = ((Label)RFiltrar.Items[i].FindControl("LT")).Visible ? "#CCCCCC" : "#EEEEEE";
+                valor += "<tr bgcolor=" + color + "><td colspan=7 class='nowrap'>";
+                valor += "<table width=100%><tr><TD width="+ ancho +  " style='min-width:" + ancho + "'><b>";
+                valor += codigo;
+                valor += "</b></td><TD width=100%><b>";
+                valor += ((Label)RFiltrar.Items[i].FindControl("LN")).Text;
+                if (((Label)RFiltrar.Items[i].FindControl("LT")).Visible)
+                {
+                    valor += "</b></td><TD align=right nowrap=nowrap><b>";
+                    valor += ((Label)RFiltrar.Items[i].FindControl("LT")).Text;
+                }
+                valor += "</b></td></tr></table>";
+                valor += "</td><tr>";
+            }
         }
         valor = valor.Replace("<td", "<td style='border: 1px solid #000;vertical-align:middle;'");
         valor += "</table>";
@@ -320,8 +346,9 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
         query["TSede"] = "proyecto.ips";
         query["DMunicipio"] = "municipio.nombre";
         query["TFVisita"] = "proyecto.visita";
-        query["TObjeto"] = "REPLACE(intervencion.descripcion,'{0}',institucion.nombre)";
+        query["LObjeto"] = "REPLACE(intervencion.descripcion,'{0}',institucion.nombre)";
         query["sCoordinador"] = "REPLACE(grupo.descripcion,'\\\\n', '<br/>')";
+        query["sLocalidad"] = "proyecto.nombre_localidad";
 
         CConector conector = new CConector();
 

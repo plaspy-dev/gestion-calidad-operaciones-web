@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-11 · Ajustar la selección de adecuación y de obra.** Revisa el evento que responde a cambios en el selector de adecuación y ajusta la consulta de cantidades vinculadas con una intervención e institución. Las vistas pueden cargar los datos asociados a la selección actual.
+**2012-01-12 · Añadir borrado controlado y ajustar cantidades.** Incorpora la comprobación de borrado en la portada y ajusta los controles de cantidades para el proyecto. El flujo puede verificar el permiso antes de retirar un registro y mostrar los campos que quedaron disponibles.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-11 · Update renovation and work item selection.** Revise the renovation selector change handler and the work quantities lookup for an intervention and institution. The views can load data associated with the current selection.
+**2012-01-12 · Add controlled deletion and revise quantities.** Add a deletion check on the homepage and adjust project quantity controls. The workflow can check permission before removing a record and display the available fields.
 
 ### How to explore the source
 

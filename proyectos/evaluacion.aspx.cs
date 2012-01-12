@@ -276,6 +276,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         query["DMunicipio"] = "municipio.nombre";
         query["TFVisita"] = "proyecto.visita";
         query["sCoordinador"] = "REPLACE(grupo.descripcion,'\\\\n', '<br/>')";
+        query["sLocalidad"] = "proyecto.nombre_localidad";
 
         CConector conector = new CConector();
 
