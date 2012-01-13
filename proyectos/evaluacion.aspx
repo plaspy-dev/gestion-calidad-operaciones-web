@@ -102,7 +102,7 @@
                     <asp:SqlDataSource ID="SReubicacion" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="(SELECT shared.id AS id, shared.nombre AS nombre,reubicacion_evaluacion.id AS idreubicacion,reubicacion_evaluacion.estado AS estado FROM shared LEFT JOIN reubicacion_evaluacion ON (reubicacion_evaluacion.proyecto=@evaluacion AND reubicacion_evaluacion.reubicacion=shared.id) WHERE shared.nReservado=109 AND shared.szReservado IS NULL) UNION (SELECT 0 AS id,'VIABLE' AS nombre, 0 AS idreubicacion,(SELECT viable FROM evaluacion WHERE proyecto=@evaluacion) AS estado)" >
+                    SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,reubicacion_evaluacion.id AS idreubicacion,reubicacion_evaluacion.estado AS estado FROM shared LEFT JOIN reubicacion_evaluacion ON (reubicacion_evaluacion.proyecto=@evaluacion AND reubicacion_evaluacion.reubicacion=shared.id) WHERE shared.nReservado=109 AND shared.szReservado IS NULL" >
                     <SelectParameters>
                         <asp:ControlParameter ControlID="HEvaluacion" Name="evaluacion" PropertyName="Value" DefaultValue="0" />
                     </SelectParameters>
@@ -120,7 +120,7 @@
                     <asp:TextBox runat="server" CssClass="float" ID="TAreaAfectada"></asp:TextBox></td>
             </tr>
             <tr>
-                <td>
+                <td nowrap="nowrap">
                     Costo intervención (m<sup>2</sup>)</td>
                 <td align="right">
                     <asp:Label ID="LCostoIntervencion" runat="server" Text=""></asp:Label></td>
@@ -365,7 +365,7 @@
             </tr>
             <tr>
                 <td colspan="4">
-                <asp:GridView ID="GDocumentos" runat="server" AutoGenerateColumns="False" 
+                <asp:GridView ID="GDocumentos" runat="server" AutoGenerateColumns="False" Width="100%"
                     DataSourceID="SDocumentos" DataKeyNames="id,iddocumento" 
                         onselectedindexchanged="GDocumentos_SelectedIndexChanged">
                     <RowStyle CssClass="GridRow"></RowStyle>
@@ -385,10 +385,15 @@
                                 <asp:ImageButton ID="IDelete" Visible='<%# Eval("estado").ToString()=="1" %>' runat="server" CausesValidation="False" CommandName="Delete" ImageUrl="~/imgs/eliminar.gif" Text="Eliminar" />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:BoundField HeaderText="Documento" DataField="nombre" />
+                        <asp:BoundField HeaderText="Documento" DataField="nombre" ItemStyle-Wrap="false" />
                         <asp:TemplateField HeaderText="Archivo">
                             <ItemTemplate>
                                 <asp:FileUpload ID="FArchivo" runat="server" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Observaciones" ItemStyle-Width="100%">
+                            <ItemTemplate>
+                                <asp:TextBox runat="server" Width="98%" ID="TObservaciones" Text='<%# Bind("observaciones") %>'></asp:TextBox>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
@@ -397,6 +402,7 @@
                 ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                 ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
                 SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,documentos_proyecto.id AS iddocumento,LENGTH(documentos_proyecto.archivo)>0 AS estado 
+                            ,documentos_proyecto.observaciones
                             FROM shared 
                             LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=@proyecto AND documentos_proyecto.documento=shared.id) 
                             WHERE shared.nReservado=106 AND (shared.szReservado IS NULL OR shared.szReservado!=-1)

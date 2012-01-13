@@ -151,15 +151,24 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                 {
                     BAceptar.Enabled = usuario.CanInsert();
                     PDatos.Visible = true;
+                    TImprevistos.Text = conector.QueryString("SELECT imprevistos FROM evaluacion WHERE proyecto='" + UCProyecto.IdProyecto + "'");
+                    if (TImprevistos.Text.Length == 0)
+                        TImprevistos.Text = "0";
                     string total= conector.QueryString("SELECT SUM(vtotal) FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ";");
                     CultureInfo culture = new CultureInfo("en-US");
                     if (total.Length > 0)
                     {
                         LFiltro.Visible = true;
                         ((MasterPageI)Master).Imprimir("~/imprimir/cantidad.htm");
-                        LTotal.Text = String.Format(culture, "{0:c}", Convert.ToDouble(total));
+                        double dTotal=Convert.ToDouble(total);
+                        LSubTotal.Text = String.Format(culture, "{0:c}", dTotal);
+                        LImprevistos.Text = String.Format(culture, "{0:c}", dTotal*Convert.ToDouble(TImprevistos.Text)/100);
+                        dTotal+= dTotal*Convert.ToDouble(TImprevistos.Text)/100;
+                        LTotal.Text = String.Format(culture, "{0:c}", dTotal);
                     } else {
                         LFiltro.Visible = conector.QueryString("SELECT COUNT(*) FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + " AND (cantidad IS NOT NULL OR vunitario IS NOT NULL);") != "0";
+                        LSubTotal.Text = String.Format(culture, "{0:c}", 0.0);
+                        LImprevistos.Text = String.Format(culture, "{0:c}", 0.0);
                         LTotal.Text = String.Format(culture, "{0:c}", 0.0);
                     }
                 }
@@ -190,6 +199,7 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
     protected void BAceptar_Click(object sender, EventArgs e)
     {
         CConector conector = new CConector();
+
         if (E.Visible)
         {
             Hashtable tabla = (Hashtable)Session["Elementos"];
@@ -232,7 +242,7 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                 }
             }
         }
-        if (conector.QueryMod("UPDATE evaluacion SET presupuesto_inicial=(SELECT SUM(vtotal) FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ") WHERE proyecto=" + UCProyecto.IdProyecto + ";") == -1)
+        if (conector.QueryMod("UPDATE evaluacion SET imprevistos=" + TImprevistos.Text + ",presupuesto_inicial=(SELECT SUM(vtotal)*(" + TImprevistos.Text + "+100)/100 FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ") WHERE proyecto=" + UCProyecto.IdProyecto + ";") == -1)
             return;
         if (conector.InsertModificacionWeb(UCProyecto.IdProyecto) == -1)
             return;

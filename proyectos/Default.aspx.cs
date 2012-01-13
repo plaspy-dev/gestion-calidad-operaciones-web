@@ -231,7 +231,7 @@ public partial class proyectos_Default : System.Web.UI.Page
         if (conector.QueryMod("DELETE FROM documentos_proyecto WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
         if (conector.QueryMod("DELETE FROM evaluacion_elemento_afectado WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
         if (conector.QueryMod("DELETE FROM evaluacion_servicios WHERE proyecto=" + HProyecto.Value + ";") == -1) return;
-        ((MasterPageI)Master).SetParametros("?idp=" + HProyecto.Value);
+
         ((MasterPageI)Master).SetResultado(TNombre.Text + " eliminado");
     }
 }

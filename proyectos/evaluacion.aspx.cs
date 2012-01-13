@@ -39,7 +39,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 {
                     return;
                 }
-                TPInicial.Text = conector.QueryString("SELECT SUM(vtotal) FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ";").Replace(",",".");
+                TPInicial.Text = conector.QueryString("SELECT SUM(cantidades_obra.vtotal)*(evaluacion.imprevistos+100)/100 FROM cantidades_obra LEFT JOIN evaluacion ON (evaluacion.proyecto=cantidades_obra.proyecto) WHERE cantidades_obra.proyecto=" + UCProyecto.IdProyecto + ";").Replace(",", ".");
 
                 Query query = new Query("evaluacion");
 
@@ -70,7 +70,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 query += "otros";
                 // query += "viable";
                 query += "objeto";
-                query += "presupuesto_inicial";
+                // query += "presupuesto_inicial";
                 query += "area_afectada";
                 query += "presupuesto_dotacion";
                 query += "dotacion";
@@ -155,7 +155,6 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         query["presupuesto_dotacion"] = TPDotacion.Text.Replace(",", "");
         query["objeto"] = LObjeto.Text;
         query["dotacion"] = CDotacion.Checked ? "1" : "";
-        query["viable"] = ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "1" : ""; // es el ultimo de la lista
         
         if (HEvaluacion.Value.Length == 0)
         {
@@ -172,7 +171,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         if (conector.InsertModificacionWeb(HEvaluacion.Value) == -1)
             return;
 
-        for (int i = 0; i < GReubicacion.Rows.Count-1; i++)
+        for (int i = 0; i < GReubicacion.Rows.Count; i++)
         {
             Query reubicacion = new Query("reubicacion_evaluacion");
             reubicacion["reubicacion"] = GReubicacion.DataKeys[i].Values["id"].ToString();
@@ -216,12 +215,11 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         for (int i = 0; i < GDocumentos.Rows.Count; i++)
         {
             Query documentos = new Query("documentos_proyecto");
+            string id = GDocumentos.DataKeys[i].Values["iddocumento"].ToString();
 
             FileUpload file = (FileUpload)GDocumentos.Rows[i].FindControl("FArchivo");
             if (file.HasFile)
             {
-
-                string id = GDocumentos.DataKeys[i].Values["iddocumento"].ToString();
                 if (id.Length > 0)
                 {
                     if (conector.QueryMod("DELETE FROM documentos_proyecto WHERE id='" + id + "'") == -1)
@@ -230,9 +228,22 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
 
                 documentos["documento"] = GDocumentos.DataKeys[i].Value.ToString();
                 documentos["proyecto"] = UCProyecto.IdProyecto;
+                documentos["observaciones"] = ((TextBox)GDocumentos.Rows[i].FindControl("TObservaciones")).Text;
 
                 Archivos archivo = new Archivos(file.PostedFile, 0);
                 archivo.SaveFile(documentos);
+            } else {
+                documentos["observaciones"] = ((TextBox)GDocumentos.Rows[i].FindControl("TObservaciones")).Text;
+                if(id.Length==0) {
+                    documentos["documento"] = GDocumentos.DataKeys[i].Value.ToString();
+                    documentos["proyecto"] = UCProyecto.IdProyecto;
+
+                    if (conector.QueryMod(documentos.GetInsert()) == -1)
+                        return;
+                } else {
+                    if (conector.QueryMod(documentos.GetUpdate("id='" + id + "'")) == -1)
+                        return;
+                }
             }
         }
         ((MasterPageI)Master).SetParametros("?idp=" + UCProyecto.IdProyecto);
@@ -261,8 +272,8 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
     {
 
         string resultado = (string)sender;
-        resultado = resultado.Replace("$CViable$", ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "X" : "");
-        resultado = resultado.Replace("$NoViable$", ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "" : "X");
+        /*resultado = resultado.Replace("$CViable$", ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "X" : "");
+        resultado = resultado.Replace("$NoViable$", ((CheckBox)GReubicacion.Rows[GReubicacion.Rows.Count - 1].FindControl("CEstado")).Checked ? "" : "X");*/
         resultado = resultado.Replace("$szAMenor$", DAdecuacion.SelectedItem.Text.ToLower()=="menor" ? "X" : "");
         resultado = resultado.Replace("$szAMayor$", DAdecuacion.SelectedItem.Text.ToLower() == "mayor" ? "X" : "");
         resultado = resultado.Replace("$szReubicacion$", DAdecuacion.SelectedItem.Text.ToLower() == "reubicación" ? "X" : "");

@@ -21,8 +21,6 @@
             <td>
                 Intervención</td>
             <td>
-                Viable</td>
-            <td>
                 Nombre</td>
             <td>
                 &nbsp;</td>
@@ -85,13 +83,6 @@
                 </asp:SqlDataSource>
             </td>
             <td>
-                <asp:DropDownList runat="server" ID="DViable" AutoPostBack="true">
-                    <asp:ListItem Text="(Todos)" Value="0"></asp:ListItem>
-                    <asp:ListItem Text="Viable" Value="1"></asp:ListItem>
-                    <asp:ListItem Text="No viable" Value="2"></asp:ListItem>
-                </asp:DropDownList>
-            </td>
-            <td>
                 <asp:TextBox ID="TNombres" runat="server"></asp:TextBox></td>
             <td>
                 <asp:Button ID="BBuscar" runat="server" Text="Buscar" />
@@ -125,11 +116,6 @@
             <asp:BoundField DataField="tlocalidad" HeaderText="Tipo localidad" SortExpression="tlocalidad" />
             <asp:BoundField DataField="tintervencion" HeaderText="Tipo intervención" SortExpression="tintervencion" />
             <asp:BoundField DataField="adecuacion" HeaderText="Tipo adecuación" SortExpression="adecuacion" />
-            <asp:TemplateField HeaderText="Viable">
-                <ItemTemplate>
-                    <%# Eval("viable").ToString()=="1" ? "Sí" : "No" %>
-                </ItemTemplate>
-            </asp:TemplateField>
             <asp:BoundField DataField="area_afectada" HeaderText="Área afectada" SortExpression="area_afectada" >
                 <ItemStyle HorizontalAlign="Right" Wrap="false" />
                 <FooterStyle HorizontalAlign="Right" Wrap="false" />
@@ -142,7 +128,15 @@
                 <ItemStyle HorizontalAlign="Right" Wrap="false" />
                 <FooterStyle HorizontalAlign="Right" Wrap="false" />
             </asp:BoundField>
-            <asp:BoundField DataField="presupuestog" HeaderText="Presupuesto gerencia" SortExpression="presupuestog" DataFormatString="{0:c}">
+            <asp:BoundField DataField="presupuestog" HeaderText="Valor costos directos" SortExpression="presupuestog" DataFormatString="{0:c}">
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="aiu" HeaderText="A.I.U." SortExpression="aiu" DataFormatString="{0:c}">
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="totalp" HeaderText="Valor total proyecto" SortExpression="totalp" DataFormatString="{0:c}">
                 <ItemStyle HorizontalAlign="Right" Wrap="false" />
                 <FooterStyle HorizontalAlign="Right" Wrap="false" />
             </asp:BoundField>
@@ -166,8 +160,11 @@
                     ,municipio.nombre AS municipio,tinstitucion.nombre AS tinstitucion,localidad.nombre AS tlocalidad,tintervencion.nombre AS tintervencion
                     ,proyecto.presupuesto_inicial,proyecto.area_afectada,proyecto.presupuesto_dotacion,proyecto.observaciones
                     ,departamento.descripcion AS grupo, evaluacion.observaciones AS observacionesg
-                    ,evaluacion.presupuesto_inicial AS presupuestog,evaluacion.presupuesto_dotacion AS pdotaciong
-                    ,adecuacion.nombre AS adecuacion,evaluacion.viable
+                    ,evaluacion.presupuesto_dotacion AS pdotaciong
+                    ,adecuacion.nombre AS adecuacion
+                    ,evaluacion.presupuesto_inicial AS presupuestog
+                    ,evaluacion.presupuesto_inicial*0.32 AS aiu
+                    ,evaluacion.presupuesto_inicial*1.32 AS totalp
                     FROM proyecto
                     LEFT JOIN shared AS departamento ON (departamento.id=proyecto.departamento)
                     LEFT JOIN shared AS municipio ON (municipio.id=proyecto.municipio)
@@ -181,7 +178,6 @@
                     AND (@departamento=0 OR proyecto.departamento=@departamento)
                     AND (@municipio=0 OR proyecto.municipio=@municipio)
                     AND (@intervencion=0 OR evaluacion.adecuacion=@intervencion)
-                    AND (@viable=0 OR (@viable=1 AND @viable=evaluacion.viable) OR (@viable=2 AND evaluacion.viable IS NULL))
                     AND (@nombres='' OR proyecto.nombre LIKE CONCAT('%', @nombres, '%'))
                     ;">
         <SelectParameters>
@@ -190,7 +186,6 @@
             <asp:ControlParameter ControlID="DDepartamento" Name="departamento" PropertyName="SelectedValue" />
             <asp:ControlParameter ControlID="DMunicipio" Name="municipio" PropertyName="SelectedValue" />
             <asp:ControlParameter ControlID="DTIntervencion" Name="intervencion" PropertyName="SelectedValue" />
-            <asp:ControlParameter ControlID="DViable" Name="viable" PropertyName="SelectedValue" />
         </SelectParameters>
     </asp:SqlDataSource>
 </asp:Content>

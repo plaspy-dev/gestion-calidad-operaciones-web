@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Cantidades de obra" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="cantidadobra.aspx.cs" Inherits="proyectos_cantidadobra" %>
+﻿<%@ Page Title="Presupuesto de obra" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="cantidadobra.aspx.cs" Inherits="proyectos_cantidadobra" %>
 <%@ Register src="proyector.ascx" tagname="proyector" tagprefix="uc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
@@ -66,7 +66,7 @@
             total *= parseFloat($(vunitario).val().replace(/,/g, ""));
             $(vtotal).numeric('value', isNaN(total) ? 0 : total);
 
-            var ttotal = parseFloat($("#<%=LTotal.ClientID %>").text().replace(/,/g, "").replace(/\$/g, ""));
+            var ttotal = parseFloat($("#<%=LSubTotal.ClientID %>").text().replace(/,/g, "").replace(/\$/g, ""));
             if (isNaN(ttotal))
                 ttotal = 0;
             if (isNaN(antiguo))
@@ -74,8 +74,22 @@
             if (isNaN(total))
                 total = 0;
             ttotal += total - antiguo;
-            $("#<%=LTotal.ClientID %>").text(currencyFormatted(ttotal.toString()));
+            $("#<%=LSubTotal.ClientID %>").text(currencyFormatted(ttotal.toString()));
+            $("#<%= TImprevistos.ClientID %>").change();
         }
+
+        $("#<%= TImprevistos.ClientID %>").change(function() {
+            var ttotal = parseFloat($("#<%=LSubTotal.ClientID %>").text().replace(/,/g, "").replace(/\$/g, ""));
+            if (isNaN(ttotal))
+                ttotal = 0;
+            var imprevistos = parseFloat($("#<%= TImprevistos.ClientID %>").val().replace(/,/g, ""));
+            if (isNaN(imprevistos))
+                imprevistos = 0;
+            imprevistos = ttotal * imprevistos / 100;
+            $("#<%= LImprevistos.ClientID %>").text(currencyFormatted(imprevistos.toString()));
+            ttotal += imprevistos;
+            $("#<%= LTotal.ClientID %>").text(currencyFormatted(ttotal.toString()));
+        }).change();
 
         function inicio() {
             arreglo = $('#elementos > tbody > tr');
@@ -256,7 +270,7 @@
         ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
         SelectCommand="SELECT shared.id, shared.szReservado AS cap, CONCAT(shared.szReservado, ' ',shared.nombre) AS nombre 
-                        ,(SELECT IFNULL(SUM(cantidades_obra.vtotal),0) FROM cantidades_obra LEFT JOIN shared AS elemento ON (elemento.id=cantidades_obra.elemento) WHERE cantidades_obra.proyecto=@proyecto AND elemento.szReservado LIKE CONCAT(shared.szReservado,'%')) AS total
+                        ,(SELECT SUM(cantidades_obra.vtotal) FROM cantidades_obra LEFT JOIN shared AS elemento ON (elemento.id=cantidades_obra.elemento) WHERE cantidades_obra.proyecto=@proyecto AND elemento.szReservado LIKE CONCAT(shared.szReservado,'%')) AS total
                         FROM shared 
                         WHERE shared.nReservado=122 AND shared.szReservado!=-1 
                         AND shared.parametro1 IS NULL ORDER BY GetCodigo(shared.szReservado)">
@@ -266,7 +280,26 @@
     </asp:SqlDataSource>
     </ContentTemplate>
     </asp:UpdatePanel>
-    <div align="right">Total: <asp:Label runat="server" ID="LTotal"></asp:Label></div>
+    <div align="right">
+    <table>
+        <tr>
+            <td colspan=2>Subtotal</td>
+            <td><asp:Label runat="server" ID="LSubTotal"></asp:Label></td>
+        </tr>
+        <tr>
+            <td>ÍTEMS NO PREVISTO O CANTIDADES MAYORES DE OBRA</td>
+            <td><asp:TextBox runat="server" Width="30" ID="TImprevistos" CssClass="float"></asp:TextBox>%</td>
+            <td><asp:Label runat="server" ID="LImprevistos"></asp:Label></td>
+        </tr>
+        <tr>
+            <td colspan=3><hr /></td>
+        </tr>
+        <tr>
+            <td colspan=2>Total</td>
+            <td><asp:Label runat="server" ID="LTotal"></asp:Label></td>
+        </tr>
+    </table>
+    </div>
     <div align="right">
         <asp:Button ID="BAceptar" runat="server" Text="Aceptar" 
             onclick="BAceptar_Click" /><asp:Button ID="BCancelar" runat="server" 

@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-12 · Añadir borrado controlado y ajustar cantidades.** Incorpora la comprobación de borrado en la portada y ajusta los controles de cantidades para el proyecto. El flujo puede verificar el permiso antes de retirar un registro y mostrar los campos que quedaron disponibles.
+**2012-01-13 · Ajustar columnas y controles de evaluación.** Actualiza los campos de la tabla de proyectos y el formato de los valores en cantidades. Ajusta la lectura de controles en evaluación para que su salida use los campos que muestra la interfaz.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-12 · Add controlled deletion and revise quantities.** Add a deletion check on the homepage and adjust project quantity controls. The workflow can check permission before removing a record and display the available fields.
+**2012-01-13 · Revise evaluation controls and table columns.** Update project table columns and the display of values in work quantities. Revise evaluation control lookup so its output uses the fields displayed in the interface.
 
 ### How to explore the source
 
