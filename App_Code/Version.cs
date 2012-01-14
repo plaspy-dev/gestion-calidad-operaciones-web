@@ -13,6 +13,6 @@ public class Version
     }
     static public string GetVersion()
     {
-        return "0.71 Beta";
+        return "0.7 Beta";
     }
 }

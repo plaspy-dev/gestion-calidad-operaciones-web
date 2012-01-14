@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-14 · Añadir una página de estadísticas de proyectos.** Incorpora tablas de estadísticas y reajusta la pantalla de evaluación. Los lectores pueden consultar datos resumidos en una vista dedicada y abrir la evaluación cuando necesiten revisar el registro.
+**2012-01-14 · Identificar la compilación 0.7 Beta.** Cambia el identificador mostrado de 0.71 Beta a 0.7 Beta. El marcador deja constancia de la etiqueta que reportaba esta revisión.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-14 · Add a project statistics page.** Add statistics tables and revise the evaluation screen. Readers can consult summary data in a dedicated view and open the evaluation to examine a record.
+**2012-01-14 · Label the 0.7 Beta build.** Change the displayed identifier from 0.71 Beta to 0.7 Beta. This records the label reported by this revision.
 
 ### How to explore the source
 
