@@ -242,7 +242,7 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                 }
             }
         }
-        if (conector.QueryMod("UPDATE evaluacion SET imprevistos=" + TImprevistos.Text + ",presupuesto_inicial=(SELECT SUM(vtotal)*(" + TImprevistos.Text + "+100)/100 FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ") WHERE proyecto=" + UCProyecto.IdProyecto + ";") == -1)
+        if (conector.QueryMod("UPDATE evaluacion SET imprevistos=" + Query.GetValor(TImprevistos.Text) + ",presupuesto_inicial=(SELECT SUM(vtotal)*(" + TImprevistos.Text + "+100)/100 FROM cantidades_obra WHERE proyecto=" + UCProyecto.IdProyecto + ") WHERE proyecto=" + UCProyecto.IdProyecto + ";") == -1)
             return;
         if (conector.InsertModificacionWeb(UCProyecto.IdProyecto) == -1)
             return;

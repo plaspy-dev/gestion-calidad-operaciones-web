@@ -39,54 +39,7 @@
         $("#<%= TPInicial.ClientID %>").change(Calcular).change();
         $("#<%= TAreaAfectada.ClientID %>").change(Calcular).change();
         $("#<%= TPDotacion.ClientID%>").change(Calcular).change();
-
-        $('#<%=UReubicacion.ClientID%>').panelUpdated(function() {
-            if ($("#<%= GReubicacion.ClientID %> > tbody > tr").length > 0) {
-                $("#tobs").hide();
-                $("#<%= GReubicacion.ClientID %>").show();
-            } else {
-                $("#<%= GReubicacion.ClientID %>").hide();
-                $("#tobs").show();
-            }
-        });
-
-        $("#<%= DEstado.ClientID %>").change(function() {
-            var t = $(this).children(":selected").val();
-            switch (t) {
-                case "1":
-                    $("#<%= GReubicacion.ClientID %>").hide();
-                    $("#tobs").hide();
-                    $("#ttipo").hide();
-                    $("#testado").attr("colspan", "2")
-                        .css("background-color", $("#<%= LEstado.ClientID %>").css("background-color"));
-                    $("#<%= LTipo.ClientID %>").hide();
-                    $("#<%= LEstado.ClientID %>").show();
-                    break;
-                case "2":
-                    if ($("#<%= GReubicacion.ClientID %> > tbody > tr").length > 0) {
-                        $("#tobs").hide();
-                        $("#<%= GReubicacion.ClientID %>").show();
-                    } else {
-                        $("#<%= GReubicacion.ClientID %>").hide();
-                        $("#tobs").show();
-                    }
-                    $("#testado").attr("colspan", "1")
-                        .css("background-color", "#FFFFFF");
-                    $("#<%= LEstado.ClientID %>").hide();
-                    $("#<%= LTipo.ClientID %>").show();
-                    $("#ttipo").show();
-                    break;
-                default:
-                    $("#<%= GReubicacion.ClientID %>").hide();
-                    $("#tobs").hide();
-                    $("#testado").attr("colspan", "2")
-                        .css("background-color", "#FFFFFF");
-                    $("#<%= LEstado.ClientID %>").hide();
-                    $("#<%= LTipo.ClientID %>").hide();
-                    $("#ttipo").hide();
-                    break;
-            }
-        }).change();
+        $("#testado").css("background-color", $("#<%= LEstado.ClientID %>").css("background-color"));
     });
 </script>
 </asp:Content>
@@ -124,79 +77,70 @@
                 <td>
                     Estado</td>
                 <td>
-                    <asp:DropDownList ID="DEstado" runat="server">
+                    <asp:DropDownList ID="DEstado" runat="server" AutoPostBack="true" 
+                        onselectedindexchanged="DEstado_SelectedIndexChanged">
                         <asp:ListItem Text="" Value=""></asp:ListItem>
                         <asp:ListItem Text="OBJETO DE INTERVENCIÓN" Value="1"></asp:ListItem>
                         <asp:ListItem Text="OBJETO DE NO INTERVENCIÓN" Value="2"></asp:ListItem>
                     </asp:DropDownList>
                 </td>
-                <td id="testado">
-                    <asp:Label runat="server" ID="LTipo" CssClass="hide" Text="Tipo"></asp:Label>
-                    <asp:Label runat="server" ID="LEstado" ForeColor="White" CssClass="hide" Text="Viable"></asp:Label></td>
-                <td id="ttipo">
-                    <asp:UpdatePanel runat="server" UpdateMode="Conditional" ID="UTipo">
-                        <ContentTemplate>
-                            <asp:DropDownList ID="DTipo" runat="server" DataSourceID="STipo" 
-                                DataTextField="nombre" DataValueField="id" AutoPostBack="True">
-                            </asp:DropDownList>
-                            <asp:SqlDataSource ID="STipo" runat="server" 
-                                ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
-                                ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                                SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=123 AND szReservado IS NULL ORDER BY nombre">
-                            </asp:SqlDataSource>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
+                <td>
+                    <asp:DropDownList ID="DTipo" runat="server" DataSourceID="STipo" 
+                        DataTextField="nombre" DataValueField="id" AutoPostBack="True">
+                    </asp:DropDownList>
+                    <asp:SqlDataSource ID="STipo" runat="server" 
+                        ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                        ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                        SelectCommand="(SELECT 0 AS id, '' AS nombre) UNION (SELECT id, nombre FROM shared WHERE ((@estado=1 AND nReservado=124) OR (@estado=2 AND nReservado=123) OR id=-1) AND szReservado IS NULL ORDER BY nombre)">
+                        <SelectParameters>
+                            <asp:ControlParameter ControlID="DEstado" Name="estado" PropertyName="SelectedValue" DefaultValue="3" />
+                        </SelectParameters>
+                    </asp:SqlDataSource>
                 </td>
+                <td id="testado"><asp:Label runat="server" ID="LEstado" Text=""></asp:Label></td>
             </tr>
             <tr>
                 <td colspan="4">
-                    <asp:UpdatePanel runat="server" ID="UReubicacion" UpdateMode="Conditional">
-                        <ContentTemplate>
-                        <asp:GridView ID="GReubicacion" runat="server" AutoGenerateColumns="False" Width="100%"
-                            DataSourceID="SReubicacion" DataKeyNames="id,idreubicacion" CssClass="hide">
-                            <RowStyle CssClass="GridRow"></RowStyle>
-                            <FooterStyle CssClass="GridFooter"></FooterStyle>
-                            <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
-                            <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
-                            <HeaderStyle CssClass="GridHeader"></HeaderStyle>
-                            <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
-                            <Columns>
-                                <asp:TemplateField HeaderText="Sí">
-                                    <ItemTemplate>
-                                        <asp:CheckBox ID="CEstado" runat="server" Checked='<%# Eval("estado").ToString()=="1" %>' />
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="No">
-                                    <ItemTemplate>
-                                        <asp:CheckBox ID="CNo" runat="server" Checked='<%# Eval("estado").ToString()!="1" %>' />
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Concepto" ItemStyle-Width="100%">
-                                    <ItemTemplate>
-                                        <asp:Label runat="server" ID="LConcepto" Text='<%# Eval("nombre").ToString() %>'></asp:Label>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                        </asp:GridView>
-                        <asp:SqlDataSource ID="SReubicacion" runat="server" 
-                            ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
-                            ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                            SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,reubicacion_evaluacion.id AS idreubicacion,reubicacion_evaluacion.estado AS estado FROM shared LEFT JOIN reubicacion_evaluacion ON (reubicacion_evaluacion.proyecto=@evaluacion AND reubicacion_evaluacion.reubicacion=shared.id) WHERE shared.nReservado=109 AND shared.szReservado IS NULL AND shared.parametro1=@tipo" >
-                            <SelectParameters>
-                                <asp:ControlParameter ControlID="HEvaluacion" Name="evaluacion" PropertyName="Value" DefaultValue="0" />
-                                <asp:ControlParameter ControlID="DTipo" Name="tipo" PropertyName="SelectedValue" DefaultValue="0" />
-                            </SelectParameters>
-                        </asp:SqlDataSource>
-                        </ContentTemplate>
-                        <Triggers>
-                            <asp:PostBackTrigger ControlID="DTipo" />
-                        </Triggers>
-                    </asp:UpdatePanel>
+                    <asp:GridView ID="GReubicacion" runat="server" AutoGenerateColumns="False" Width="100%"
+                        DataSourceID="SReubicacion" DataKeyNames="id,idreubicacion">
+                        <RowStyle CssClass="GridRow"></RowStyle>
+                        <FooterStyle CssClass="GridFooter"></FooterStyle>
+                        <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
+                        <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
+                        <HeaderStyle CssClass="GridHeader"></HeaderStyle>
+                        <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
+                        <Columns>
+                            <asp:TemplateField HeaderText="Sí">
+                                <ItemTemplate>
+                                    <asp:CheckBox ID="CEstado" runat="server" Checked='<%# Eval("estado").ToString()=="1" %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="No">
+                                <ItemTemplate>
+                                    <asp:CheckBox ID="CNo" runat="server" Checked='<%# Eval("estado").ToString()!="1" %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Concepto" ItemStyle-Width="100%">
+                                <ItemTemplate>
+                                    <asp:Label runat="server" ID="LConcepto" Text='<%# Eval("nombre").ToString() %>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                    <asp:SqlDataSource ID="SReubicacion" runat="server" 
+                        ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                        ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                        SelectCommand="SELECT shared.id AS id, shared.nombre AS nombre,reubicacion_evaluacion.id AS idreubicacion,reubicacion_evaluacion.estado AS estado FROM shared LEFT JOIN reubicacion_evaluacion ON (reubicacion_evaluacion.proyecto=@evaluacion AND reubicacion_evaluacion.reubicacion=shared.id) WHERE shared.nReservado=109 AND shared.szReservado IS NULL AND shared.parametro1=@tipo" >
+                        <SelectParameters>
+                            <asp:ControlParameter ControlID="HEvaluacion" Name="evaluacion" PropertyName="Value" DefaultValue="0" />
+                            <asp:ControlParameter ControlID="DTipo" Name="tipo" PropertyName="SelectedValue" DefaultValue="0" />
+                        </SelectParameters>
+                    </asp:SqlDataSource>
                 </td>
             </tr>
-            <tr id="tobs" class="hide">
-                <td>Observaciones</td>
-                <td colspan=3><asp:TextBox runat="server" ID="TObservacionesConcepto" TextMode="MultiLine" Width="99%"></asp:TextBox></td>
+            <tr>
+                <td>Justificación</td>
+                <td colspan=3><asp:TextBox runat="server" ID="TObservacionesConcepto" Width="99%"></asp:TextBox></td>
             </tr>
             <tr>
                 <td>

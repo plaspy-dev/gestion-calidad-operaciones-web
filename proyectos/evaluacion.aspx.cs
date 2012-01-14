@@ -94,11 +94,11 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     conector.SelectInDropDown(DAcceso2,reader["acceso2"]);
                     conector.SelectInDropDown(DTopografia,reader["topografia"]);
                     conector.SelectInDropDown(DForma, reader["forma"]);
+                    conector.SelectInDropDown(DEstado, reader["estado"].ToString());
                     conector.SelectInDropDown(DTipo, reader["tipo_nointervencion"]);
+                    
 
                     TObservacionesConcepto.Text = reader["observaciones_nointervencion"].ToString();
-                    DEstado.SelectedValue = reader["estado"].ToString();
-                    
                     CDotacion.Checked = reader["dotacion"].ToString() == "1";
                     TObservaciones.Text = reader["observaciones"].ToString();
                     TAltura.Text = reader["altura"].ToString();
@@ -112,7 +112,6 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     TAOcupada.Text = reader["area_ocupada"].ToString();
                     TAConstruida.Text = reader["area_construida"].ToString();
                     
-                    
                     CEnUso.Checked = reader["actualmente_enuso"].ToString()=="1";
                     TEdificios.Text = reader["edificios"].ToString();
                     TPisos.Text = reader["pisos"].ToString();
@@ -124,8 +123,11 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     DAdecuacion_SelectedIndexChanged(sender, e);
                     // CViable.Checked = reader["viable"].ToString() == "1";
                 }
+                LEstado.Visible = false;
+                if(HEvaluacion.Value.Length>0) {
 
-                string faltantes = conector.QueryString("SELECT COUNT(*)"
+                    LEstado.Visible = true;
+                    string faltantes = conector.QueryString("SELECT COUNT(*)"
                             + " FROM shared "
                             + " LEFT JOIN evaluacion ON (evaluacion.proyecto="
                             + HEvaluacion.Value
@@ -135,29 +137,24 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                             + " AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL))"
                             + " AND (documentos_proyecto.id IS NULL OR documentos_proyecto.archivo IS NULL);");
 
-                LEstado.Text = conector.QueryString("SELECT visita FROM proyecto WHERE id='" + HEvaluacion.Value + "'").Length == 0
-                    ? "Falta visita" : "";
-
-                if(faltantes!="0") {
-                    if (LEstado.Text.Length != 0)
-                        LEstado.Text += " y ";
-                    else
+                    if (faltantes != "0")
                     {
-                        LEstado.Text += "Falta";
+                        LEstado.Text = "Falta";
                         if (faltantes != "1")
                             LEstado.Text += "n";
-                    }                    
-                    LEstado.Text += " " + faltantes + "  documento";
-                    if (faltantes != "1")
-                        LEstado.Text += "s";
-                }
-                if(LEstado.Text.Length==0) {
-                    LEstado.Text = "Viable";
-                    LEstado.BackColor = System.Drawing.Color.FromArgb(0, 255, 0);
-                    LEstado.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
-                } else {
-                    LEstado.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
-                    LEstado.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+
+                        LEstado.Text += " " + faltantes + "  documento";
+                        if (faltantes != "1")
+                            LEstado.Text += "s";
+                        LEstado.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                        LEstado.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                    }
+                    else
+                    {
+                        LEstado.Text = "Documentación completa";
+                        LEstado.BackColor = System.Drawing.Color.FromArgb(0, 255, 0);
+                        LEstado.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
+                    }
                 }
             }
         }
@@ -198,8 +195,8 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         query["objeto"] = LObjeto.Text;
         query["dotacion"] = CDotacion.Checked ? "1" : "";
         query["estado"] = DEstado.SelectedValue;
-        query["tipo_nointervencion"]= DTipo.SelectedValue;
-        query["observaciones_nointervencion"] = GReubicacion.Rows.Count==0 ? TObservacionesConcepto.Text : "";
+        query["tipo_nointervencion"]= DTipo.SelectedIndex!=-1 ? DTipo.SelectedValue : "";
+        query["observaciones_nointervencion"] = TObservacionesConcepto.Text;
 
         conector.StartTransaction();
 
@@ -331,6 +328,10 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         resultado = resultado.Replace("$sIntervencion$", DEstado.SelectedItem.Text.ToLower().IndexOf("no") == -1 ? "X" : "");
         resultado = resultado.Replace("$sNoIntervencion$", DEstado.SelectedItem.Text.ToLower().IndexOf("no") != -1 ? "X" : "");
 
+        resultado = resultado.Replace("$sTipo$", DEstado.SelectedItem.Text.ToLower().IndexOf("no") == -1 ? DTipo.SelectedItem.Text : "");
+        resultado = resultado.Replace("$sTipoNo$", DEstado.SelectedItem.Text.ToLower().IndexOf("no") != -1 ? DTipo.SelectedItem.Text : "");
+        resultado = resultado.Replace("$sJustificacion$", TObservacionesConcepto.Text);
+
         Query query = new Query("proyecto");
 
         query["DDepartamento"] = "departamento.nombre";
@@ -403,5 +404,10 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
     protected void CDotacion_CheckedChanged(object sender, EventArgs e)
     {
         DAdecuacion_SelectedIndexChanged(sender, e);
+    }
+    protected void DEstado_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DTipo.DataBind();
+        GReubicacion.DataBind();
     }
 }

@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-14 · Reorganizar la evaluación y su estado visual.** Añade controles y reglas de presentación de la evaluación, incluidos colores calculados para la interfaz. También ajusta campos de la lista de proyectos para dar acceso a la información usada en la revisión.
+**2012-01-14 · Añadir una página de estadísticas de proyectos.** Incorpora tablas de estadísticas y reajusta la pantalla de evaluación. Los lectores pueden consultar datos resumidos en una vista dedicada y abrir la evaluación cuando necesiten revisar el registro.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-14 · Rework evaluation and its visual status.** Add evaluation controls and display rules, including computed colors for the interface. Update project list fields to expose information used during the review.
+**2012-01-14 · Add a project statistics page.** Add statistics tables and revise the evaluation screen. Readers can consult summary data in a dedicated view and open the evaluation to examine a record.
 
 ### How to explore the source
 
