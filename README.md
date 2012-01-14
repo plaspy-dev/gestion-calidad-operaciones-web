@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-13 · Ajustar columnas y controles de evaluación.** Actualiza los campos de la tabla de proyectos y el formato de los valores en cantidades. Ajusta la lectura de controles en evaluación para que su salida use los campos que muestra la interfaz.
+**2012-01-14 · Reorganizar la evaluación y su estado visual.** Añade controles y reglas de presentación de la evaluación, incluidos colores calculados para la interfaz. También ajusta campos de la lista de proyectos para dar acceso a la información usada en la revisión.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-13 · Revise evaluation controls and table columns.** Update project table columns and the display of values in work quantities. Revise evaluation control lookup so its output uses the fields displayed in the interface.
+**2012-01-14 · Rework evaluation and its visual status.** Add evaluation controls and display rules, including computed colors for the interface. Update project list fields to expose information used during the review.
 
 ### How to explore the source
 

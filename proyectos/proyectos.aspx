@@ -22,8 +22,7 @@
                 Intervención</td>
             <td>
                 Nombre</td>
-            <td>
-                &nbsp;</td>
+            <td>&nbsp;</td><td>&nbsp;</td>
         </tr>
         <tr>
             <td>
@@ -87,6 +86,7 @@
             <td>
                 <asp:Button ID="BBuscar" runat="server" Text="Buscar" />
             </td>
+            <td><asp:Label runat="server" ID="LTotal"></asp:Label></td>
         </tr>
         </table>
     </asp:Panel>
@@ -150,9 +150,18 @@
             <asp:BoundField DataField="observacionesg" HeaderText="Observaciones gerencia" SortExpression="observacionesg" ItemStyle-CssClass="cobs" >
                 <ItemStyle CssClass="cobs"></ItemStyle>
             </asp:BoundField>
+            <asp:TemplateField HeaderText="Documentos pendientes" SortExpression="dpendientes" ItemStyle-CssClass="cobs">
+                <ItemTemplate>
+                    <%# Eval("dpendientes")%>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="Observaciones de documentos" SortExpression="pendientes" ItemStyle-CssClass="cobs">
+                <ItemTemplate>
+                    <%# Eval("pendientes")%>
+                </ItemTemplate>
+            </asp:TemplateField>
         </Columns>
     </asp:GridView>
-    <div style="text-align: right"><asp:Label runat="server" ID="LTotal"></asp:Label></div>
     <asp:SqlDataSource ID="SResultados" runat="server" 
                 ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                 ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
@@ -165,6 +174,8 @@
                     ,evaluacion.presupuesto_inicial AS presupuestog
                     ,evaluacion.presupuesto_inicial*0.32 AS aiu
                     ,evaluacion.presupuesto_inicial*1.32 AS totalp
+                    ,(SELECT GROUP_CONCAT(shared.nombre SEPARATOR '<br/>') FROM shared WHERE shared.nReservado=106 AND shared.szReservado='1' AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL)) AND NOT EXISTS (SELECT 1 FROM documentos_proyecto WHERE documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id AND documentos_proyecto.archivo IS NOT NULL)) AS dpendientes
+                    ,(SELECT GROUP_CONCAT(CONCAT('<b>', shared.nombre,'</b>: ',documentos_proyecto.observaciones) SEPARATOR '<br/>') FROM documentos_proyecto LEFT JOIN shared ON (shared.id=documentos_proyecto.documento) WHERE documentos_proyecto.proyecto=proyecto.id) AS pendientes
                     FROM proyecto
                     LEFT JOIN shared AS departamento ON (departamento.id=proyecto.departamento)
                     LEFT JOIN shared AS municipio ON (municipio.id=proyecto.municipio)

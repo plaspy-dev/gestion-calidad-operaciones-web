@@ -23,7 +23,7 @@ public partial class proyectos_Default : System.Web.UI.Page
         {
             Usuario usuario = Usuario.GetUsuario();
             BAceptar.Enabled = usuario.CanInsert();
-            BEliminar.Visible = usuario.CanDelete();
+            BEliminar.Visible = false;
             ((MasterPageI)Master).SetModificacion(Request.QueryString["idp"]);
 
             if (Request.QueryString["idp"] != null)
@@ -58,6 +58,7 @@ public partial class proyectos_Default : System.Web.UI.Page
 
                     HProyecto.Value = Request.QueryString["idp"];
                     BAceptar.Enabled = ((CUsuario)usuario).CanUpdate(HProyecto.Value);
+                    BEliminar.Visible = usuario.CanDelete();
 
                     DDepartamento.SelectedValue = reader["departamento"].ToString();
                     DContrato.SelectedValue = reader["contrato"].ToString();
@@ -169,7 +170,7 @@ public partial class proyectos_Default : System.Web.UI.Page
                             + " LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id) "
                             + " WHERE shared.nReservado=106 AND shared.szReservado='1'"
                             + " AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL))"
-                            + " AND documentos_proyecto.id IS NULL AND documentos_proyecto.archivo IS NULL;") == "0";
+                            + " AND (documentos_proyecto.id IS NULL OR documentos_proyecto.archivo IS NULL);") == "0";
 
         resultado = resultado.Replace("$szCompleta$", completa ? "X" : "");
         resultado = resultado.Replace("$szTramite$", completa  ? "" : "X");
