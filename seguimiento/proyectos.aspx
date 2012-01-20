@@ -1,0 +1,205 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="proyectos.aspx.cs" Inherits="seguimiento_proyectos" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+<style type="text/css">
+.cobs 
+{
+    min-width: 400px;
+}
+</style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph" Runat="Server">
+<asp:Panel runat="server" ID="PBuscar" DefaultButton="BBuscar">
+    <table>
+        <tr>
+            <td>
+                Grupo</td>
+            <td>
+                Departamento</td>
+            <td>
+                Municipio</td>
+            <td>
+                Intervención</td>
+            <td>
+                Nombre</td>
+            <td>&nbsp;</td><td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <asp:DropDownList ID="DGrupo" runat="server" AppendDataBoundItems="true" 
+                    AutoPostBack="true" DataSourceID="SGrupo" DataTextField="nombre" 
+                    DataValueField="nombre" onselectedindexchanged="DGrupo_SelectedIndexChanged">
+                    <asp:ListItem Text="(Todos)" Value="0"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:SqlDataSource ID="SGrupo" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                    ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                    SelectCommand="SELECT nombre FROM shared WHERE nReservado=100 AND szReservado IS NULL">
+                </asp:SqlDataSource>
+            </td>
+            <td>
+                <asp:DropDownList ID="DDepartamento" runat="server" AppendDataBoundItems="true" 
+                    AutoPostBack="true" DataSourceID="SDepartamento" DataTextField="nombre" 
+                    DataValueField="id" onselectedindexchanged="DDepartamento_SelectedIndexChanged">
+                    <asp:ListItem Text="(Todos)" Value="0"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:SqlDataSource ID="SDepartamento" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                    ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                    SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=101 AND szReservado IS NULL AND (@grupo='0' OR descripcion=@grupo)">
+                    <SelectParameters>
+                        <asp:ControlParameter ControlID="DGrupo" Name="grupo" 
+                            PropertyName="SelectedValue" />
+                    </SelectParameters>
+                </asp:SqlDataSource>
+            </td>
+            <td>
+                <asp:DropDownList ID="DMunicipio" runat="server" AutoPostBack="true" 
+                    DataSourceID="SMunicipio" DataTextField="nombre" DataValueField="id">
+                    <asp:ListItem Text="(Todos)" Value="0"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:SqlDataSource ID="SMunicipio" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                    ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                    SelectCommand="(SELECT 0 AS id,'(Todos)' AS nombre) UNION (SELECT id, nombre FROM shared 
+                    WHERE nReservado=102 AND szReservado IS NULL AND descripcion=@departamento)">
+                    <SelectParameters>
+                        <asp:ControlParameter ControlID="DDepartamento" Name="departamento" 
+                            PropertyName="SelectedValue" />
+                    </SelectParameters>
+                </asp:SqlDataSource>
+            </td>
+            <td>
+                <asp:DropDownList ID="DTIntervencion" runat="server" AppendDataBoundItems="true" 
+                    AutoPostBack="true" DataSourceID="STIntervencion" DataTextField="nombre" 
+                    DataValueField="id">
+                    <asp:ListItem Text="(Todos)" Value="0"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:SqlDataSource ID="STIntervencion" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                    ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                    SelectCommand="SELECT id, nombre FROM shared WHERE nReservado=108 AND szReservado IS NULL ORDER BY nombre">
+                </asp:SqlDataSource>
+            </td>
+            <td>
+                <asp:TextBox ID="TNombres" runat="server"></asp:TextBox></td>
+            <td>
+                <asp:Button ID="BBuscar" runat="server" Text="Buscar" />
+            </td>
+            <td><asp:Label runat="server" ID="LTotal"></asp:Label></td>
+        </tr>
+        </table>
+    </asp:Panel>
+    <br />
+    <asp:GridView ID="GResultados" runat="server" DataSourceID="SResultados" 
+        AutoGenerateColumns="False" EmptyDataText="No se encontraron proyectos" 
+        AllowPaging="True" PageSize="50" AllowSorting="True" ShowFooter="True">
+            <RowStyle CssClass="GridRow"></RowStyle>
+            <FooterStyle CssClass="GridFooter"></FooterStyle>
+            <PagerStyle CssClass="GridPager" ForeColor="White"></PagerStyle>
+            <SelectedRowStyle CssClass="GridSelRow"></SelectedRowStyle>
+            <HeaderStyle CssClass="GridHeader"></HeaderStyle>
+            <AlternatingRowStyle CssClass="GridAltRow"></AlternatingRowStyle>
+        <Columns>
+            <asp:BoundField DataField="grupo" HeaderText="Grupo" SortExpression="grupo" />
+            <asp:HyperLinkField DataTextField="nombre" HeaderText="Nombre" 
+                DataNavigateUrlFields="id" SortExpression="nombre"
+                DataNavigateUrlFormatString="~/seguimiento/contrato.aspx?idp={0}">
+                <ItemStyle Wrap="false" />
+            </asp:HyperLinkField>
+            <asp:BoundField DataField="departamento" HeaderText="Departamento" SortExpression="departamento" />
+            <asp:BoundField DataField="municipio" HeaderText="Municipio" SortExpression="municipio" />
+            <asp:BoundField DataField="sede" HeaderText="Sede" SortExpression="sede" />
+            <asp:BoundField DataField="tinstitucion" HeaderText="Tipo institución" SortExpression="tinstitucion">
+                <ItemStyle Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="tlocalidad" HeaderText="Tipo localidad" SortExpression="tlocalidad" />
+            <asp:BoundField DataField="tintervencion" HeaderText="Tipo intervención" SortExpression="tintervencion" />
+            <asp:BoundField DataField="adecuacion" HeaderText="Tipo adecuación" SortExpression="adecuacion" />
+            <asp:BoundField DataField="area_afectada" HeaderText="Área afectada" SortExpression="area_afectada" >
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="presupuesto_inicial" HeaderText="Presupuesto inicial" SortExpression="presupuesto_inicial" DataFormatString="{0:c}">
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="presupuesto_dotacion" HeaderText="Presupuesto dotación" SortExpression="presupuesto_dotacion" DataFormatString="{0:c}" >
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="presupuestog" HeaderText="Valor costos directos" SortExpression="presupuestog" DataFormatString="{0:c}">
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="aiu" HeaderText="A.I.U." SortExpression="aiu" DataFormatString="{0:c}">
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="totalp" HeaderText="Valor total proyecto" SortExpression="totalp" DataFormatString="{0:c}">
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="pdotaciong" HeaderText="Presupuesto dotación gerencia" SortExpression="pdotaciong" DataFormatString="{0:c}" >
+                <ItemStyle HorizontalAlign="Right" Wrap="false" />
+                <FooterStyle HorizontalAlign="Right" Wrap="false" />
+            </asp:BoundField>
+            <asp:BoundField DataField="observaciones" HeaderText="Observaciones" SortExpression="observaciones" ItemStyle-CssClass="cobs" >
+                <ItemStyle CssClass="cobs"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="observacionesg" HeaderText="Observaciones gerencia" SortExpression="observacionesg" ItemStyle-CssClass="cobs" >
+                <ItemStyle CssClass="cobs"></ItemStyle>
+            </asp:BoundField>
+            <asp:TemplateField HeaderText="Documentos pendientes" SortExpression="dpendientes" ItemStyle-CssClass="cobs">
+                <ItemTemplate>
+                    <%# Eval("dpendientes")%>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="Observaciones de documentos" SortExpression="pendientes" ItemStyle-CssClass="cobs">
+                <ItemTemplate>
+                    <%# Eval("pendientes")%>
+                </ItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+    </asp:GridView>
+    <asp:SqlDataSource ID="SResultados" runat="server" 
+                ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
+                ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
+                SelectCommand="SELECT proyecto.id,proyecto.sede,proyecto.nombre,departamento.nombre AS departamento
+                    ,municipio.nombre AS municipio,tinstitucion.nombre AS tinstitucion,localidad.nombre AS tlocalidad,tintervencion.nombre AS tintervencion
+                    ,proyecto.presupuesto_inicial,proyecto.area_afectada,proyecto.presupuesto_dotacion,proyecto.observaciones
+                    ,departamento.descripcion AS grupo, evaluacion.observaciones AS observacionesg
+                    ,evaluacion.presupuesto_dotacion AS pdotaciong
+                    ,adecuacion.nombre AS adecuacion
+                    ,evaluacion.presupuesto_inicial AS presupuestog
+                    ,evaluacion.presupuesto_inicial*0.32 AS aiu
+                    ,evaluacion.presupuesto_inicial*1.32 AS totalp
+                    ,(SELECT GROUP_CONCAT(shared.nombre SEPARATOR '<br/>') FROM shared WHERE shared.nReservado=106 AND shared.szReservado='1' AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL)) AND NOT EXISTS (SELECT 1 FROM documentos_proyecto WHERE documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id AND documentos_proyecto.archivo IS NOT NULL)) AS dpendientes
+                    ,(SELECT GROUP_CONCAT(CONCAT('<b>', shared.nombre,'</b>: ',documentos_proyecto.observaciones) SEPARATOR '<br/>') FROM documentos_proyecto LEFT JOIN shared ON (shared.id=documentos_proyecto.documento) WHERE documentos_proyecto.proyecto=proyecto.id) AS pendientes
+                    FROM proyecto
+                    LEFT JOIN shared AS departamento ON (departamento.id=proyecto.departamento)
+                    LEFT JOIN shared AS municipio ON (municipio.id=proyecto.municipio)
+                    LEFT JOIN shared AS localidad ON (localidad.id=proyecto.localidad)
+                    LEFT JOIN shared AS tintervencion ON (tintervencion.id=proyecto.tintervencion)
+                    LEFT JOIN shared AS tinstitucion ON (tinstitucion.id=proyecto.tinstitucion)
+                    LEFT JOIN evaluacion ON (evaluacion.proyecto=proyecto.id)
+                    LEFT JOIN shared AS adecuacion ON (adecuacion.id=evaluacion.adecuacion)
+                    LEFT JOIN shared AS tipo ON (tipo.id=evaluacion.tipo_nointervencion)
+                    WHERE 
+                    evaluacion.estado=1 AND tipo.nombre='viable'
+                    AND (@grupo='0' OR departamento.descripcion=@grupo)
+                    AND (@departamento=0 OR proyecto.departamento=@departamento)
+                    AND (@municipio=0 OR proyecto.municipio=@municipio)
+                    AND (@intervencion=0 OR evaluacion.adecuacion=@intervencion)
+                    AND (@nombres='' OR proyecto.nombre LIKE CONCAT('%', @nombres, '%'))
+                    ;">
+        <SelectParameters>
+            <asp:ControlParameter ControlID="TNombres" Name="nombres" PropertyName="Text" ConvertEmptyStringToNull="false" />
+            <asp:ControlParameter ControlID="DGrupo" Name="grupo" PropertyName="SelectedValue" />
+            <asp:ControlParameter ControlID="DDepartamento" Name="departamento" PropertyName="SelectedValue" />
+            <asp:ControlParameter ControlID="DMunicipio" Name="municipio" PropertyName="SelectedValue" />
+            <asp:ControlParameter ControlID="DTIntervencion" Name="intervencion" PropertyName="SelectedValue" />
+        </SelectParameters>
+    </asp:SqlDataSource>
+</asp:Content>
+

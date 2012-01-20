@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-14 · Identificar la compilación 0.7 Beta.** Cambia el identificador mostrado de 0.71 Beta a 0.7 Beta. El marcador deja constancia de la etiqueta que reportaba esta revisión.
+**2012-01-20 · Recuperar el formulario de contratos y su guardado.** Añade la vista de contratos, sus campos y las operaciones que guardan los valores. El equipo puede revisar los contratos en una pantalla separada de la lista de proyectos.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-14 · Label the 0.7 Beta build.** Change the displayed identifier from 0.71 Beta to 0.7 Beta. This records the label reported by this revision.
+**2012-01-20 · Recover the contract form and save handler.** Add the contract view, its fields, and the operations that save their values. Teams can review contracts separately from the project list.
 
 ### How to explore the source
 
