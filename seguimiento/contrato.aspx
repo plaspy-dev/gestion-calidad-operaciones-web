@@ -5,6 +5,67 @@
 <script type="text/javascript">
     $(function() {
         addDialog("#<%= PDatos.ClientID %>", "#dNivelEducativo");
+        $("#<%= TRPropios.ClientID %>,#<%= TRColombiaH.ClientID %>,#<%= TROtras.ClientID %>,#<%= TAdicion.ClientID %>").change(function() {
+            var p = parseFloat($("#<%= TRPropios.ClientID %>").val().replace(/,/g, ""));
+            var c = parseFloat($("#<%= TRColombiaH.ClientID %>").val().replace(/,/g, ""));
+            var o = parseFloat($("#<%= TROtras.ClientID %>").val().replace(/,/g, ""));
+            if (isNaN(p))
+                p = 0;
+            if (isNaN(c))
+                c = 0;
+            if (isNaN(o))
+                o = 0;
+            var total = p + c + o;
+            $("#<%= LTotalR.ClientID %>").text(currencyFormatted(total.toString()));
+            // adiciones
+            var a = parseFloat($("#<%= TAdicion.ClientID %>").val().replace(/,/g, ""));
+            if (isNaN(a))
+                a = 0;
+            total += a;
+            $("#<%= LTotalC.ClientID %>").text(currencyFormatted(total.toString()));
+        }).change();
+
+        function daysDiff(d1, d2) {
+            var t2 = d2.getTime();
+            var t1 = d1.getTime();
+
+            return parseInt((t2 - t1) / (24 * 3600 * 1000));
+        }
+        function monthDiff(d1, d2) {
+            var d1Y = d1.getFullYear();
+            var d2Y = d2.getFullYear();
+            var d1M = d1.getMonth();
+            var d2M = d2.getMonth();
+
+            return (d2M + 12 * d2Y) - (d1M + 12 * d1Y);
+        }
+
+        function calcularDuracion() {
+            var f = $("#<%= TFinalizacion.ClientID %>").datepicker("getDate");
+            var i = $("#<%= TActaInicio.ClientID %>").datepicker("getDate");
+            if (f && i) {
+                $("#<%= LDuracion.ClientID %>").html(monthDiff(i, f));
+            } else {
+                $("#<%= LDuracion.ClientID %>").html("");
+            }
+        }
+
+        var tr = $("#<%= GFinanciero.ClientID %> tr");
+        for (var i = 1; i < tr.length; i++) {
+            var td = $(tr[i]).children("td");
+            var pos = td.length - 5;
+            if ($(td[pos]).text().indexOf(',') == -1) {
+                $(td[pos]).text(currencyFormatted($(td[pos]).text()));
+                $(td[pos + 3]).text(currencyFormatted($(td[pos + 3]).text()));
+            }
+        }
+
+        $("#<%= TActaInicio.ClientID %>,#<%= TFinalizacion.ClientID %>").change(calcularDuracion).datepicker({
+            onClose: function(dateText, inst) {
+                calcularDuracion();
+            }
+        });
+        $("#<%= TActaInicio.ClientID %>,#<%= TFinalizacion.ClientID %>").change();
     });
 </script>
 </asp:Content>
@@ -65,7 +126,7 @@
             </tr>
             <tr>
                 <td>Objeto del contrato</td>
-                <td><asp:TextBox runat="server" ID="TObjeto" TextMode="MultiLine" Width="99%"></asp:TextBox></td>
+                <td colspan="3"><asp:TextBox runat="server" ID="TObjeto" TextMode="MultiLine" Width="99%"></asp:TextBox></td>
             </tr>
             <tr>
                 <td>Forma de pago</td>
@@ -86,7 +147,7 @@
                 <td>Recursos otras fuentes</td>
                 <td><asp:TextBox runat="server" ID="TROtras" CssClass="dinero"></asp:TextBox></td>
                 <td>Valor total</td>
-                <td><asp:Label runat="server" ID="LTotalR"></asp:Label></td>
+                <td align="right"><asp:Label runat="server" ID="LTotalR"></asp:Label></td>
             </tr>
             <tr>
                 <td>Fecha última adición</td>
@@ -96,9 +157,7 @@
             </tr>
             <tr>
                 <td>Valor total mas adiciones</td>
-                <td><asp:Label runat="server" ID="TTotalC"></asp:Label></td>
-                <td></td>
-                <td></td>
+                <td align="right" colspan="3"><asp:Label runat="server" ID="LTotalC"></asp:Label></td>
             </tr>
             <tr>
                 <td colspan="4" class="Titulo">Duración</td>
@@ -113,7 +172,7 @@
                 <td>Finalización Última prorroga</td>
                 <td><asp:TextBox runat="server" ID="TUProrroga" CssClass="fecha"></asp:TextBox><asp:RangeValidator ControlToValidate="TUProrroga" runat="server" ErrorMessage="Por favor ingrese una fecha valida." MinimumValue="01/01/1930" MaximumValue="01/01/2100" ID="RangeValidator4" Display="Dynamic" Type="Date">*</asp:RangeValidator></td>
                 <td>Duración (Meses)</td>
-                <td><asp:Label runat="server" ID="TDuracion"></asp:Label></td>
+                <td><asp:Label runat="server" ID="LDuracion"></asp:Label></td>
             </tr>
             <tr>
                 <td class="Titulo" colspan=4>Pólizas</td>
@@ -161,9 +220,13 @@
             </asp:GridView>
                 <sdg:CustomDataSource ID="SPolizas" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
-                    SelectCommand="SELECT contrato_proyecto_polizas.id, shared.nombre AS tipo,contrato_proyecto_polizas.numero,contrato_proyecto_polizas.aseguradora,contrato_proyecto_polizas.vencimiento FROM shared 
+                    SelectCommand="(SELECT contrato_proyecto_polizas.id, shared.nombre AS tipo,contrato_proyecto_polizas.numero,contrato_proyecto_polizas.aseguradora,contrato_proyecto_polizas.vencimiento FROM shared 
                                     LEFT JOIN contrato_proyecto_polizas ON (contrato_proyecto_polizas.proyecto=@proyecto AND contrato_proyecto_polizas.tipo=shared.nombre) 
-                                    WHERE shared.nReservado=125 AND shared.szReservado IS NULL ORDER BY tipo"
+                                    WHERE shared.nReservado=125 AND shared.szReservado IS NULL ORDER BY tipo) UNION (
+                                    SELECT id,tipo,numero,aseguradora,vencimiento
+                                    FROM contrato_proyecto_polizas
+                                    WHERE proyecto=@proyecto
+                                    )"
                     InsertCommand="INSERT INTO contrato_proyecto_polizas (tipo,numero,aseguradora,vencimiento) VALUES (@tipo,@numero,@aseguradora,@vencimiento)"
                     DeleteCommand="DELETE FROM contrato_proyecto_polizas WHERE id=@id">
                       <SelectParameters>
@@ -191,18 +254,19 @@
                 <Columns>
 		            <asp:CommandField ButtonType="Image" ShowSelectButton="True" SelectImageUrl="~/imgs/edit.gif" />
                     <asp:CommandField ButtonType="Image" DeleteImageUrl="~/imgs/eliminar.gif" ShowDeleteButton="True" />
-                    <asp:BoundField HeaderText="Programada" DataField="programado" SortExpression="programado" />
-                    <asp:BoundField HeaderText="Porcentaje" DataField="porcentajep" SortExpression="porcentajep" />
-                    <asp:BoundField HeaderText="Valor" DataField="valorp" SortExpression="valorp" />
-                    <asp:BoundField HeaderText="Girada" DataField="giro" SortExpression="giro" />
-                    <asp:BoundField HeaderText="Porcentaje" DataField="porcentajeg" SortExpression="porcentajeg" />
-                    <asp:BoundField HeaderText="Valor" DataField="valorg" SortExpression="valorg" />
+                    <asp:BoundField HeaderText="Programada" DataField="programado" SortExpression="programado" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:d}" />
+                    <asp:BoundField HeaderText="Porcentaje" DataField="porcentajep" SortExpression="porcentajep" ItemStyle-HorizontalAlign="Right" />
+                    <asp:BoundField HeaderText="Valor" DataField="valorp" SortExpression="valorp" ItemStyle-HorizontalAlign="Right" />
+                    <asp:BoundField HeaderText="Girada" DataField="giro" SortExpression="giro" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:d}" />
+                    <asp:BoundField HeaderText="Porcentaje" DataField="porcentajeg" SortExpression="porcentajeg" ItemStyle-HorizontalAlign="Right" />
+                    <asp:BoundField HeaderText="Valor" DataField="valorg" SortExpression="valorg" ItemStyle-HorizontalAlign="Right" />
                     <asp:BoundField HeaderText="Observaciones" DataField="observaciones" SortExpression="observaciones" />
                 </Columns>
             </asp:GridView>
                 <sdg:CustomDataSource ID="SFinanciero" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
-                    SelectCommand="SELECT id,programado,porcentajep,valorp,giro,porcentajeg,valorg,observaciones FROM contrato_proyecto_giros WHERE proyecto=@proyecto">
+                    SelectCommand="SELECT id,programado,CAST(porcentajep AS CHAR) AS porcentajep,CAST(valorp AS CHAR) AS valorp,giro,CAST(porcentajeg AS CHAR) AS porcentajeg,CAST(valorg AS CHAR) AS valorg,observaciones FROM contrato_proyecto_giros WHERE proyecto=@proyecto"
+                    DeleteCommand="DELETE FROM contrato_proyecto_giros WHERE id=@id">
                       <SelectParameters>
                         <asp:ControlParameter ControlID="HContrato" Name="proyecto" PropertyName="Value" DefaultValue="0" />
                       </SelectParameters>
@@ -228,10 +292,10 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Porcentaje programado">
                                 <EditItemTemplate>
-                                    <asp:TextBox runat="server" ID="TPProgramado" CssClass="float" Text='<%# Bind("porcentajep") %>'></asp:TextBox>
+                                    <asp:TextBox runat="server" ID="TPProgramado" CssClass="float" Text='<%# Bind("porcentajep") %>'></asp:TextBox>%
                                 </EditItemTemplate>
                                 <InsertItemTemplate>
-                                    <asp:TextBox runat="server" ID="TPProgramado" CssClass="float" Text='<%# Bind("porcentajep") %>'></asp:TextBox>
+                                    <asp:TextBox runat="server" ID="TPProgramado" CssClass="float" Text='<%# Bind("porcentajep") %>'></asp:TextBox>%
                                 </InsertItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Valor programado">
@@ -254,10 +318,10 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Porcentaje girado">
                                 <EditItemTemplate>
-                                    <asp:TextBox runat="server" ID="TPGirado" CssClass="float" Text='<%# Bind("porcentajeg") %>'></asp:TextBox>
+                                    <asp:TextBox runat="server" ID="TPGirado" CssClass="float" Text='<%# Bind("porcentajeg") %>'></asp:TextBox>%
                                 </EditItemTemplate>
                                 <InsertItemTemplate>
-                                    <asp:TextBox runat="server" ID="TPGirado" CssClass="float" Text='<%# Bind("porcentajeg") %>'></asp:TextBox>
+                                    <asp:TextBox runat="server" ID="TPGirado" CssClass="float" Text='<%# Bind("porcentajeg") %>'></asp:TextBox>%
                                 </InsertItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Valor girado">
@@ -283,8 +347,8 @@
                     </div>
                     <sdg:CustomDataSource ID="SDFinanciero" runat="server" ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                                     SelectCommand="SELECT programado,porcentajep,valorp,giro,porcentajeg,valorg,observaciones FROM contrato_proyecto_giros WHERE id=@id"
-                                    InsertCommand="INSERT INTO contrato_proyecto_giros(proyecto,programado,porcentajep,valorp,giro,porcentajeg,valorg,observaciones) VALUES (@proyecto,@programado,@porcentajep,@valorp,@giro,@porcentajeg,@valorg,@observaciones)"
-                                    UpdateCommand="UPDATE contrato_proyecto_giros SET programado=@programado,porcentajep=@porcentajep,valorp=@valorp,giro=@giro,porcentajeg=@porcentajeg,valorg=@valorg,observaciones=@observaciones WHERE id=@id" 
+                                    InsertCommand="INSERT INTO contrato_proyecto_giros(proyecto,STR_TO_DATE(programado, '%d/%m/%Y'),porcentajep,REPLACE(valorp,',',''),STR_TO_DATE(giro, '%d/%m/%Y'),porcentajeg,REPLACE(valorg,',',''),observaciones) VALUES (@proyecto,@programado,@porcentajep,@valorp,@giro,@porcentajeg,@valorg,@observaciones)"
+                                    UpdateCommand="UPDATE contrato_proyecto_giros SET programado=STR_TO_DATE(@programado, '%d/%m/%Y'),porcentajep=@porcentajep,valorp=REPLACE(@valorp,',',''),giro=STR_TO_DATE(@giro, '%d/%m/%Y'),porcentajeg=@porcentajeg,valorg=REPLACE(@valorg,',',''),observaciones=@observaciones WHERE id=@id" 
                                     ParentDataSource="SFinanciero"
                                     >
                                     <SelectParameters>

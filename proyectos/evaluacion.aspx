@@ -436,14 +436,15 @@
                 ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
                 SelectCommand="SELECT shared.id AS id
                             , IF(shared.szReservado=1, CONCAT(shared.nombre,'*'), shared.nombre) AS nombre
-                            ,documentos_proyecto.id AS iddocumento,LENGTH(documentos_proyecto.archivo)>0 AS estado 
+                            ,documentos_proyecto.id AS iddocumento,documentos_proyecto_archivo.id IS NOT NULL AS estado 
                             ,documentos_proyecto.observaciones
                             FROM shared 
                             LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=@proyecto AND documentos_proyecto.documento=shared.id) 
+                            LEFT JOIN documentos_proyecto_archivo ON (documentos_proyecto_archivo.id=documentos_proyecto.id) 
                             WHERE shared.nReservado=106 AND (shared.szReservado IS NULL OR shared.szReservado!=-1)
                             AND (shared.parametro1=@tipo OR (@dotacion=1 AND shared.parametro1 IS NULL))
                             ORDER BY nombre" 
-                DeleteCommand="DELETE FROM documentos_proyecto WHERE id=@iddocumento">
+                DeleteCommand="DELETE FROM documentos_proyecto WHERE id=@iddocumento;DELETE FROM documentos_proyecto_archivo WHERE id=@iddocumento;">
                 <SelectParameters>
                     <asp:ControlParameter ControlID="HEvaluacion" Name="proyecto" PropertyName="Value" DefaultValue="0" />
                     <asp:ControlParameter ControlID="DAdecuacion" Name="tipo" PropertyName="SelectedValue" />

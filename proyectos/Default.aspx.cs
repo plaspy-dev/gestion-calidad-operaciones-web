@@ -168,9 +168,10 @@ public partial class proyectos_Default : System.Web.UI.Page
                             + HProyecto.Value
                             + ")"
                             + " LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id) "
+                            + " LEFT JOIN documentos_proyecto_archivo ON (documentos_proyecto_archivo.id=documentos_proyecto.id) "
                             + " WHERE shared.nReservado=106 AND shared.szReservado='1'"
                             + " AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL))"
-                            + " AND (documentos_proyecto.id IS NULL OR documentos_proyecto.archivo IS NULL);") == "0";
+                            + " AND (documentos_proyecto.id IS NULL OR documentos_proyecto_archivo.id IS NULL);") == "0";
 
         resultado = resultado.Replace("$szCompleta$", completa ? "X" : "");
         resultado = resultado.Replace("$szTramite$", completa  ? "" : "X");

@@ -174,7 +174,7 @@
                     ,evaluacion.presupuesto_inicial AS presupuestog
                     ,evaluacion.presupuesto_inicial*0.32 AS aiu
                     ,evaluacion.presupuesto_inicial*1.32 AS totalp
-                    ,(SELECT GROUP_CONCAT(shared.nombre SEPARATOR '<br/>') FROM shared WHERE shared.nReservado=106 AND shared.szReservado='1' AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL)) AND NOT EXISTS (SELECT 1 FROM documentos_proyecto WHERE documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id AND documentos_proyecto.archivo IS NOT NULL)) AS dpendientes
+                    ,(SELECT GROUP_CONCAT(shared.nombre SEPARATOR '<br/>') FROM shared WHERE shared.nReservado=106 AND shared.szReservado='1' AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL)) AND NOT EXISTS (SELECT 1 FROM documentos_proyecto LEFT JOIN documentos_proyecto_archivo ON (documentos_proyecto_archivo.id=documentos_proyecto.id) WHERE documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id AND documentos_proyecto_archivo.id IS NOT NULL)) AS dpendientes
                     ,(SELECT GROUP_CONCAT(CONCAT('<b>', shared.nombre,'</b>: ',documentos_proyecto.observaciones) SEPARATOR '<br/>') FROM documentos_proyecto LEFT JOIN shared ON (shared.id=documentos_proyecto.documento) WHERE documentos_proyecto.proyecto=proyecto.id) AS pendientes
                     FROM proyecto
                     LEFT JOIN shared AS departamento ON (departamento.id=proyecto.departamento)

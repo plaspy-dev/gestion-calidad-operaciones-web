@@ -84,9 +84,9 @@ public partial class seguimiento_contrato : System.Web.UI.Page
                     TROtras.Text = reader["rotros"].ToString().Replace(",", ".");
                     TFAdicion.Text = CConector.GetFromMySQLDate(reader["uadicion"]);
                     TAdicion.Text = reader["vadicion"].ToString().Replace(",", ".");
-                    TActaInicio.Text = reader["inicio"].ToString();
-                    TFinalizacion.Text = reader["finalizacion"].ToString();
-                    TUProrroga.Text = reader["prorroga"].ToString();
+                    TActaInicio.Text = CConector.GetFromMySQLDate(reader["inicio"]);
+                    TFinalizacion.Text = CConector.GetFromMySQLDate(reader["finalizacion"]);
+                    TUProrroga.Text = CConector.GetFromMySQLDate(reader["prorroga"]);
                 }
             }
         }
@@ -117,9 +117,9 @@ public partial class seguimiento_contrato : System.Web.UI.Page
         query["rotros"] = TROtras.Text.Replace(",", "");
         query["uadicion"] = CConector.GetMySQLDateFormat(TFAdicion.Text);
         query["vadicion"] = TAdicion.Text.Replace(",", "");
-        query["inicio"] = TActaInicio.Text;
-        query["finalizacion"] = TFinalizacion.Text;
-        query["prorroga"] = TUProrroga.Text;
+        query["inicio"] = CConector.GetMySQLDateFormat(TActaInicio.Text);
+        query["finalizacion"] = CConector.GetMySQLDateFormat(TFinalizacion.Text);
+        query["prorroga"] = CConector.GetMySQLDateFormat(TUProrroga.Text);
 
         conector.StartTransaction();
 
@@ -145,7 +145,7 @@ public partial class seguimiento_contrato : System.Web.UI.Page
             polizas["tipo"] = ((TextBox)GPolizas.Rows[i].FindControl("TTipo")).Text;
             polizas["numero"] = ((TextBox)GPolizas.Rows[i].FindControl("TNumero")).Text;
             polizas["aseguradora"] = ((DropDownList)GPolizas.Rows[i].FindControl("DAseguradora")).SelectedValue;
-            polizas["vencimiento"] = ((TextBox)GPolizas.Rows[i].FindControl("TVencimiento")).Text;
+            polizas["vencimiento"] = CConector.GetMySQLDateFormat(((TextBox)GPolizas.Rows[i].FindControl("TVencimiento")).Text);
 
             if(GPolizas.DataKeys[i].Value.ToString().Length==0) {
 

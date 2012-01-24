@@ -133,9 +133,10 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                             + HEvaluacion.Value
                             + ")"
                             + " LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id) "
+                            + " LEFT JOIN documentos_proyecto_archivo ON (documentos_proyecto_archivo.id=documentos_proyecto.id) "
                             + " WHERE shared.nReservado=106 AND shared.szReservado='1'"
                             + " AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL))"
-                            + " AND (documentos_proyecto.id IS NULL OR documentos_proyecto.archivo IS NULL);");
+                            + " AND (documentos_proyecto.id IS NULL OR documentos_proyecto_archivo.id IS NULL);");
 
                     if (faltantes != "0")
                     {
@@ -262,37 +263,40 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
         for (int i = 0; i < GDocumentos.Rows.Count; i++)
         {
             Query documentos = new Query("documentos_proyecto");
+            
             string id = GDocumentos.DataKeys[i].Values["iddocumento"].ToString();
-
             FileUpload file = (FileUpload)GDocumentos.Rows[i].FindControl("FArchivo");
+
+            documentos["observaciones"] = ((TextBox)GDocumentos.Rows[i].FindControl("TObservaciones")).Text;
+            if (id.Length == 0)
+            {
+                if (((TextBox)GDocumentos.Rows[i].FindControl("TObservaciones")).Text.Length > 0 || file.HasFile)
+                {
+                    documentos["documento"] = GDocumentos.DataKeys[i].Value.ToString();
+                    documentos["proyecto"] = UCProyecto.IdProyecto;
+                    int res = conector.QueryMod(documentos.GetInsert());
+                    if (res == -1)
+                        return;
+                    id= res.ToString();
+                }
+            }
+            else
+            {
+                if (conector.QueryMod(documentos.GetUpdate("id='" + id + "'")) == -1)
+                    return;
+            }
+
             if (file.HasFile)
             {
-                if (id.Length > 0)
-                {
-                    if (conector.QueryMod("DELETE FROM documentos_proyecto WHERE id='" + id + "'") == -1)
-                        return;
-                }
+                if (conector.QueryMod("DELETE FROM documentos_proyecto_archivo WHERE id='" + id + "'") == -1)
+                    return;
 
-                documentos["documento"] = GDocumentos.DataKeys[i].Value.ToString();
-                documentos["proyecto"] = UCProyecto.IdProyecto;
-                documentos["observaciones"] = ((TextBox)GDocumentos.Rows[i].FindControl("TObservaciones")).Text;
+                Query doc = new Query("documentos_proyecto_archivo");
+
+                doc["id"] = id;
 
                 Archivos archivo = new Archivos(file.PostedFile, 0);
-                archivo.SaveFile(documentos);
-            } else {
-                documentos["observaciones"] = ((TextBox)GDocumentos.Rows[i].FindControl("TObservaciones")).Text;
-                if(id.Length==0) {
-                    if (((TextBox)GDocumentos.Rows[i].FindControl("TObservaciones")).Text.Length > 0)
-                    {
-                        documentos["documento"] = GDocumentos.DataKeys[i].Value.ToString();
-                        documentos["proyecto"] = UCProyecto.IdProyecto;
-                        if (conector.QueryMod(documentos.GetInsert()) == -1)
-                            return;
-                    }
-                } else {
-                    if (conector.QueryMod(documentos.GetUpdate("id='" + id + "'")) == -1)
-                        return;
-                }
+                archivo.SaveFile(doc);
             }
         }
         conector.Commit();
@@ -306,14 +310,14 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
     }
     protected void GDocumentos_SelectedIndexChanged(object sender, EventArgs e)
     {
-        Query archivos = new Query("documentos_proyecto");
+        Query archivos = new Query("documentos_proyecto_archivo");
 
         archivos += "id";
         archivos += "nombre";
         archivos += "tipo";
 
         Archivos archivo = new Archivos(archivos.GetSelect("id='" + GDocumentos.SelectedDataKey.Values["iddocumento"].ToString() + "'"),
-            "SELECT archivo FROM documentos_proyecto WHERE id={0}");
+            "SELECT archivo FROM documentos_proyecto_archivo WHERE id={0}");
 
         archivo.ShowFile(Response);
     }
@@ -366,9 +370,10 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                             + HEvaluacion.Value
                             + ")"
                             + " LEFT JOIN documentos_proyecto ON (documentos_proyecto.proyecto=evaluacion.proyecto AND documentos_proyecto.documento=shared.id) "
+                            + " LEFT JOIN documentos_proyecto_archivo ON (documentos_proyecto_archivo.id=documentos_proyecto.id) "
                             + " WHERE shared.nReservado=106 AND shared.szReservado='1'"
                             + " AND (shared.parametro1=evaluacion.adecuacion OR (evaluacion.dotacion=1 AND shared.parametro1 IS NULL))"
-                            + " AND (documentos_proyecto.id IS NULL OR documentos_proyecto.archivo IS NULL);") == "0";
+                            + " AND (documentos_proyecto.id IS NULL OR documentos_proyecto_archivo.id IS NULL);") == "0";
 
         resultado = resultado.Replace("$szCompleta$", completa ? "X" : "");
         resultado = resultado.Replace("$szTramite$", completa ? "" : "X");

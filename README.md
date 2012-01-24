@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-20 · Recuperar el formulario de contratos y su guardado.** Añade la vista de contratos, sus campos y las operaciones que guardan los valores. El equipo puede revisar los contratos en una pantalla separada de la lista de proyectos.
+**2012-01-24 · Ajustar la lectura de fechas en contratos.** Revisa los controles del contrato y las llamadas que convierten fechas al formato usado por la base de datos. También ajusta el guardado de evaluación para seguir los valores de los controles actualizados.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-20 · Recover the contract form and save handler.** Add the contract view, its fields, and the operations that save their values. Teams can review contracts separately from the project list.
+**2012-01-24 · Adjust contract date handling.** Revise contract controls and calls that convert dates to and from the database format. Update evaluation saves to use values from the revised controls.
 
 ### How to explore the source
 
