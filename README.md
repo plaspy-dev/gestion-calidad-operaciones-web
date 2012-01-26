@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-24 · Ajustar la lectura de fechas en contratos.** Revisa los controles del contrato y las llamadas que convierten fechas al formato usado por la base de datos. También ajusta el guardado de evaluación para seguir los valores de los controles actualizados.
+**2012-01-26 · Exportar cantidades de obra a una hoja de cálculo.** Añade el evento de exportación y modifica la generación de contenido en cantidades y la plantilla común. El usuario puede obtener una salida para consultar las mediciones fuera del formulario de edición.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-24 · Adjust contract date handling.** Revise contract controls and calls that convert dates to and from the database format. Update evaluation saves to use values from the revised controls.
+**2012-01-26 · Export work quantities to a spreadsheet.** Add the export event and update content generation in work quantities and the shared layout. Users can obtain an output for reviewing measurements outside the editing form.
 
 ### How to explore the source
 

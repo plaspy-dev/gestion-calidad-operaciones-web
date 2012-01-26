@@ -122,6 +122,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cph" Runat="Server">
 <uc1:proyector ID="UCProyecto" runat="server" />
 <asp:Panel runat="server" ID="PDatos" Visible="false">
+    <asp:HiddenField runat="server" ID="HDepartamento" />
+    <asp:HiddenField runat="server" ID="HUpdate" Value="1" />
     <div align="right"><asp:LinkButton runat="server" ID="LFiltro" Text="Filtrar" onclick="LFiltro_Click"></asp:LinkButton></div>
     <asp:Repeater ID="RFiltrar" runat="server" DataSourceID="SFiltrar" Visible="false">
         <HeaderTemplate>
@@ -140,7 +142,7 @@
             <tr p='<%# DataBinder.Eval(Container.DataItem, "parent").ToString() %>' t=<%# DataBinder.Eval(Container.DataItem, "id") %>>
                 <td <%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "colspan=7" : "" %>>
                     <table width=100%><tr><td style="width:100%;">
-                        <asp:Label ID="LC" Font-Bold="true" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "szReservado") %>'></asp:Label>
+                        <asp:Label ID="LC" Font-Bold="true" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "codigo") %>'></asp:Label>
                         <asp:Label ID="LN" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre") %>'></asp:Label>
                         </td><td align=right nowrap=nowrap>
                             <asp:Label ID="LT" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "total", "{0:c}") %>' Visible='<%# DataBinder.Eval(Container.DataItem, "parent").ToString()=="0" %>'></asp:Label>
@@ -150,7 +152,7 @@
                     <td>
                         <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
                         <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
-                        <asp:Label ID="LD"  runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "descripcion") %>'></asp:Label>
+                        <asp:Label ID="LD"  runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "unidad") %>'></asp:Label>
                     </td>
                     <td>
                         <asp:TextBox runat="server" ID="TC" CssClass="ft" Width="60px" Text='<%# DataBinder.Eval(Container.DataItem, "cantidad").ToString().Replace(",", ".") %>'></asp:TextBox>
@@ -174,21 +176,22 @@
     <asp:SqlDataSource ID="SFiltrar" runat="server" 
         ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-        SelectCommand="SELECT elemento.id, elemento.nombre, elemento.descripcion,elemento.szReservado,IFNULL(elemento.parametro1,0) AS parent
+        SelectCommand="SELECT elemento.id, elemento.nombre, elemento.unidad,elemento.codigo,IFNULL(elemento.padre,0) AS parent
                         ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
                         ,cantidades_obra.elemento!=elemento.id AS hijos
-                        ,(SELECT IFNULL(SUM(cantidades_obra.vtotal),0) FROM cantidades_obra LEFT JOIN shared AS e ON (e.id=cantidades_obra.elemento) WHERE cantidades_obra.proyecto=@proyecto AND e.szReservado LIKE CONCAT(elemento.szReservado,'%')) AS total
+                        ,(SELECT IFNULL(SUM(cantidades_obra.vtotal),0) FROM cantidades_obra LEFT JOIN elemento_cantidad_obra AS e ON (e.id=cantidades_obra.elemento) WHERE cantidades_obra.proyecto=@proyecto AND e.departamento=@departamento AND e.codigo LIKE CONCAT(elemento.codigo,'%')) AS total
                         FROM cantidades_obra 
-                        LEFT JOIN shared AS elemento ON 
-                        (elemento.nReservado=122 AND elemento.szReservado!=-1 AND (SELECT LEFT(shared.szReservado,LENGTH(elemento.szReservado))=elemento.szReservado FROM shared WHERE id=cantidades_obra.elemento))
+                        LEFT JOIN elemento_cantidad_obra AS elemento ON 
+                        (elemento.estado IS NULL AND (SELECT LEFT(elemento_cantidad_obra.codigo,LENGTH(elemento.codigo))=elemento.codigo FROM elemento_cantidad_obra WHERE elemento.departamento=@departamento AND id=cantidades_obra.elemento))
                         WHERE cantidades_obra.proyecto=@proyecto
                         AND elemento.id IS NOT NULL
                         AND (cantidades_obra.cantidad IS NOT NULL 
                         OR cantidades_obra.vunitario IS NOT NULL)
                         GROUP BY elemento.id
-                        ORDER BY GetCodigo(elemento.szReservado)">
+                        ORDER BY GetCodigo(elemento.codigo)">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
+                        <asp:ControlParameter ControlID="HDepartamento" Name="departamento" PropertyName="Value" />
                     </SelectParameters>
     </asp:SqlDataSource>
     <asp:UpdatePanel runat="server" ID="UCantidad" UpdateMode="Conditional">
@@ -220,11 +223,11 @@
                     <ItemTemplate>
                         <tr p='<%# DataBinder.Eval(Container.DataItem, "parent").ToString() %>' t=<%# DataBinder.Eval(Container.DataItem, "id") %>>
                             <td <%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))>0 ? "colspan=7" : "" %>>
-                                <b><%# DataBinder.Eval(Container.DataItem, "szReservado") %></b> <%# DataBinder.Eval(Container.DataItem, "nombre") %>
+                                <b><%# DataBinder.Eval(Container.DataItem, "codigo")%></b> <%# DataBinder.Eval(Container.DataItem, "nombre") %>
                             </td>
                             <asp:Panel runat="server" ID="S" Visible='<%# Convert.ToInt32(DataBinder.Eval(Container.DataItem, "hijos"))==0 %>'>
                                 <td>
-                                    <%# DataBinder.Eval(Container.DataItem, "descripcion") %>
+                                    <%# DataBinder.Eval(Container.DataItem, "unidad")%>
                                     <asp:HiddenField ID="HE" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "id") %>' />
                                     <asp:HiddenField ID="HC" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "idcantidad") %>' />
                                 </td>
@@ -247,18 +250,19 @@
                 <asp:SqlDataSource ID="SHijos" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT shared.id, shared.nombre, shared.descripcion,shared.szReservado,IFNULL(shared.parametro1,0) AS parent
-                        ,(SELECT COUNT(*) FROM shared AS s WHERE s.nReservado=122 AND s.szReservado!=-1 AND s.parametro1=shared.id) AS hijos 
+                    SelectCommand="SELECT elemento_cantidad_obra.id, elemento_cantidad_obra.nombre, elemento_cantidad_obra.unidad,elemento_cantidad_obra.codigo,IFNULL(elemento_cantidad_obra.padre,0) AS parent
+                        ,(SELECT COUNT(*) FROM elemento_cantidad_obra AS s WHERE s.estado IS NULL AND s.departamento=@departamento AND s.padre=elemento_cantidad_obra.id) AS hijos 
                         ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
-                        FROM shared 
-                        LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=shared.id AND cantidades_obra.proyecto=@proyecto)
-                        WHERE @actualid=@actual AND shared.nReservado=122 AND shared.szReservado LIKE CONCAT(@capitulo,'%') AND shared.szReservado!=-1 AND shared.id!=@actualid ORDER BY GetCodigo(shared.szReservado)">
+                        FROM elemento_cantidad_obra 
+                        LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=elemento_cantidad_obra.id AND cantidades_obra.proyecto=@proyecto)
+                        WHERE @actualid=@actual AND elemento_cantidad_obra.departamento=@departamento AND elemento_cantidad_obra.codigo LIKE CONCAT(@capitulo,'%') AND elemento_cantidad_obra.codigo!=-1 AND elemento_cantidad_obra.id!=@actualid ORDER BY GetCodigo(elemento_cantidad_obra.codigo)">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="HSel" Name="padre" PropertyName="Value" />
                         <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
                         <asp:ControlParameter ControlID="LCapitulo" Name="actual" PropertyName="CommandArgument" />
                         <asp:ControlParameter ControlID="HSel" Name="actualid" PropertyName="Value" />
                         <asp:ControlParameter ControlID="LCapitulo" Name="capitulo" PropertyName="CommandName" />
+                        <asp:ControlParameter ControlID="HDepartamento" Name="departamento" PropertyName="Value" />
                     </SelectParameters>
                 </asp:SqlDataSource>
         </ItemTemplate>
@@ -269,13 +273,16 @@
     <asp:SqlDataSource ID="SElementos" runat="server" 
         ConnectionString="<%$ ConnectionStrings:MySQLConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:MySQLConnectionString.ProviderName %>" 
-        SelectCommand="SELECT shared.id, shared.szReservado AS cap, CONCAT(shared.szReservado, ' ',shared.nombre) AS nombre 
-                        ,(SELECT SUM(cantidades_obra.vtotal) FROM cantidades_obra LEFT JOIN shared AS elemento ON (elemento.id=cantidades_obra.elemento) WHERE cantidades_obra.proyecto=@proyecto AND elemento.szReservado LIKE CONCAT(shared.szReservado,'%')) AS total
-                        FROM shared 
-                        WHERE shared.nReservado=122 AND shared.szReservado!=-1 
-                        AND shared.parametro1 IS NULL ORDER BY GetCodigo(shared.szReservado)">
+        SelectCommand="SELECT elemento_cantidad_obra.id, elemento_cantidad_obra.codigo AS cap, CONCAT(elemento_cantidad_obra.codigo, ' ',elemento_cantidad_obra.nombre) AS nombre 
+                        ,(SELECT SUM(cantidades_obra.vtotal) FROM cantidades_obra LEFT JOIN elemento_cantidad_obra AS elemento ON (elemento.id=cantidades_obra.elemento) WHERE cantidades_obra.proyecto=@proyecto AND elemento.departamento=@departamento AND elemento.codigo LIKE CONCAT(elemento_cantidad_obra.codigo,'%')) AS total
+                        FROM elemento_cantidad_obra 
+                        WHERE elemento_cantidad_obra.estado IS NULL 
+                        AND elemento_cantidad_obra.departamento=@departamento
+                        AND elemento_cantidad_obra.padre IS NULL ORDER BY GetCodigo(elemento_cantidad_obra.codigo)">
                         <SelectParameters>
                             <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />
+                            <asp:ControlParameter ControlID="HDepartamento" Name="departamento" PropertyName="Value" />
+                            <asp:ControlParameter ControlID="HUpdate" Name="update" PropertyName="Value" />
                         </SelectParameters>
     </asp:SqlDataSource>
     </ContentTemplate>
@@ -300,6 +307,61 @@
         </tr>
     </table>
     </div>
+    <asp:Panel DefaultButton="BAgregar" runat="server" ID="PAgregar">
+        <fieldset>
+            <legend>Nuevo</legend>
+            <table border="0" width="100%">
+                <tr>
+                    <td colspan="3"><asp:Label runat="server" ID="LMensaje" ForeColor="#FF0000" Text=""></asp:Label></td>
+                </tr>
+                <tr>
+                    <td>
+                        Código</td>
+                    <td align="right">
+                        <asp:TextBox ID="TCodigo" runat="server" Text=""></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ValidationGroup="nuevo"
+                            ControlToValidate="TCodigo" Display="Dynamic" 
+                            ErrorMessage="Por favor ingrese un codigo." SetFocusOnError="true"></asp:RequiredFieldValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Nombre</td>
+                    <td align="right">
+                        <asp:TextBox ID="TNombre" runat="server" Width="98%"></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ValidationGroup="nuevo"
+                            ControlToValidate="TNombre" Display="Dynamic" 
+                            ErrorMessage="Por favor ingrese un nombre." SetFocusOnError="True"></asp:RequiredFieldValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Unidad</td>
+                    <td align="right">
+                        <asp:TextBox ID="TDescripcion" runat="server" EnableViewState="False"></asp:TextBox>
+                    </td>
+                    <td align="right">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;</td>
+                    <td align="right">
+                        <asp:Button ID="BAgregar" runat="server" Text="Agregar" ValidationGroup="nuevo" 
+                            onclick="BAgregar_Click" />
+                        <asp:Button ID="BCancelarA" runat="server" CausesValidation="False" 
+                            Text="Cancelar" onclick="BCancelarA_Click" />
+                    </td>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+            </table>
+        </fieldset>
+    </asp:Panel>
     <div align="right">
         <asp:Button ID="BAceptar" runat="server" Text="Aceptar" 
             onclick="BAceptar_Click" /><asp:Button ID="BCancelar" runat="server" 
@@ -307,4 +369,3 @@
     </div>
 </asp:Panel>
 </asp:Content>
-

@@ -132,6 +132,8 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         ((MasterPageI)Master)._ImprimirClicked += new EventHandler(OnImprimir);
+        ((MasterPageI)Master)._ExcelClicked += new EventHandler(OnExcel);
+
         if (Request.QueryString["idp"] != null)
         {
             ((MasterPageI)Master).SetParametros("?idp=" + Request.QueryString["idp"]);
@@ -150,6 +152,8 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                 if (UCProyecto.IdProyecto.Length > 0)
                 {
                     BAceptar.Enabled = usuario.CanInsert();
+                    PAgregar.Enabled = usuario.CanInsert();
+                    HDepartamento.Value = conector.QueryString("SELECT departamento FROM proyecto WHERE id=" + UCProyecto.IdProyecto);
                     PDatos.Visible = true;
                     TImprevistos.Text = conector.QueryString("SELECT imprevistos FROM evaluacion WHERE proyecto='" + UCProyecto.IdProyecto + "'");
                     if (TImprevistos.Text.Length == 0)
@@ -160,6 +164,7 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                     {
                         LFiltro.Visible = true;
                         ((MasterPageI)Master).Imprimir("~/imprimir/cantidad.htm");
+                        ((MasterPageI)Master).Excel(null);
                         double dTotal=Convert.ToDouble(total);
                         LSubTotal.Text = String.Format(culture, "{0:c}", dTotal);
                         LImprevistos.Text = String.Format(culture, "{0:c}", dTotal*Convert.ToDouble(TImprevistos.Text)/100);
@@ -278,10 +283,26 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
             LFiltro.OnClientClick = tabla.Count>0 ? "return confirm('Esta acción revertira todos los cambios realizados. ¿Desea continuar?');" : "";
         }
     }
-    protected void OnImprimir(object sender, EventArgs e) {
 
-        string resultado = (string)sender;
-        // aqui modificamos el resultado
+    protected void OnExcel(object sender, EventArgs e) {
+
+        Response.Clear();
+        Response.AddHeader("Content-Disposition", "inline;filename=" + Page.Title + ".xls");
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.ContentEncoding = System.Text.Encoding.GetEncoding("ISO-8859-1");
+        Response.Write("<html>");
+        Response.Write("<body>\n");
+
+        Response.Write(RenderPage());
+
+        Response.Write("</body></html>\n");
+        Response.End();
+    }
+
+    protected string RenderPage() {
+
+        RFiltrar.Visible = true;
+        RFiltrar.DataBind();
         string valor = "<table border=0 cellpadding=0 cellspacing=0 width=100% style='border-collapse: collapse;width:100%'>"
                 + "<tr class=xl115 style='text-align:center'>"
                     + "<td style='font-weight: bold'>Descripción</td>"
@@ -300,11 +321,11 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
             string codigo = ((Label)RFiltrar.Items[i].FindControl("LC")).Text;
             int ancho = 50;// +codigo.Split('.').Length * 10;
 
-            if(((Panel)RFiltrar.Items[i].FindControl("S")).Visible) {
-   
+            if (((Panel)RFiltrar.Items[i].FindControl("S")).Visible)
+            {
                 valor += "<tr><td class='nowrap'>";
                 valor += "<table><tr><TD width=" + ancho + " style='vertical-align: middle;'><b>";
-                valor+= codigo;
+                valor += codigo;
                 valor += "</b>";
                 valor += "</td><TD class='nowrap'>";
                 valor += ((Label)RFiltrar.Items[i].FindControl("LN")).Text;
@@ -312,26 +333,28 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
                 valor += "</td><td>";
                 valor += ((Label)RFiltrar.Items[i].FindControl("LD")).Text;
                 valor += "</td>";
-                string sv= ((TextBox)RFiltrar.Items[i].FindControl("TC")).Text;
+                string sv = ((TextBox)RFiltrar.Items[i].FindControl("TC")).Text;
                 double dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
                 valor += "<td align=right>" + string.Format("{0:N}", dv);
 
-                sv= ((TextBox)RFiltrar.Items[i].FindControl("TU")).Text;
+                sv = ((TextBox)RFiltrar.Items[i].FindControl("TU")).Text;
                 dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
                 valor += "</td><td align=right>" + string.Format("{0:c}", dv);
 
-                sv=((TextBox)RFiltrar.Items[i].FindControl("TT")).Text;
+                sv = ((TextBox)RFiltrar.Items[i].FindControl("TT")).Text;
                 dv = string.IsNullOrEmpty(sv) ? 0 : Convert.ToDouble(sv, culture.NumberFormat);
                 valor += "</td><td align=right>" + string.Format("{0:c}", dv);
-                string ob= ((TextBox)RFiltrar.Items[i].FindControl("TO")).Text;
+                string ob = ((TextBox)RFiltrar.Items[i].FindControl("TO")).Text;
                 if (ob.Length == 0)
                     ob = " ";
                 valor += "</td><td class='nowrap' colspan=2>" + ob;
                 valor += "</td></tr>";
-            } else {
+            }
+            else
+            {
                 string color = ((Label)RFiltrar.Items[i].FindControl("LT")).Visible ? "#CCCCCC" : "#EEEEEE";
                 valor += "<tr bgcolor=" + color + "><td colspan=7 class='nowrap'>";
-                valor += "<table width=100%><tr><TD width="+ ancho +  " style='min-width:" + ancho + "'><b>";
+                valor += "<table width=100%><tr><TD width=" + ancho + " style='min-width:" + ancho + "'><b>";
                 valor += codigo;
                 valor += "</b></td><TD width=100%><b>";
                 valor += ((Label)RFiltrar.Items[i].FindControl("LN")).Text;
@@ -346,8 +369,14 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
         }
         valor = valor.Replace("<td", "<td style='border: 1px solid #000;vertical-align:middle;'");
         valor += "</table>";
-        resultado= resultado.Replace("$RFiltrar$", valor);
+        return valor;
+    }
 
+    protected void OnImprimir(object sender, EventArgs e) {
+
+        string resultado = (string)sender;
+        // aqui modificamos el resultado
+        resultado= resultado.Replace("$RFiltrar$", RenderPage());
 
         Query query = new Query("proyecto");
 
@@ -384,9 +413,92 @@ public partial class proyectos_cantidadobra : System.Web.UI.Page
             }
         }
 
-
         Response.Clear();
         Response.Write(resultado);
         Response.End();
+    }
+
+    protected void BAgregar_Click(object sender, EventArgs e)
+    {
+        Query query = new Query("elemento_cantidad_obra");
+        CConector conector = new CConector();
+        
+        // validamos el formato del codigo
+        for (int i = 0; i < TCodigo.Text.Length; i++) { 
+
+            if(!Char.IsNumber(TCodigo.Text,i) && TCodigo.Text[i]!='.') {
+
+                LMensaje.Text = "Por favor ingrese un código valido";
+                TCodigo.Focus();
+                return;
+            }
+        }
+        if (TCodigo.Text[TCodigo.Text.Length - 1] != '.')
+            TCodigo.Text += ".";
+        while (TCodigo.Text.IndexOf("..") != -1)
+            TCodigo.Text= TCodigo.Text.Replace("..", ".");
+
+        // buscamos al padre
+        int pos= TCodigo.Text.Substring(0, TCodigo.Text.Length-1).LastIndexOf(".");
+        string parent = "";
+        string topparent = "";
+        if(pos!=-1) {
+            string capitulo = TCodigo.Text.Substring(0, pos+1);
+            parent= conector.QueryString("SELECT id FROM elemento_cantidad_obra WHERE codigo='" + capitulo + "' AND departamento="  + HDepartamento.Value + " AND estado IS NULL;");
+            if(parent.Length==0) {
+                LMensaje.Text = "No se encontro el capítulo o sub capítulo " + capitulo;
+                return;
+            }
+            // buscamos el top parent
+            pos= TCodigo.Text.Substring(0, TCodigo.Text.Length-1).IndexOf(".");
+            if(pos!=-1) {
+                string capitulop = TCodigo.Text.Substring(0, pos + 1);
+                if(capitulop==capitulo) { // el padre es el mismo nivel mas alto
+                    topparent = parent;
+                } else {
+                    topparent = conector.QueryString("SELECT id FROM elemento_cantidad_obra WHERE codigo='" + capitulop + "' AND departamento=" + HDepartamento.Value + " AND estado IS NULL;");
+                }
+            }
+        }
+        // los busacmos a el
+        string id = conector.QueryString("SELECT id FROM elemento_cantidad_obra WHERE codigo='" + TCodigo.Text + "' AND departamento=" + HDepartamento.Value + " AND estado IS NULL;");
+        if(id.Length!=0) {
+            LMensaje.Text = "Ya existe un capítulo o sub capítulo con el código " + TCodigo.Text;
+            return;
+        }
+
+        query["nombre"] = TNombre.Text;
+        query["unidad"] = TDescripcion.Text;
+        query["codigo"] = TCodigo.Text;
+        query["padre"] = parent;
+        query["departamento"] = HDepartamento.Value;
+
+        if (conector.QueryMod(query.GetInsert()) == -1)
+            return;
+        
+        /*
+        if (conector.InsertModificacionWeb(HId.Value) == -1)
+            return;*/
+
+        HUpdate.Value = HUpdate.Value+ "1";
+
+        if (HSel.Value != "")
+        {
+            Hashtable tabla = (Hashtable)Session["Elementos"];
+            tabla[HSel.Value] = new Elementos(E);
+        }
+        HSel.Value = topparent;
+
+        ((MasterPageI)Master).SetTitulo(TNombre.Text + " Agregado");
+        BCancelarA_Click(sender, e);
+        TCodigo.Focus();
+    }
+
+    protected void BCancelarA_Click(object sender, EventArgs e)
+    {
+        LMensaje.Text = "";
+        TCodigo.Text = "";
+        TNombre.Text = "";
+        TDescripcion.Text = "";
     }
 }

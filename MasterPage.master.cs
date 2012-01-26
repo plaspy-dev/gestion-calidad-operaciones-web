@@ -12,6 +12,7 @@ public partial class MasterPageI : System.Web.UI.MasterPage
 {
     // private static readonly object _ImprimirClicked = new object();
     public event EventHandler _ImprimirClicked = null;
+    public event EventHandler _ExcelClicked = null;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -296,6 +297,8 @@ public partial class MasterPageI : System.Web.UI.MasterPage
         if (Session["excelgridview"]!=null)
         {
             RenderView((GridView)Session["excelgridview"]);
+        } else if(_ExcelClicked!=null) {
+            _ExcelClicked(sender, e);
         }
     }
 }
