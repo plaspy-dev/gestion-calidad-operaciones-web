@@ -255,7 +255,7 @@
                         ,cantidades_obra.id AS idcantidad,cantidades_obra.vtotal,cantidades_obra.vunitario,cantidades_obra.cantidad,cantidades_obra.observaciones
                         FROM elemento_cantidad_obra 
                         LEFT JOIN cantidades_obra ON (cantidades_obra.elemento=elemento_cantidad_obra.id AND cantidades_obra.proyecto=@proyecto)
-                        WHERE @actualid=@actual AND elemento_cantidad_obra.departamento=@departamento AND elemento_cantidad_obra.codigo LIKE CONCAT(@capitulo,'%') AND elemento_cantidad_obra.codigo!=-1 AND elemento_cantidad_obra.id!=@actualid ORDER BY GetCodigo(elemento_cantidad_obra.codigo)">
+                        WHERE @actualid=@actual AND elemento_cantidad_obra.estado IS NULL AND elemento_cantidad_obra.departamento=@departamento AND elemento_cantidad_obra.codigo LIKE CONCAT(@capitulo,'%') AND elemento_cantidad_obra.codigo!=-1 AND elemento_cantidad_obra.id!=@actualid ORDER BY GetCodigo(elemento_cantidad_obra.codigo)">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="HSel" Name="padre" PropertyName="Value" />
                         <asp:ControlParameter ControlID="UCProyecto" Name="proyecto" PropertyName="IdProyecto" />

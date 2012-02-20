@@ -39,7 +39,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 {
                     return;
                 }
-                TPInicial.Text = conector.QueryString("SELECT SUM(cantidades_obra.vtotal)*(evaluacion.imprevistos+100)/100 FROM cantidades_obra LEFT JOIN evaluacion ON (evaluacion.proyecto=cantidades_obra.proyecto) WHERE cantidades_obra.proyecto=" + UCProyecto.IdProyecto + ";").Replace(",", ".");
+                // TPInicial.Text = conector.QueryString("SELECT SUM(cantidades_obra.vtotal)*(evaluacion.imprevistos+100)/100 FROM cantidades_obra LEFT JOIN evaluacion ON (evaluacion.proyecto=cantidades_obra.proyecto) WHERE cantidades_obra.proyecto=" + UCProyecto.IdProyecto + ";").Replace(",", ".");
 
                 Query query = new Query("evaluacion");
 
@@ -70,7 +70,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                 query += "otros";
                 // query += "viable";
                 query += "objeto";
-                // query += "presupuesto_inicial";
+                query += "presupuesto_inicial";
                 query += "area_afectada";
                 query += "presupuesto_dotacion";
                 query += "dotacion";
@@ -120,6 +120,7 @@ public partial class proyectos_evaluacion : System.Web.UI.Page
                     TOtros.Text = reader["otros"].ToString();
                     TAreaAfectada.Text = reader["area_afectada"].ToString().Replace(",", ".");
                     TPDotacion.Text = reader["presupuesto_dotacion"].ToString().Replace(",", ".");
+                    TPInicial.Text = reader["presupuesto_inicial"].ToString().Replace(",", ".");
                     DAdecuacion_SelectedIndexChanged(sender, e);
                     // CViable.Checked = reader["viable"].ToString() == "1";
                 }

@@ -8,7 +8,7 @@ Sitio interno para consultar información y documentos de proyectos. Permite que
 
 ### Esta revisión
 
-**2012-01-26 · Exportar cantidades de obra a una hoja de cálculo.** Añade el evento de exportación y modifica la generación de contenido en cantidades y la plantilla común. El usuario puede obtener una salida para consultar las mediciones fuera del formulario de edición.
+**2012-02-20 · Ampliar estadísticas y ajustar su salida.** Añade campos a las estadísticas y actualiza la plantilla que renderiza y devuelve el resultado. El usuario puede consultar más datos del proyecto en la salida de la vista.
 
 ### Cómo explorar el código
 
@@ -25,7 +25,7 @@ An internal site for looking up project records and documents. Teams can review 
 
 ### This revision
 
-**2012-01-26 · Export work quantities to a spreadsheet.** Add the export event and update content generation in work quantities and the shared layout. Users can obtain an output for reviewing measurements outside the editing form.
+**2012-02-20 · Expand statistics and revise rendered output.** Add fields to the statistics screen and update the layout that renders and returns the result. Users can consult more project data in the view output.
 
 ### How to explore the source
 

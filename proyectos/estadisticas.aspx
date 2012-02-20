@@ -20,7 +20,7 @@
         function addPorcentajes(tabla, inicio, mensaje) {
 
             var encabezado = "<tr class='Titulo'><td colspan=" + (inicio-5).toString() + " align=center><b>DATOS GENERALES</b></td>"
-            encabezado += "<td colspan=5 align=center><b>EJECUCIÓN PRESUPUESTAL</b></td>";
+            encabezado += "<td colspan=13 align=center><b>EJECUCIÓN PRESUPUESTAL</b></td>";
             encabezado += "<td align=center colspan=1><b></b></td>";
             encabezado += "<td align=center colspan=3><b>TIPO DE EDIFICACIÓN</b></td>";
             encabezado += "<td align=center colspan=3><b>OBJETOS DE INTERVENCIÓN</b></td>";
@@ -95,6 +95,30 @@
 
 <ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
             </asp:BoundField>
+            <asp:BoundField DataField="amenorindirecto" HeaderText="COSTOS INDIRECTOS" 
+                SortExpression="amenorindirecto" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amenorinterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="amenorinterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amenortotal" HeaderText="TOTAL ADECUACION MENOR" 
+                SortExpression="amenortotal" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
             <asp:BoundField DataField="amayor" HeaderText="ADECUACIONES MAYORES" 
                 SortExpression="amayor" ItemStyle-HorizontalAlign="Right" 
                 DataFormatString="{0:c}" ItemStyle-Wrap="false" 
@@ -103,8 +127,48 @@
 
 <ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
             </asp:BoundField>
-            <asp:BoundField DataField="dotacion" HeaderText="DOTACION" 
+            <asp:BoundField DataField="amayorindirecto" HeaderText="COSTOS INDIRECTOS" 
+                SortExpression="amayorindirecto" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amayorinterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="amayorinterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amayortotal" HeaderText="TOTAL ADECUACIONES MAYORES" 
+                SortExpression="amayortotal" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotacion" HeaderText="DOTACIÓN" 
                 SortExpression="dotacion" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotacioninterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="dotacioninterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotaciontotal" HeaderText="TOTAL DOTACIÓN" 
+                SortExpression="dotaciontotal" ItemStyle-HorizontalAlign="Right" 
                 DataFormatString="{0:c}" ItemStyle-Wrap="false" 
                 FooterStyle-HorizontalAlign="Right">
 <FooterStyle HorizontalAlign="Right"></FooterStyle>
@@ -221,8 +285,16 @@
                         ,COUNT(DISTINCT proyecto.municipio) AS municipios
                         ,SUM(evaluacion.presupuesto_inicial) AS total
                         ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0)) AS amenor
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*0.32 AS amenorindirecto
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*0.07 AS amenorinterventoria
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*1.39 AS amenortotal
                         ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0)) AS amayor
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*0.32 AS amayorindirecto
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*0.07 AS amayorinterventoria
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*1.39 AS amayortotal
                         ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0)) AS dotacion
+                        ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0))*0.07 AS dotacioninterventoria
+                        ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0))*1.07 AS dotaciontotal
                         ,SUM(evaluacion.presupuesto_inicial)/(SELECT SUM(presupuesto_inicial) FROM evaluacion) AS inversion
                         ,COUNT(proyecto.id) AS proyectosrecibidos
                         ,COUNT(IF(tinstitucion.nombre LIKE '%puesto%', 1, NULL)) AS puesto
@@ -291,6 +363,30 @@
 
 <ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
             </asp:BoundField>
+            <asp:BoundField DataField="amenorindirecto" HeaderText="COSTOS INDIRECTOS" 
+                SortExpression="amenorindirecto" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amenorinterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="amenorinterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amenortotal" HeaderText="TOTAL ADECUACION MENOR" 
+                SortExpression="amenortotal" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
             <asp:BoundField DataField="amayor" HeaderText="ADECUACIONES MAYORES" 
                 SortExpression="amayor" ItemStyle-HorizontalAlign="Right" 
                 DataFormatString="{0:c}" ItemStyle-Wrap="false" 
@@ -299,8 +395,48 @@
 
 <ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
             </asp:BoundField>
-            <asp:BoundField DataField="dotacion" HeaderText="DOTACION" 
+            <asp:BoundField DataField="amayorindirecto" HeaderText="COSTOS INDIRECTOS" 
+                SortExpression="amayorindirecto" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amayorinterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="amayorinterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amayortotal" HeaderText="TOTAL ADECUACIONES MAYORES" 
+                SortExpression="amayortotal" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotacion" HeaderText="DOTACIÓN" 
                 SortExpression="dotacion" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotacioninterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="dotacioninterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotaciontotal" HeaderText="TOTAL DOTACIÓN" 
+                SortExpression="dotaciontotal" ItemStyle-HorizontalAlign="Right" 
                 DataFormatString="{0:c}" ItemStyle-Wrap="false" 
                 FooterStyle-HorizontalAlign="Right">
 <FooterStyle HorizontalAlign="Right"></FooterStyle>
@@ -416,8 +552,16 @@
                         ,municipio.nombre AS municipio
                         ,SUM(evaluacion.presupuesto_inicial) AS total
                         ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0)) AS amenor
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*0.32 AS amenorindirecto
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*0.07 AS amenorinterventoria
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*1.39 AS amenortotal
                         ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0)) AS amayor
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*0.32 AS amayorindirecto
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*0.07 AS amayorinterventoria
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*1.39 AS amayortotal
                         ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0)) AS dotacion
+                        ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0))*0.07 AS dotacioninterventoria
+                        ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0))*1.07 AS dotaciontotal
                         ,SUM(evaluacion.presupuesto_inicial)/(SELECT SUM(evaluacion.presupuesto_inicial) FROM evaluacion LEFT JOIN proyecto ON proyecto.id=evaluacion.proyecto LEFT JOIN shared ON proyecto.departamento=shared.id WHERE shared.descripcion=@grupo) AS inversion
                         ,COUNT(proyecto.id) AS proyectosrecibidos
                         ,COUNT(IF(tinstitucion.nombre LIKE '%puesto%', 1, NULL)) AS puesto
@@ -488,6 +632,30 @@
 
 <ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
             </asp:BoundField>
+            <asp:BoundField DataField="amenorindirecto" HeaderText="COSTOS INDIRECTOS" 
+                SortExpression="amenorindirecto" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amenorinterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="amenorinterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amenortotal" HeaderText="TOTAL ADECUACION MENOR" 
+                SortExpression="amenortotal" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
             <asp:BoundField DataField="amayor" HeaderText="ADECUACIONES MAYORES" 
                 SortExpression="amayor" ItemStyle-HorizontalAlign="Right" 
                 DataFormatString="{0:c}" ItemStyle-Wrap="false" 
@@ -496,8 +664,48 @@
 
 <ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
             </asp:BoundField>
-            <asp:BoundField DataField="dotacion" HeaderText="DOTACION" 
+            <asp:BoundField DataField="amayorindirecto" HeaderText="COSTOS INDIRECTOS" 
+                SortExpression="amayorindirecto" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amayorinterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="amayorinterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="amayortotal" HeaderText="TOTAL ADECUACIONES MAYORES" 
+                SortExpression="amayortotal" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotacion" HeaderText="DOTACIÓN" 
                 SortExpression="dotacion" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotacioninterventoria" HeaderText="INTERVENTORÍA" 
+                SortExpression="dotacioninterventoria" ItemStyle-HorizontalAlign="Right" 
+                DataFormatString="{0:c}" ItemStyle-Wrap="false" 
+                FooterStyle-HorizontalAlign="Right">
+<FooterStyle HorizontalAlign="Right"></FooterStyle>
+
+<ItemStyle HorizontalAlign="Right" Wrap="False"></ItemStyle>
+            </asp:BoundField>
+            <asp:BoundField DataField="dotaciontotal" HeaderText="TOTAL DOTACIÓN" 
+                SortExpression="dotaciontotal" ItemStyle-HorizontalAlign="Right" 
                 DataFormatString="{0:c}" ItemStyle-Wrap="false" 
                 FooterStyle-HorizontalAlign="Right">
 <FooterStyle HorizontalAlign="Right"></FooterStyle>
@@ -612,8 +820,16 @@
                         municipio.nombre AS municipio
                         ,SUM(evaluacion.presupuesto_inicial) AS total
                         ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0)) AS amenor
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*0.32 AS amenorindirecto
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*0.07 AS amenorinterventoria
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%menor%', evaluacion.presupuesto_inicial, 0))*1.39 AS amenortotal
                         ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0)) AS amayor
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*0.32 AS amayorindirecto
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*0.07 AS amayorinterventoria
+                        ,SUM(IF(tipoadecuacion.nombre LIKE '%mayor%', evaluacion.presupuesto_inicial, 0))*1.39 AS amayortotal
                         ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0)) AS dotacion
+                        ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0))*0.07 AS dotacioninterventoria
+                        ,SUM(IF(evaluacion.dotacion, evaluacion.presupuesto_inicial,0))*1.07 AS dotaciontotal
                         ,SUM(evaluacion.presupuesto_inicial)/(SELECT SUM(evaluacion.presupuesto_inicial) FROM evaluacion LEFT JOIN proyecto ON proyecto.id=evaluacion.proyecto LEFT JOIN shared ON proyecto.departamento=shared.id WHERE shared.nombre=@departamento) AS inversion
                         ,COUNT(proyecto.id) AS proyectosrecibidos
                         ,COUNT(IF(tinstitucion.nombre LIKE '%puesto%', 1, NULL)) AS puesto

@@ -145,7 +145,7 @@ public partial class MasterPageI : System.Web.UI.MasterPage
         return lnkGuardar;
     }
 
-    protected void RenderView(GridView view) {
+    public void RenderView(GridView view) {
 
         bool paging = view.AllowPaging;
         if (paging)
@@ -154,14 +154,6 @@ public partial class MasterPageI : System.Web.UI.MasterPage
             view.DataBind();
         }
 
-        Response.Clear();
-        Response.AddHeader("Content-Disposition", "inline;filename=" + Page.Title + ".xls");
-        Response.ContentType = "application/vnd.ms-excel";
-        Response.ContentEncoding = System.Text.Encoding.GetEncoding("ISO-8859-1");
-
-        Response.Write("<html>");
-        Response.Write("<body>\n");
-        Response.Write("<table border='1'>\n");
         Response.Write("<tr>\n");
         for (int i = 0; i < view.Columns.Count; i++)
         {
@@ -196,9 +188,6 @@ public partial class MasterPageI : System.Web.UI.MasterPage
             }
             Response.Write("</tr>\n");
         }
-        Response.Write("</body></html>\n");
-        
-        Response.End();
 
         if (paging)
         {
@@ -296,7 +285,19 @@ public partial class MasterPageI : System.Web.UI.MasterPage
     {
         if (Session["excelgridview"]!=null)
         {
+            Response.Clear();
+            Response.AddHeader("Content-Disposition", "inline;filename=" + Page.Title + ".xls");
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("ISO-8859-1");
+
+            Response.Write("<html>");
+            Response.Write("<body>\n");
+            Response.Write("<table border='1'>\n");
+
             RenderView((GridView)Session["excelgridview"]);
+
+            Response.Write("</table></body></html>\n");
+            Response.End();
         } else if(_ExcelClicked!=null) {
             _ExcelClicked(sender, e);
         }

@@ -146,7 +146,7 @@
                 <td>
                     Presupuesto</td>
                 <td>
-                    <asp:TextBox runat="server" CssClass="dinero" ID="TPInicial" ReadOnly="true"></asp:TextBox></td>
+                    <asp:TextBox runat="server" CssClass="dinero" ID="TPInicial"></asp:TextBox></td>
                 <td>
                     Área afectada (m<sup>2</sup>)</td>
                 <td>
